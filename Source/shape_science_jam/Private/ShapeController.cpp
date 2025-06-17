@@ -42,6 +42,15 @@ void AShapeController::SetupInputComponent()
 			if (MoveAction) {
 				Subsystem->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AShapeController::Move);
 			}
+			if (AttackAction) {
+				Subsystem->BindAction(AttackAction, ETriggerEvent::Started, this, &AShapeController::Attack);
+			}
+			if (SpecialMoveAction) {
+				Subsystem->BindAction(SpecialMoveAction, ETriggerEvent::Started, this, &AShapeController::SpecialMove);
+			}
+			if (ChangeShapeAction) {
+				Subsystem->BindAction(ChangeShapeAction, ETriggerEvent::Started, this, &AShapeController::ChangeShape);
+			}
 		}
 	}
 }
@@ -52,6 +61,42 @@ void AShapeController::Move(const FInputActionValue& value)
 	float MovementDirection = value.Get<float>();
 	if (APawn* ControlledPawn = GetPawn()) {
 		/*FVector RightDirection = ControlledPawn->GetActorRightVector();*/
-		ControlledPawn->AddMovementInput(FVector(1.f, 0.f, 0.f), MovementDirection);
+		ControlledPawn->AddMovementInput(ControlledPawn->GetActorForwardVector(), MovementDirection);
 	}
+}
+
+void AShapeController::Attack(const FInputActionValue& value)
+{
+	// Perform validity checks of player and then call corresponding functions
+	if (Player)
+		Player->Attack();
+}
+
+void AShapeController::SpecialMove(const FInputActionValue& value)
+{
+	if (Player)
+		Player->SpecialMove();
+}
+
+void AShapeController::ChangeShape(const FInputActionValue& value)
+{
+	if (Player) {
+		// Add functionality for character switch 
+		FVector PlayerLocation = Player->GetActorLocation();
+		FRotator PlayerRotation = Player->GetActorRotation();
+		Player->ChangeShape();
+		
+		// Trying to spawn a new instance of a shape class into the level and then possess it but 
+		// NewPlayer is always nullptr for some reason
+		AShape* NewPlayer = GetWorld()->SpawnActor<AShape>(ShapeClass, PlayerLocation, PlayerRotation);
+		
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Purple, FString::Printf(TEXT("%s"), NewPlayer));
+		
+			
+		/*if (NewPlayer)
+			GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Black, FString::Printf(TEXT("Success")));
+		else
+			GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, FString::Printf(TEXT("Failed")));*/
+	}
+		
 }
