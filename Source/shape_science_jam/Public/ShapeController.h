@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Kismet/GameplayStatics.h"
 #include "Shape.h"
 #include "ShapeController.generated.h"
 
@@ -32,6 +33,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input")
 	UInputAction* MoveAction;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	UInputAction* AttackAction;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	UInputAction* SpecialMoveAction;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	UInputAction* ChangeShapeAction;
+
 public:
 	// Sets the input mapping context to the game mode character class
 	virtual void SetupInputComponent() override;
@@ -39,7 +49,15 @@ public:
 	// Player Class reference to cast to
 	AShape* Player;
 
+	// For spawning and possessing on shape switch
+	UPROPERTY()
+	TSubclassOf<APaperCharacter> ShapeClass;
+
 private: 
 	// Input functions and bindings
 	void Move(const FInputActionValue& value);
+	void Attack(const FInputActionValue& value);
+	void SpecialMove(const FInputActionValue& value);
+	void ChangeShape(const FInputActionValue& value);
+
 };

@@ -27,4 +27,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Camera")
 	UCameraComponent* CameraComponent;
 
+	// Functions for shape controller to call when the player executes an input
+	void Attack();
+	void SpecialMove();
+	void ChangeShape();
+
+protected: 
+	// Shapes properties
+	float heatlh;
+	int level;
+	
 };
