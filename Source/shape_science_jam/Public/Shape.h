@@ -27,14 +27,21 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Camera")
 	UCameraComponent* CameraComponent;
 
-	// Functions for shape controller to call when the player executes an input
+	// Functions for player and AI controller to call
+	// The first is for the childs to base class and derived classes to use inside the UE5 editor
+	// and should only be declared in base class! Also, do not create definition in the cpp file 
+	// The second function is for the cpp functionality of the function and should be overriden 
+	// in derived classes
+	UFUNCTION(BlueprintNativeEvent, Category = "Shape Moves")
 	void Attack();
-	void SpecialMove();
-	void ChangeShape();
+	virtual void Attack_Implementation();
 
-protected: 
-	// Shapes properties
-	float heatlh;
-	int level;
+	UFUNCTION(BlueprintNativeEvent, Category = "Shape Moves")
+	void SpecialMove();
+	virtual void SpecialMove_Implementation();
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Shape Moves")
+	void ChangeShape();
+	virtual void ChangeShape_Implementation();
 	
 };
