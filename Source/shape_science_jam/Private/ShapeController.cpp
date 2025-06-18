@@ -12,12 +12,30 @@ void AShapeController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (GEngine) {
+	// Spawns the different shape classes to object pool through
+	// Need to set the shape class template inside the details panel of player controller bp
+
+	if (CircleClass) 
+		Circle = GetWorld()->SpawnActor<ACircle>(CircleClass, FVector(-100, 0, 25), FRotator(0, 0, 0));
+
+	if (SquareClass)
+		Square = GetWorld()->SpawnActor<ASquare>(SquareClass, FVector(0, 0, 10), FRotator(0, 0, 0));
+	
+	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 4.f, FColor::Green, FString::Printf(TEXT("Game Start")));
+
+	// No longer needed since we are removing default pawn class from game mode
+	// and possessing one of the spawned shapes but leaving here if needed later
+	/*Player = Cast<AShape>(GetCharacter());*/
+
+	// Possess shape on begin play
+	if (Circle) {
+		Possess(Circle);
+		// Assign the player class to whatever is possessed so we can call access member variables
+		// and functions using the Shape class
+		Player = Circle;
 	}
-
-	Player = Cast<AShape>(GetCharacter());
-
+	
 	if (AShapeController* PC = Cast<AShapeController>(this)) {
 
 		// Enables possessed character to access the controllers Input Mapping Context and Inputs and use them in game
@@ -80,23 +98,30 @@ void AShapeController::SpecialMove(const FInputActionValue& value)
 
 void AShapeController::ChangeShape(const FInputActionValue& value)
 {
+	// Add functionality for character switch
 	if (Player) {
-		// Add functionality for character switch 
+		 
+		// Location and orientation of former shape for incoming shape to inherit
 		FVector PlayerLocation = Player->GetActorLocation();
 		FRotator PlayerRotation = Player->GetActorRotation();
-		Player->ChangeShape();
 		
-		// Trying to spawn a new instance of a shape class into the level and then possess it but 
-		// NewPlayer is always nullptr for some reason
-		AShape* NewPlayer = GetWorld()->SpawnActor<AShape>(ShapeClass, PlayerLocation, PlayerRotation);
-		
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Purple, FString::Printf(TEXT("%s"), NewPlayer));
-		
-			
-		/*if (NewPlayer)
-			GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Black, FString::Printf(TEXT("Success")));
-		else
-			GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, FString::Printf(TEXT("Failed")));*/
+		// Switch the shape depending on the index accessed
+		switch(ShapeIndex) {
+		case 0:
+			Possess(Square);
+			Player = Square;
+			ShapeIndex = 1;
+			break;
+		case 1:
+			Possess(Circle);
+			Player = Circle;
+			ShapeIndex = 0;
+			break;
+		default:
+			break;
+		}
 	}
+	else
+		GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, FString::Printf(TEXT("Can't access player")));
 		
 }

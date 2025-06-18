@@ -8,11 +8,15 @@
 #include "EnhancedInputSubsystems.h"
 #include "Kismet/GameplayStatics.h"
 #include "Shape.h"
+#include "Circle.h"
+#include "Square.h"
 #include "ShapeController.generated.h"
 
 /**
  * 
  */
+class AShape;
+
 UCLASS()
 class SHAPE_SCIENCE_JAM_API AShapeController : public APlayerController
 {
@@ -46,12 +50,22 @@ public:
 	// Sets the input mapping context to the game mode character class
 	virtual void SetupInputComponent() override;
 
-	// Player Class reference to cast to
+	// Template classes to create variabels that references classes and their respective subclasses
+	UPROPERTY(EditDefaultsOnly, Category = "Shapes")
+	TSubclassOf<ACircle> CircleClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Shapes")
+	TSubclassOf<ASquare> SquareClass;
+	
+	// Shape class instances to cast to
+	ACircle* Circle;
+	ASquare* Square;
+
+	// Player Reference
 	AShape* Player;
 
-	// For spawning and possessing on shape switch
-	UPROPERTY()
-	TSubclassOf<APaperCharacter> ShapeClass;
+	// Index to indentify and switch shapes too
+	int ShapeIndex = 1;
 
 private: 
 	// Input functions and bindings
