@@ -19,7 +19,7 @@ AShape::AShape()
 void AShape::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 }
 
 void AShape::Attack()
