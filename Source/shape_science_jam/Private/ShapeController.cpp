@@ -86,14 +86,20 @@ void AShapeController::Move(const FInputActionValue& value)
 void AShapeController::Attack(const FInputActionValue& value)
 {
 	// Perform validity checks of player and then call corresponding functions
-	if (Player)
+	if (Player) {
 		Player->Attack();
+		Player->Attack_Implementation();
+	}		
 }
 
 void AShapeController::SpecialMove(const FInputActionValue& value)
 {
-	if (Player)
+	if (Player) {
 		Player->SpecialMove();
+		Player->SpecialMove_Implementation();
+	}
+		
+	
 }
 
 void AShapeController::ChangeShape(const FInputActionValue& value)

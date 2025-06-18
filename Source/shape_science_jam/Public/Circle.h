@@ -13,5 +13,13 @@ UCLASS()
 class SHAPE_SCIENCE_JAM_API ACircle : public AShape
 {
 	GENERATED_BODY()
-	
+
+public: 
+	// Base class function implementations
+	virtual void Attack_Implementation() override;
+	virtual void SpecialMove_Implementation() override;
+
+protected: 
+	UPROPERTY(EditDefaultsOnly, Category = "Stats")
+	float RunSpeed = 800;
 };
