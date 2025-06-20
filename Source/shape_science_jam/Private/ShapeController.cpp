@@ -69,6 +69,9 @@ void AShapeController::SetupInputComponent()
 			if (ChangeShapeAction) {
 				Subsystem->BindAction(ChangeShapeAction, ETriggerEvent::Started, this, &AShapeController::ChangeShape);
 			}
+			if (PauseMenuAction) {
+				Subsystem->BindAction(PauseMenuAction, ETriggerEvent::Started, this, &AShapeController::OpenPauseMenu);
+			}
 		}
 	}
 }
@@ -106,7 +109,10 @@ void AShapeController::ChangeShape(const FInputActionValue& value)
 {
 	// Add functionality for character switch
 	if (Player) {
-		 
+
+		// purely for testing, delete later
+		Player->LevelUp();
+
 		// Location and orientation of former shape for incoming shape to inherit
 		FVector PlayerLocation = Player->GetActorLocation();
 		FRotator PlayerRotation = Player->GetActorRotation();
@@ -130,4 +136,23 @@ void AShapeController::ChangeShape(const FInputActionValue& value)
 	else
 		GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, FString::Printf(TEXT("Can't access player")));
 		
+}
+
+void AShapeController::OpenPauseMenu(const FInputActionValue& value)
+{
+	if (PauseMenuClass) {
+		// Swap between opening and closing pause menu
+		// another conditional check for if the player can pause might be needed
+		if (PauseMenu) {
+			PauseMenu->RemoveFromParent();	
+			PauseMenu = NULL;
+		}
+		else {
+			PauseMenu = CreateWidget<UUserWidget>(GetWorld(), PauseMenuClass);
+			PauseMenu->AddToViewport();
+		}	
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("Pause widget class not set in player controller")));
+	}
 }

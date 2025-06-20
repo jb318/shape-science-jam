@@ -3,3 +3,11 @@
 
 #include "InteractInterface.h"
 
+void IInteractInterface::Interact()
+{
+}
+
+FString IInteractInterface::ItemName()
+{
+    return FString();
+}

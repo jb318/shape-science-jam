@@ -5,7 +5,7 @@
 
 void ACircle::Attack_Implementation()
 {
-	GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
+	
 }
 
 void ACircle::SpecialMove_Implementation()

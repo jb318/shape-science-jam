@@ -6,8 +6,6 @@
 // Sets default values
 AItem::AItem()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
 
 }
 
@@ -18,10 +16,12 @@ void AItem::BeginPlay()
 	
 }
 
-// Called every frame
-void AItem::Tick(float DeltaTime)
+void AItem::Interact()
 {
-	Super::Tick(DeltaTime);
-
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Interact Function called successfully")));
 }
 
+FString AItem::ItemName()
+{
+	return FString();
+}

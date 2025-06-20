@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "InteractInterface.h"
 #include "Item.generated.h"
 
 UCLASS()
-class SHAPE_SCIENCE_JAM_API AItem : public AActor
+class SHAPE_SCIENCE_JAM_API AItem : public AActor, public IInteractInterface
 {
 	GENERATED_BODY()
 	
@@ -20,7 +21,8 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
+	// Player Item interaction
+	virtual void Interact() override;
+	
+	virtual FString ItemName() override;
 };
