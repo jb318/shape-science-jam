@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "GameFramework/CharacterMovementComponent.h"
 #include "Circle.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 void ACircle::Attack_Implementation()
 {
