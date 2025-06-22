@@ -85,21 +85,18 @@ void AEnemyBase::PickNewRoamDestination()
 	// Instructs the AI to move there
 	if (AAIController* AICon = Cast<AAIController>(GetController()))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Roaming to %s"), *Dest->GetName());
+		
 		AICon->MoveToLocation(Dest->GetActorLocation());
 	}
 	
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("  No valid AIController on %s"), *GetName());
-	}
+	
 }
 // Called every frame
 void AEnemyBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	UE_LOG(LogTemp, Warning, TEXT("%s Tick at %.2f"), *GetName(), GetWorld()->GetTimeSeconds());
+	
 	// Every RoamInterval seconds, pick a new destination
 	const float Now = GetWorld()->GetTimeSeconds();
 	if (Now - LastRoamTime >= RoamInterval)
