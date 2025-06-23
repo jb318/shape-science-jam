@@ -12,7 +12,17 @@ void ASquare::SpecialMove_Implementation()
 {
 	// Get the reference to Character Movement Component
 	/*UCharacterMovementComponent* CharacterMovement = GetCharacterMovement();*/
-
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue,TEXT("SpecialMove Implementation called twice"));
+	
 	// Switch gravity on player
-	GetCharacterMovement()->SetGravityDirection(GetActorUpVector());
+	if (!AntiGravityEnabled) {
+		GetCharacterMovement()->SetGravityDirection(GetActorUpVector());
+		AntiGravityEnabled = true;
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue, FString::Printf(TEXT("Inside false conditional %d"), AntiGravityEnabled));
+	}
+	else {
+		GetCharacterMovement()->SetGravityDirection(-1 * GetActorUpVector());
+		AntiGravityEnabled = false;
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue, FString::Printf(TEXT("Inside else conditional %d"), AntiGravityEnabled));
+	}
 }

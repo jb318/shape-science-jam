@@ -2,6 +2,7 @@
 
 #include "Shape.h"
 #include "Components/CapsuleComponent.h"
+#include "CombatInterface.h"
 
 AShape::AShape()
 {
@@ -64,13 +65,6 @@ void AShape::SpecialMove_Implementation()
 	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("SpecialMove")));
 }
 
-void AShape::ChangeShape_Implementation()
-{
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::White, FString::Printf(TEXT("Shape Change")));
-	Destroy();
-
-}
-
 void AShape::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	GEngine->AddOnScreenDebugMessage(0, 2.f, FColor::Red, FString::Printf(TEXT("Overlap Called")));
@@ -102,7 +96,6 @@ void AShape::LevelUp()
 			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Congrats you have just leveled up!  Your new max health is: %f"), CurrentHealth));
 		}
 	}
-	
 }
 
 float AShape::SetHealth(float amount)
@@ -111,3 +104,6 @@ float AShape::SetHealth(float amount)
 	CurrentHealth += amount;
 	return CurrentHealth;
 }
+
+
+

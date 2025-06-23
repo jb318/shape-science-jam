@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
 #include "InteractInterface.h"
+#include "Projectile.h"
 #include "Shape.generated.h"
 
 /**
@@ -57,10 +58,10 @@ protected:
 	TArray<FName> RowNames;
 
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Camera")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UCameraComponent* CameraComponent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UBoxComponent* BoxComponent;
 
 	// Functions for player and AI controller to call
@@ -76,9 +77,9 @@ public:
 	void SpecialMove();
 	virtual void SpecialMove_Implementation();
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Shape Moves")
+	/*UFUNCTION(BlueprintNativeEvent, Category = "Shape Moves")
 	void ChangeShape();
-	virtual void ChangeShape_Implementation();
+	virtual void ChangeShape_Implementation();*/
 
 	// On overlap with actors that implement interact interface
 	UFUNCTION()

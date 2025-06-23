@@ -17,6 +17,10 @@ class SHAPE_SCIENCE_JAM_API ASquare : public AShape
 public:
 	// Base class function implementations
 	virtual void Attack_Implementation() override;
-	virtual void SpecialMove_Implementation() override;
+	void SpecialMove_Implementation() override;
+
+private:
+	// bool to check if anti-gravity is enabled
+	bool AntiGravityEnabled = false;
 	
 };

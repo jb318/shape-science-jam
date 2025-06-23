@@ -11,6 +11,8 @@
 #include "Shape.h"
 #include "Circle.h"
 #include "Square.h"
+#include "Triangle.h"
+#include "Star.h"
 #include "ShapeController.generated.h"
 
 /**
@@ -50,6 +52,27 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 	UInputAction* PauseMenuAction;
 
+	// Chorded action for changing shape
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	UInputAction* ShapeChangeSelectAction;
+
+	// Spawn locations for each of the shapes player will possess
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn Points")
+	FVector CircleSpawn;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn Points")
+	FVector SquareSpawn;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn Points")
+	FVector TriangleSpawn;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn Points")
+	FVector StarSpawn;
+
+	// Main spawn point
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn Points")
+	FVector PlayerSpawn;
+
 public:
 	// Sets the input mapping context to the game mode character class
 	virtual void SetupInputComponent() override;
@@ -60,10 +83,18 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Shapes")
 	TSubclassOf<ASquare> SquareClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Shapes")
+	TSubclassOf<ATriangle> TriangleClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Shapes")
+	TSubclassOf<AStar> StarClass;
 	
 	// Shape class instances to cast to
 	ACircle* Circle;
 	ASquare* Square;
+	ATriangle* Triangle;
+	AStar* Star;
 
 	// Player Reference
 	AShape* Player;
@@ -73,12 +104,6 @@ public:
 	TSubclassOf<UUserWidget> PauseMenuClass;
 	UUserWidget* PauseMenu;
 
-	// Tracks if widget is currently on screen or not
-	bool PauseMenuVisible = false;
-	
-	// Index to indentify and switch shapes too
-	int ShapeIndex = 0;
-
 private: 
 	
 	// Input functions and bindings
@@ -86,6 +111,16 @@ private:
 	void Attack(const FInputActionValue& value);
 	void SpecialMove(const FInputActionValue& value);
 	void ChangeShape(const FInputActionValue& value);
-	void OpenPauseMenu(const FInputActionValue& value);
+	void OpenPauseMenu(const FInputActionValue& value);	
+	void ShapeChangeSelect(const FInputActionValue& value);
+	
+	// Pools shape out of view
+	void PoolShape(int index);
+
+	// Tracks if widget is currently on screen or not
+	bool PauseMenuVisible = false;
+
+	// Index to indentify and switch shapes too
+	int ShapeIndex = 0;
 
 };
