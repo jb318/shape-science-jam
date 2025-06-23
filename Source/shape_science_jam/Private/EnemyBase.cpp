@@ -6,7 +6,10 @@
 #include "EnemyHealthBarWidget.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
+#include "Perception/PawnSensingComponent.h"
 #include "AIController.h" 
+#include "ShapeController.h"
+#include "DrawDebugHelpers.h"
 #include "NavigationSystem.h"
 
 // Sets default values
@@ -23,6 +26,17 @@ AEnemyBase::AEnemyBase()
 	HealthBarComponent->SetRelativeLocation(FVector(0, 0, 110));
 	HealthBarComponent->SetWidgetSpace(EWidgetSpace::Screen);
 	HealthBarComponent->SetDrawAtDesiredSize(true);
+
+	EyePoint = CreateDefaultSubobject<USceneComponent>(TEXT("EyePoint"));
+	EyePoint->SetupAttachment(GetMesh());
+	EyePoint->SetRelativeLocation(FVector(0, 0, 100));
+
+	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensing"));
+	PawnSensingComp->SightRadius = 100.0f;
+	PawnSensingComp->SetPeripheralVisionAngle(45.0f);
+	PawnSensingComp->bOnlySensePlayers = true;
+	PawnSensingComp->HearingThreshold = 20.0f;
+	PawnSensingComp->LOSHearingThreshold = 20.0f;
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> WBP(TEXT("/Game/Enemy/UI/EnemyHealthBar_WBP.EnemyHealthBar_WBP_C"));
 	if (WBP.Succeeded())
@@ -60,9 +74,45 @@ void AEnemyBase::BeginPlay()
 
 	LastRoamTime = GetWorld()->GetTimeSeconds();
 	
-	
+	if (PawnSensingComp)
+	{
+		PawnSensingComp->OnSeePawn.AddDynamic(this, &AEnemyBase::OnSeePawn);
+		//PawnSensingComp->OnHearNoise.AddDynamic(this, &AEnemyBase::OnHearNoise);
+	}
 }
 
+void AEnemyBase::OnSeePawn(APawn* SeenPawn)
+{
+	if (!SeenPawn) return;
+	UE_LOG(LogTemp, Warning, TEXT("%s saw pawn: %s"), *GetName(), SeenPawn ? *SeenPawn->GetName() : TEXT("NULL"));
+	if (GEngine && SeenPawn)
+	{
+		GEngine->AddOnScreenDebugMessage(
+			-1, 2.f, FColor::Yellow,
+			FString::Printf(TEXT("%s: OnSeePawn -> %s"), *GetName(), *SeenPawn->GetName()));
+	}
+	if (SeenPawn->IsA(AShapeController::StaticClass()))
+	{
+		if (AAIController* AICon = Cast<AAIController>(GetController()))
+		{
+			AICon->MoveToActor(SeenPawn, 5.0f);
+		}
+	}
+	if (SeenPawn)
+	{
+		DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 50.f, 12, FColor::Red, false, 2.f);
+	}
+}
+
+FVector AEnemyBase::GetPawnViewLocation() const
+{
+	if (EyePoint)
+	{
+		return EyePoint->GetComponentLocation();
+	}
+
+	return Super::GetPawnViewLocation();
+}
 void AEnemyBase::RefreshHealthBar()
 {
 	if (UEnemyHealthBarWidget* UI = Cast<UEnemyHealthBarWidget>(HealthBarComponent->GetUserWidgetObject()))

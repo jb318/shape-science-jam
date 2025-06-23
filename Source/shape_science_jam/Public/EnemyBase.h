@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Perception/PawnSensingComponent.h"
 #include "EnemyBase.generated.h"
 
 
@@ -52,6 +53,20 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Roam")
 	float LastRoamTime = 0.0f;
 
+	UFUNCTION()
+	void OnSeePawn(APawn* SeenPawn);
+
+	//UFUNCTION()
+	//void OnHearNoise(APawn* InstigatorPawn, const FVector& Location, float Volume);
+
+	UPROPERTY(VisibleAnywhere, Category = "AI Sensing")
+	UPawnSensingComponent* PawnSensingComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AI Sensing", meta = (AllowPrivateAccess = "true"))
+	USceneComponent* EyePoint;
+
+	/** Returns EyePoint location instead of default */
+	virtual FVector GetPawnViewLocation() const override;
 	void PickNewRoamDestination();
 
 public:	
