@@ -11,4 +11,5 @@ void ACircle::Attack_Implementation()
 void ACircle::SpecialMove_Implementation()
 {
 	Jump();
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue, TEXT("SpecialMove Implementation called twice"));
 }

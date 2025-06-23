@@ -16,6 +16,7 @@ void AAIShapeController::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	GEngine->AddOnScreenDebugMessage(-3, 3.f, FColor::Blue, TEXT("Possessed"));
 	// uncomment if using behavior tree
 	/*if (BehaviorTree) {
 		RunBehaviorTree(BehaviorTree);
@@ -43,7 +44,7 @@ void AAIShapeController::PickNewRoamDestination()
 {
 	// Might want to limit where the AI can move to in the level
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), RoamTag, Points);
-	
+	GEngine->AddOnScreenDebugMessage(-3, 3.f, FColor::Blue, TEXT("Possessed"));
 	
 	// Pick one at random
 	if (Points.Num() > 0) {

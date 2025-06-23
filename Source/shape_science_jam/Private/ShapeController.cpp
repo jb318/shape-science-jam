@@ -16,10 +16,16 @@ void AShapeController::BeginPlay()
 	// Need to set the shape class template inside the details panel of player controller bp
 
 	if (CircleClass) 
-		Circle = GetWorld()->SpawnActor<ACircle>(CircleClass, FVector(-100, 0, 25), FRotator(0, 0, 0));
+		Circle = GetWorld()->SpawnActor<ACircle>(CircleClass, CircleSpawn, FRotator(0, 0, 0));
 
 	if (SquareClass)
-		Square = GetWorld()->SpawnActor<ASquare>(SquareClass, FVector(0, 0, 10), FRotator(0, 0, 0));
+		Square = GetWorld()->SpawnActor<ASquare>(SquareClass, SquareSpawn, FRotator(0, 0, 0));
+
+	if (TriangleClass)
+		Triangle = GetWorld()->SpawnActor<ATriangle>(TriangleClass, TriangleSpawn, FRotator(0, 0, 0));
+
+	if (StarClass)
+		Star = GetWorld()->SpawnActor<AStar>(StarClass, StarSpawn, FRotator(0, 0, 0));
 	
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 4.f, FColor::Green, FString::Printf(TEXT("Game Start")));
@@ -34,6 +40,7 @@ void AShapeController::BeginPlay()
 		// Assign the player class to whatever is possessed so we can call access member variables
 		// and functions using the Shape class
 		Player = Circle;
+		Player->SetActorLocation(PlayerSpawn);
 	}
 	
 	if (AShapeController* PC = Cast<AShapeController>(this)) {
@@ -72,6 +79,9 @@ void AShapeController::SetupInputComponent()
 			if (PauseMenuAction) {
 				Subsystem->BindAction(PauseMenuAction, ETriggerEvent::Started, this, &AShapeController::OpenPauseMenu);
 			}
+			if (ShapeChangeSelectAction) {
+				Subsystem->BindAction(ShapeChangeSelectAction, ETriggerEvent::Started, this, &AShapeController::ShapeChangeSelect);
+			}
 		}
 	}
 }
@@ -101,41 +111,14 @@ void AShapeController::SpecialMove(const FInputActionValue& value)
 		Player->SpecialMove();
 		Player->SpecialMove_Implementation();
 	}
-		
+	
 	
 }
 
 void AShapeController::ChangeShape(const FInputActionValue& value)
 {
-	// Add functionality for character switch
-	if (Player) {
+	// Moved to ShapeChangeSelect
 
-		// purely for testing, delete later
-		Player->LevelUp();
-
-		// Location and orientation of former shape for incoming shape to inherit
-		FVector PlayerLocation = Player->GetActorLocation();
-		FRotator PlayerRotation = Player->GetActorRotation();
-		
-		// Switch the shape depending on the index accessed
-		switch(ShapeIndex) {
-		case 0:
-			Possess(Square);
-			Player = Square;
-			ShapeIndex = 1;
-			break;
-		case 1:
-			Possess(Circle);
-			Player = Circle;
-			ShapeIndex = 0;
-			break;
-		default:
-			break;
-		}
-	}
-	else
-		GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, FString::Printf(TEXT("Can't access player")));
-		
 }
 
 void AShapeController::OpenPauseMenu(const FInputActionValue& value)
@@ -155,4 +138,96 @@ void AShapeController::OpenPauseMenu(const FInputActionValue& value)
 	else {
 		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("Pause widget class not set in player controller")));
 	}
+}
+
+void AShapeController::ShapeChangeSelect(const FInputActionValue& value)
+{
+	// Get the two floats of the FVector2D
+	FVector2D XYValue = value.Get<FVector2D>();
+	int XValue = XYValue.X;
+	int YValue = XYValue.Y;
+
+	// Add functionality for character switch
+	if (Player) {
+
+		// Location and orientation of former shape for incoming shape to inherit
+		FVector PlayerLocation = Player->GetActorLocation();
+		FRotator PlayerRotation = Player->GetActorRotation();
+
+		// pool the previous shape so it is out of view
+		PoolShape(ShapeIndex);
+
+		// Switch the shape if X returned a value and update ShapeIndex to the one that corresponds with new shape
+		switch (XValue) {
+		case -1:
+			if (Triangle) {
+				Triangle->SetActorLocation(PlayerLocation);
+				Triangle->SetActorRotation(PlayerRotation);
+				Possess(Triangle);
+				Player = Triangle;
+				ShapeIndex = 2;
+			}
+			break;
+		case 1:
+			if (Circle) {
+				Circle->SetActorLocation(PlayerLocation);
+				Circle->SetActorRotation(PlayerRotation);
+				Possess(Circle);
+				Player = Circle;
+				ShapeIndex = 0;
+			}
+			break;
+		default:
+			break;
+		}
+
+		// Switch the shape if Y returned a value
+		switch (YValue) {
+		case -1:
+			if (Star) {
+				Star->SetActorLocation(PlayerLocation);
+				Star->SetActorRotation(PlayerRotation);
+				Possess(Star);
+				Player = Star;
+				ShapeIndex = 3;
+			}
+			break;
+		case 1:
+			if (Square) {
+				Square->SetActorLocation(PlayerLocation);
+				Square->SetActorRotation(PlayerRotation);
+				Possess(Square);
+				Player = Square;
+				ShapeIndex = 1;
+			}
+			break;
+		default:
+			break;
+		}
+	}
+	else
+		GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, FString::Printf(TEXT("Can't access player")));
+}
+
+void AShapeController::PoolShape(int index)
+{
+	if (Player) {
+		switch (index) {
+		case 0:
+			Circle->SetActorLocation(CircleSpawn);
+			break;
+		case 1:
+			Square->SetActorLocation(SquareSpawn);
+			break;
+		case 2:
+			Triangle->SetActorLocation(TriangleSpawn);
+			break;
+		case 3:
+			Star->SetActorLocation(StarSpawn);
+			break;
+		default:
+			break;
+		}
+	}
+	
 }
