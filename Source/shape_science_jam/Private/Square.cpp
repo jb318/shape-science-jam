@@ -3,26 +3,26 @@
 #include "Square.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-void ASquare::Attack_Implementation()
+void ASquare::SpecialMove_Implementation()
 {
-	GEngine->AddOnScreenDebugMessage(0, 3.f, FColor::Green, FString::Printf(TEXT("Reflect Attack")));
+	// Call switch gravity with the user defined delay
+	FTimerHandle SwitchGravityTimer;
+	GetWorld()->GetTimerManager().SetTimer(SwitchGravityTimer, this, &ASquare::SwitchGravity, SpecialMoveDelay, false);
 }
 
-void ASquare::SpecialMove_Implementation()
+void ASquare::SwitchGravity()
 {
 	// Get the reference to Character Movement Component
 	/*UCharacterMovementComponent* CharacterMovement = GetCharacterMovement();*/
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue,TEXT("SpecialMove Implementation called twice"));
-	
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue, TEXT("SpecialMove Implementation called twice"));
+
 	// Switch gravity on player
-	if (!AntiGravityEnabled) {
+	if (!UsingAntiGravity) {
 		GetCharacterMovement()->SetGravityDirection(GetActorUpVector());
-		AntiGravityEnabled = true;
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue, FString::Printf(TEXT("Inside false conditional %d"), AntiGravityEnabled));
+		UsingAntiGravity = true;
 	}
 	else {
 		GetCharacterMovement()->SetGravityDirection(-1 * GetActorUpVector());
-		AntiGravityEnabled = false;
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue, FString::Printf(TEXT("Inside else conditional %d"), AntiGravityEnabled));
+		UsingAntiGravity = false;
 	}
 }

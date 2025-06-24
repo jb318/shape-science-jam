@@ -6,11 +6,20 @@
 
 AShape::AShape()
 {
-	// Sets the properties for player camera
+	// Creates spring arm and camera
+	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	CameraComponent->SetupAttachment(RootComponent);
-	CameraComponent->SetRelativeLocation(FVector(0.f, 200, 0.f));
-	CameraComponent->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.f));
+	
+	// Properties for spring arm component
+	SpringArmComponent->SetupAttachment(RootComponent);
+	SpringArmComponent->TargetArmLength = 300.f;
+	SpringArmComponent->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
+	SpringArmComponent->bInheritPitch = false;
+	SpringArmComponent->bInheritYaw = false;
+	SpringArmComponent->bInheritRoll = false;
+
+	// Properties for camera component
+	CameraComponent->SetupAttachment(SpringArmComponent);
 	CameraComponent->SetRelativeScale3D(FVector(0.2f, 0.2f, 0.2f));
 
 	// Sets the capsule size
@@ -55,9 +64,19 @@ void AShape::BeginPlay()
 	}
 }
 
+void AShape::CoolDown()
+{
+	// Reset the cooldown state to allow player to attack again
+	CoolDownActive = false;
+}
+
 void AShape::Attack_Implementation()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Cyan, FString::Printf(TEXT("Attack")));
+	if (!CoolDownActive) {
+		CoolDownActive = true;
+		FTimerHandle CoolDownTimer;
+		GetWorld()->GetTimerManager().SetTimer(CoolDownTimer, this, &AShape::CoolDown, AttackCoolDown, false);
+	}
 }
 
 void AShape::SpecialMove_Implementation()

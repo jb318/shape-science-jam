@@ -16,11 +16,14 @@ class SHAPE_SCIENCE_JAM_API ASquare : public AShape
 
 public:
 	// Base class function implementations
-	virtual void Attack_Implementation() override;
 	void SpecialMove_Implementation() override;
 
+protected:
+	// Checks if anti-gravity mode is in effect
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool UsingAntiGravity = false;
+
 private:
-	// bool to check if anti-gravity is enabled
-	bool AntiGravityEnabled = false;
+	void SwitchGravity();
 	
 };

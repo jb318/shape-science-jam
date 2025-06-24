@@ -3,6 +3,7 @@
 #include "ShapeController.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AShapeController::AShapeController()
 {
@@ -90,9 +91,11 @@ void AShapeController::Move(const FInputActionValue& value)
 {
 	// Obtain the axis value of the movement input (1 or -1)
 	float MovementDirection = value.Get<float>();
-	if (APawn* ControlledPawn = GetPawn()) {
-		/*FVector RightDirection = ControlledPawn->GetActorRightVector();*/
-		ControlledPawn->AddMovementInput(ControlledPawn->GetActorForwardVector(), MovementDirection);
+	if (Player) {
+		// Doesn't work, trying to prevent shapes like square from being able to move while performing special moves
+		if (!Player->GetCharacterMovement()->IsFalling())
+		Player->AddMovementInput(Player->GetActorForwardVector(), MovementDirection);
+		
 	}
 }
 
