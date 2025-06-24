@@ -3,13 +3,13 @@
 #include "Circle.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-void ACircle::Attack_Implementation()
-{
-	
-}
-
 void ACircle::SpecialMove_Implementation()
 {
+	FTimerHandle CircleJumpTimer;
+	GetWorld()->GetTimerManager().SetTimer(CircleJumpTimer, this, &ACircle::CircleJump, SpecialMoveDelay, false);
+}
+
+void ACircle::CircleJump()
+{
 	Jump();
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue, TEXT("SpecialMove Implementation called twice"));
 }

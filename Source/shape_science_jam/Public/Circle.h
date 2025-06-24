@@ -16,6 +16,10 @@ class SHAPE_SCIENCE_JAM_API ACircle : public AShape
 
 public: 
 	// Base class function implementations
-	virtual void Attack_Implementation() override;
 	virtual void SpecialMove_Implementation() override;
+
+private:
+	// Helper function, delays the circle from jumping to match with animation
+	void CircleJump();
+
 };

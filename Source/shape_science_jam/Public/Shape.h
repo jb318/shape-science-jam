@@ -6,6 +6,7 @@
 #include "PaperCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "InteractInterface.h"
 #include "Projectile.h"
 #include "Shape.generated.h"
@@ -57,12 +58,36 @@ protected:
 	// Array of the rows inside datatable
 	TArray<FName> RowNames;
 
+	// Cooldowns for each of the shapes attack moves
+	virtual void CoolDown();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float AttackCoolDown;
+
+	// Bool to check if cooldown is active
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool CoolDownActive = false;
+
+	// Jump delay interval
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shape Moves")
+	float SpecialMoveDelay = 0.125f;
+
+	// Determine the direction shape is facing for sprite orientation
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool FacingRight = true;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool FacingLeft = false;
+
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UCameraComponent* CameraComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UBoxComponent* BoxComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	USpringArmComponent* SpringArmComponent;
 
 	// Functions for player and AI controller to call
 	// The first is for the childs to base class and derived classes to use inside the UE5 editor
