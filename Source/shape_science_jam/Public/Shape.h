@@ -7,7 +7,6 @@
 #include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "InteractInterface.h"
 #include "Projectile.h"
 #include "Shape.generated.h"
 
@@ -79,6 +78,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool FacingLeft = false;
 
+	// Checks player invincibility status
+	bool CanBeDamaged;
+
+	void MakeInvincibleTimer();
+
+	void AddExperience(float amount);
+
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UCameraComponent* CameraComponent;
@@ -88,6 +94,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	USpringArmComponent* SpringArmComponent;
+
+	// Player overlaps item
+	UFUNCTION()
+	void OnOverlapItemBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	// Functions for player and AI controller to call
 	// The first is for the childs to base class and derived classes to use inside the UE5 editor
@@ -106,15 +116,13 @@ public:
 	void ChangeShape();
 	virtual void ChangeShape_Implementation();*/
 
-	// On overlap with actors that implement interact interface
-	UFUNCTION()
-	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
 	// Name of the item that was overlapped
-	FName* ItemName;
+	FString ItemName;
 
 	// Functions to be called in conjunction with interfaces
 	void LevelUp();
+
+	UFUNCTION(BlueprintCallable)
 	float SetHealth(float amount);
 
 private:

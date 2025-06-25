@@ -7,15 +7,15 @@ void ASquare::SpecialMove_Implementation()
 {
 	// Call switch gravity with the user defined delay
 	FTimerHandle SwitchGravityTimer;
-	GetWorld()->GetTimerManager().SetTimer(SwitchGravityTimer, this, &ASquare::SwitchGravity, SpecialMoveDelay, false);
+	// Check if player is in attack animation
+	if (!InAttackAnimation) 
+		GetWorld()->GetTimerManager().SetTimer(SwitchGravityTimer, this, &ASquare::SwitchGravity, SpecialMoveDelay, false);
+	
 }
 
 void ASquare::SwitchGravity()
 {
-	// Get the reference to Character Movement Component
-	/*UCharacterMovementComponent* CharacterMovement = GetCharacterMovement();*/
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue, TEXT("SpecialMove Implementation called twice"));
-
+	
 	// Switch gravity on player
 	if (!UsingAntiGravity) {
 		GetCharacterMovement()->SetGravityDirection(GetActorUpVector());
