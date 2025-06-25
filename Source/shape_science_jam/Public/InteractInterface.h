@@ -21,10 +21,13 @@ class SHAPE_SCIENCE_JAM_API IInteractInterface
 	GENERATED_BODY()
 
 public:
-	// Player overlaps actor
+	// Does something to item when player overlaps it
 	virtual void Interact();
-
+	
 	// Returns the name of the actor so the correct functions get called inside shape class
 	virtual FString ItemName();
+	
+	// Returns the value of the collectible (i.e. a value of 7 on invincibily would make player invicible for 7 secons)
+	virtual float ItemValue();
 };
 
