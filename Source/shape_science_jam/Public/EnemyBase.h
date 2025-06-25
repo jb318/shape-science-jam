@@ -62,7 +62,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "AI Sensing")
 	UPawnSensingComponent* PawnSensingComp;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AI Sensing", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "AI Sensing", meta = (AllowPrivateAccess = "true"))
 	USceneComponent* EyePoint;
 
 	/** Returns EyePoint location instead of default */
