@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Projectile.h"
+#include "CombatInterface.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -10,9 +11,16 @@ AProjectile::AProjectile()
 
 	// Projectile movement component and properties
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Movement"));
-	ProjectileMovement->InitialSpeed = 400.f; 
-	ProjectileMovement->MaxSpeed = 400.f;
+	ProjectileMovement->InitialSpeed = 600.f; 
+	ProjectileMovement->MaxSpeed = 1200.f;
 	ProjectileMovement->ProjectileGravityScale = 0.f;
+
+	Flipbook = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("Projectile Flipbook"));
+	Flipbook->SetupAttachment(RootComponent);
+	
+	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Damage Box"));
+	BoxComponent->SetupAttachment(Flipbook);
+	BoxComponent->SetGenerateOverlapEvents(true);
 }
 
 // Called when the game starts or when spawned
@@ -20,7 +28,20 @@ void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	// Destroy later as we don't need em
+	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnProjectileOverlap);
+
+}
+
+void AProjectile::OnProjectileOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	
+	if (OtherActor && OtherActor != GetInstigator()) {
+		if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(OtherActor)) {
+			CombatInterface->DamageCharacter(ProjectileDamage);
+			CombatInterface->HitReaction_Implementation(ProjectileKnockbackForce);
+			DestroyProjectile();
+		}	
+	}
 }
 
 // Called every frame
@@ -30,21 +51,16 @@ void AProjectile::Tick(float DeltaTime)
 
 }
 
-void AProjectile::SetProjectileSpeed()
-{
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Black, TEXT("Set Projectile Speed Called"));
-	ProjectileMovement->InitialSpeed = 0.f;
-	ProjectileMovement->MaxSpeed = 0.f;
+void AProjectile::DestroyProjectile()
+{	
 	// change to pool
 	Destroy();
 }
 
 void AProjectile::Fire()
 {
-	ProjectileMovement->InitialSpeed = 2000000.f;
-	ProjectileMovement->MaxSpeed = 2000000.f;
 	FTimerHandle LaunchTimer;
-	GetWorld()->GetTimerManager().SetTimer(LaunchTimer, this, &AProjectile::SetProjectileSpeed, 1.f, false);
+	GetWorld()->GetTimerManager().SetTimer(LaunchTimer, this, &AProjectile::DestroyProjectile, ProjectileDuration, false);
 	
 }
 

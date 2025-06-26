@@ -8,6 +8,7 @@
 #include "Components/BoxComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Projectile.h"
+#include "CombatInterface.h"
 #include "Shape.generated.h"
 
 /**
@@ -31,7 +32,7 @@ struct FShapeLevelData : public FTableRowBase
 };
 
 UCLASS()
-class SHAPE_SCIENCE_JAM_API AShape : public APaperCharacter
+class SHAPE_SCIENCE_JAM_API AShape : public APaperCharacter, public ICombatInterface
 {
 	GENERATED_BODY()
 	
@@ -60,7 +61,7 @@ protected:
 	// Cooldowns for each of the shapes attack moves
 	virtual void CoolDown();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shape Moves")
 	float AttackCoolDown;
 
 	// Bool to check if cooldown is active
@@ -122,8 +123,17 @@ public:
 	// Functions to be called in conjunction with interfaces
 	void LevelUp();
 
+	virtual void SetHealth(float amount);
+
+	// Members from the combat interface
 	UFUNCTION(BlueprintCallable)
-	float SetHealth(float amount);
+	virtual void DamageCharacter(float amount) override;
+
+	virtual void HitReaction_Implementation(FVector LaunchVelocity) override;
+
+	// Checks if shape can be changed
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+	bool CanChangeShape = true;
 
 private:
 	// The actual values of stats
