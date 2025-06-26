@@ -5,7 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "CombatInterface.h"
+#include "PaperFlipbookComponent.h"
+#include "Components/BoxComponent.h"
 #include "Projectile.generated.h"
 
 UCLASS()
@@ -20,6 +21,30 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	// Speed of the projectile
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float ProjectileDuration = 1.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPaperFlipbookComponent* Flipbook;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UBoxComponent* BoxComponent;
+
+	// Projectile overlaps combat interface actor
+	UFUNCTION()
+	void OnProjectileOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	// Projectile damage amount
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float ProjectileDamage;
+
+	// Whether to knock player back or not
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FVector ProjectileKnockbackForce;
+
+
 
 public:	
 	// Called every frame
@@ -36,6 +61,8 @@ private:
 	void PoolProjectile();
 
 	// sets the speed of projectile for firing
-	void SetProjectileSpeed();
+	void DestroyProjectile();
 
+	// Reference to player character
+	APawn* Insigator;
 };

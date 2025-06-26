@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Shape.h"
 #include "Components/ArrowComponent.h"
+#include "Projectile.h"
 #include "Triangle.generated.h"
 
 UCLASS()

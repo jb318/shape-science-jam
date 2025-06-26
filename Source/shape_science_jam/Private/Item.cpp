@@ -6,7 +6,13 @@
 // Sets default values
 AItem::AItem()
 {
+	// 2d item components
+	Flipbook = CreateDefaultSubobject<UPaperFlipbookComponent>("Flipbook");
+	Flipbook->SetupAttachment(RootComponent);
 
+	BoxComponent = CreateDefaultSubobject<UBoxComponent>("Interact Box");
+	BoxComponent->SetGenerateOverlapEvents(true);
+	BoxComponent->SetupAttachment(Flipbook);
 }
 
 // Called when the game starts or when spawned
@@ -18,10 +24,16 @@ void AItem::BeginPlay()
 
 void AItem::Interact()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Interact Function called successfully")));
+	Destroy();
 }
 
 FString AItem::ItemName()
 {
-	return FString();
+	return Name;
 }
+
+float AItem::ItemValue()
+{
+	return ItemVal;
+}
+

@@ -18,6 +18,9 @@ public:
 	// Base class function implementations
 	virtual void SpecialMove_Implementation() override;
 
+protected: 
+	virtual void BeginPlay() override;
+
 private:
 	// Helper function, delays the circle from jumping to match with animation
 	void CircleJump();

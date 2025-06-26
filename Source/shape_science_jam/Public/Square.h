@@ -23,6 +23,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool UsingAntiGravity = false;
 
+	// Checks if player is reflecting attacks
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool InAttackAnimation = false;
+
 private:
 	void SwitchGravity();
 	

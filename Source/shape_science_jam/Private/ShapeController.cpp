@@ -152,62 +152,67 @@ void AShapeController::ShapeChangeSelect(const FInputActionValue& value)
 
 	// Add functionality for character switch
 	if (Player) {
+		// Allows switch only when player bool value is set to true and the player is not currently falling
+		if (Player->CanChangeShape && !Player->GetCharacterMovement()->IsFalling()) {
+			// Location and orientation of former shape for incoming shape to inherit
+			FVector PlayerLocation = Player->GetActorLocation();
+			FRotator PlayerRotation = Player->GetActorRotation();
 
-		// Location and orientation of former shape for incoming shape to inherit
-		FVector PlayerLocation = Player->GetActorLocation();
-		FRotator PlayerRotation = Player->GetActorRotation();
+			// pool the previous shape so it is out of view
+			PoolShape(ShapeIndex);
 
-		// pool the previous shape so it is out of view
-		PoolShape(ShapeIndex);
-
-		// Switch the shape if X returned a value and update ShapeIndex to the one that corresponds with new shape
-		switch (XValue) {
-		case -1:
-			if (Triangle) {
-				Triangle->SetActorLocation(PlayerLocation);
-				Triangle->SetActorRotation(PlayerRotation);
-				Possess(Triangle);
-				Player = Triangle;
-				ShapeIndex = 2;
+			// Switch the shape if X returned a value and update ShapeIndex to the one that corresponds with new shape
+			switch (XValue) {
+			case -1:
+				if (Triangle) {
+					Triangle->SetActorLocation(PlayerLocation);
+					Triangle->SetActorRotation(PlayerRotation);
+					Possess(Triangle);
+					Player = Triangle;
+					ShapeIndex = 2;
+				}
+				break;
+			case 1:
+				if (Circle) {
+					Circle->SetActorLocation(PlayerLocation);
+					Circle->SetActorRotation(PlayerRotation);
+					Possess(Circle);
+					Player = Circle;
+					ShapeIndex = 0;
+				}
+				break;
+			default:
+				break;
 			}
-			break;
-		case 1:
-			if (Circle) {
-				Circle->SetActorLocation(PlayerLocation);
-				Circle->SetActorRotation(PlayerRotation);
-				Possess(Circle);
-				Player = Circle;
-				ShapeIndex = 0;
+
+			// Switch the shape if Y returned a value
+			switch (YValue) {
+			case -1:
+				if (Star) {
+					Star->SetActorLocation(PlayerLocation);
+					Star->SetActorRotation(PlayerRotation);
+					Possess(Star);
+					Player = Star;
+					ShapeIndex = 3;
+				}
+				break;
+			case 1:
+				if (Square) {
+					Square->SetActorLocation(PlayerLocation);
+					Square->SetActorRotation(PlayerRotation);
+					Possess(Square);
+					Player = Square;
+					ShapeIndex = 1;
+				}
+				break;
+			default:
+				break;
 			}
-			break;
-		default:
-			break;
 		}
-
-		// Switch the shape if Y returned a value
-		switch (YValue) {
-		case -1:
-			if (Star) {
-				Star->SetActorLocation(PlayerLocation);
-				Star->SetActorRotation(PlayerRotation);
-				Possess(Star);
-				Player = Star;
-				ShapeIndex = 3;
-			}
-			break;
-		case 1:
-			if (Square) {
-				Square->SetActorLocation(PlayerLocation);
-				Square->SetActorRotation(PlayerRotation);
-				Possess(Square);
-				Player = Square;
-				ShapeIndex = 1;
-			}
-			break;
-		default:
-			break;
+		else {
+			GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, FString::Printf(TEXT("Can't change shape")));
 		}
-	}
+	}	
 	else
 		GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, FString::Printf(TEXT("Can't access player")));
 }

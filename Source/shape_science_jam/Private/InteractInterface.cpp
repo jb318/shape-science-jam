@@ -11,3 +11,8 @@ FString IInteractInterface::ItemName()
 {
     return FString();
 }
+
+float IInteractInterface::ItemValue()
+{
+    return 0.0f;
+}
