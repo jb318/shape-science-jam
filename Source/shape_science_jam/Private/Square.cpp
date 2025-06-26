@@ -20,9 +20,11 @@ void ASquare::SwitchGravity()
 	if (!UsingAntiGravity) {
 		GetCharacterMovement()->SetGravityDirection(GetActorUpVector());
 		UsingAntiGravity = true;
+		CanChangeShape = false;
 	}
 	else {
 		GetCharacterMovement()->SetGravityDirection(-1 * GetActorUpVector());
 		UsingAntiGravity = false;
+		CanChangeShape = true;
 	}
 }

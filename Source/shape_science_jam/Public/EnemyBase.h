@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Perception/PawnSensingComponent.h"
+#include "CombatInterface.h"
 #include "EnemyBase.generated.h"
 
 
@@ -13,7 +14,7 @@ class UEnemyHealthBarWidget;
 
 
 UCLASS()
-class SHAPE_SCIENCE_JAM_API AEnemyBase : public ACharacter
+class SHAPE_SCIENCE_JAM_API AEnemyBase : public ACharacter, public ICombatInterface
 {
 	GENERATED_BODY()
 

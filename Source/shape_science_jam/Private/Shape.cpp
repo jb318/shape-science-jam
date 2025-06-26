@@ -146,9 +146,9 @@ void AShape::LevelUp()
 	}
 }
 
-float AShape::SetHealth(float amount)
+void AShape::SetHealth(float amount)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Incoming hp: %.1f"), amount));
+	
 	if (CanBeDamaged) {
 		// amount can be a positive value such as when interacted with health pickup or negative when receiving damage
 		if (row) {
@@ -159,15 +159,29 @@ float AShape::SetHealth(float amount)
 				CurrentHealth = row->MaxHealth;
 			}
 			else {
-				CurrentHealth += amount;
-				// play defeated animation
+				GEngine->AddOnScreenDebugMessage(-3, 5.f, FColor::Red, TEXT("Warning, you are below 0 hp"));
 			}
 		}
 	}
+}
+
+void AShape::DamageCharacter(float amount)
+{
 	
-	
-	
-	return CurrentHealth;
+	if (row) {
+		if (CurrentHealth + amount > 0) {
+			CurrentHealth -= amount;
+		}
+		else {
+			GEngine->AddOnScreenDebugMessage(-3, 5.f, FColor::Red, TEXT("Cue the defeat function"));
+		}
+	}
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Current health after attack: %.1f"), CurrentHealth));
+}
+
+void AShape::HitReaction_Implementation(FVector LaunchVelocity)
+{
+	LaunchCharacter(LaunchVelocity, false, false);
 }
 
 
