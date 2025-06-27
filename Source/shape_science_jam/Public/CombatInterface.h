@@ -22,12 +22,12 @@ class SHAPE_SCIENCE_JAM_API ICombatInterface
 
 public:
 	// Sets characters health after being hit
-	virtual void DamageCharacter(float amount);
+	virtual void DamageCharacter(float amount, bool IsProjectile);
 
-	// Controls the logic and animation handling once a character is damaged
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void HitReaction(FVector LaunchVelocity);
-
-	virtual void HitReaction_Implementation(FVector LaunchVelocity);
+	// Controls the logic behind a character being hit including things like knockback
+	virtual void HitReaction(FVector LaunchVelocity);
 	
+	// Implement in circle enemy to ensure that reflect is reflecting attack
+	bool canReflectAttack;
+
 };

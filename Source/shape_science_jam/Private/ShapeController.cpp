@@ -92,8 +92,8 @@ void AShapeController::Move(const FInputActionValue& value)
 	// Obtain the axis value of the movement input (1 or -1)
 	float MovementDirection = value.Get<float>();
 	if (Player) {
-		// Doesn't work, trying to prevent shapes like square from being able to move while performing special moves
-		if (!Player->GetCharacterMovement()->IsFalling())
+		// Checks if the player is locked from moving after getting hit
+		if (!Player->InDamageCoolDown)
 		Player->AddMovementInput(Player->GetActorForwardVector(), MovementDirection);
 		
 	}
@@ -102,7 +102,7 @@ void AShapeController::Move(const FInputActionValue& value)
 void AShapeController::Attack(const FInputActionValue& value)
 {
 	// Perform validity checks of player and then call corresponding functions
-	if (Player) {
+	if (Player && !Player->InDamageCoolDown) {
 		Player->Attack();
 		Player->Attack_Implementation();
 	}		
@@ -110,7 +110,7 @@ void AShapeController::Attack(const FInputActionValue& value)
 
 void AShapeController::SpecialMove(const FInputActionValue& value)
 {
-	if (Player) {
+	if (Player && !Player->InDamageCoolDown) {
 		Player->SpecialMove();
 		Player->SpecialMove_Implementation();
 	}

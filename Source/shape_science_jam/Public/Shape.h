@@ -80,11 +80,24 @@ protected:
 	bool FacingLeft = false;
 
 	// Checks player invincibility status
-	bool CanBeDamaged;
+	bool Invincible;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shape Moves")
+	bool ImmuneToProjectile;
 
+	// Timer that resets invincibility state
 	void MakeInvincibleTimer();
 
+	// Adds amount of experience passed through to shapes experience 
 	void AddExperience(float amount);
+
+	// Controls animation to be played when a hit is successful
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayDamageAnimation();
+
+	// Checks if the shape is in their attack animation
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool InAttackAnimation = false;
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -127,13 +140,16 @@ public:
 
 	// Members from the combat interface
 	UFUNCTION(BlueprintCallable)
-	virtual void DamageCharacter(float amount) override;
+	virtual void DamageCharacter(float amount, bool IsProjectile) override;
 
-	virtual void HitReaction_Implementation(FVector LaunchVelocity) override;
+	virtual void HitReaction(FVector LaunchVelocity) override;
 
 	// Checks if shape can be changed
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 	bool CanChangeShape = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+	bool InDamageCoolDown;
 
 private:
 	// The actual values of stats

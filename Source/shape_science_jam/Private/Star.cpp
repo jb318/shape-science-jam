@@ -8,38 +8,89 @@ AStar::AStar()
 	FireComponent1 = CreateDefaultSubobject<UArrowComponent>(TEXT("Fire Point 1"));
 	FireComponent2 = CreateDefaultSubobject<UArrowComponent>(TEXT("Fire Point 2"));
 	FireComponent3 = CreateDefaultSubobject<UArrowComponent>(TEXT("Fire Point 3"));
-	FireComponent1->SetRelativeLocation(FVector(45.f, 0.f, -25.f));
-	FireComponent2->SetRelativeLocation(FVector(44.5f, 0.f, 5.f));
-	FireComponent3->SetRelativeLocation(FVector(44.f, 0.f, 35.f));
-	FireComponent1->SetupAttachment(RootComponent);
-	FireComponent2->SetupAttachment(RootComponent);
-	FireComponent3->SetupAttachment(RootComponent);
+	FireComponent1->SetRelativeLocation(FVector(31.f, 0.f, -25.f));
+	FireComponent2->SetRelativeLocation(FVector(30.5f, 0.f, 5.f));
+	FireComponent3->SetRelativeLocation(FVector(30.f, 0.f, 35.f));
+
+	// Attaches the arrow components to the sprite for better animation handling
+	FireComponent1->SetupAttachment(GetSprite());
+	FireComponent2->SetupAttachment(GetSprite());
+	FireComponent3->SetupAttachment(GetSprite());
 
 }
 
 void AStar::Attack_Implementation()
 {
-	if (ProjectileClass) {
-		// Spawn Params
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Instigator = this;
+	if (!CoolDownActive) {
+		CoolDownActive = true;
+		// Timers for both the attack delay and attack cool down
+		FTimerHandle CoolDownTimer;
+		FTimerHandle AttackTimer;
+		GetWorld()->GetTimerManager().SetTimer(CoolDownTimer, this, &AStar::CoolDown, AttackCoolDown, false);
+		GetWorld()->GetTimerManager().SetTimer(AttackTimer, this, &AStar::FireProjectile, AttackDelay, false);
 
-		// Get the direction the character is facing
-		FRotator CurrentRotation = GetActorRotation();
-		// change from spawning to object pooling
-		Projectile1 = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, FireComponent1->GetComponentLocation(), CurrentRotation, SpawnParams);
-		Projectile2 = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, FireComponent2->GetComponentLocation(), CurrentRotation, SpawnParams);
-		Projectile3 = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, FireComponent3->GetComponentLocation(), CurrentRotation, SpawnParams);
-		Projectile1->Fire();
-		Projectile2->Fire();
-		Projectile3->Fire();
-	}
-	else {
-		GEngine->AddOnScreenDebugMessage(-2, 3.f, FColor::Red, TEXT("Could not spawn star projectiles.  Please make sure star projectile class is set inside the star bp"));
 	}
 }
 
 void AStar::SpecialMove_Implementation()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue, TEXT("Star Glide!"));
+}
+
+void AStar::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// Spawn the projectiles for pooling
+	if (ProjectileClass) {
+		// Spawn Params
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Instigator = this;
+
+		// Get the direction the character is facing
+		FRotator CurrentRotation = GetSprite()->GetComponentRotation();
+
+		Projectile1 = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, FireComponent1->GetComponentLocation(), CurrentRotation, SpawnParams);
+		Projectile2 = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, FireComponent2->GetComponentLocation(), CurrentRotation, SpawnParams);
+		Projectile3 = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, FireComponent3->GetComponentLocation(), CurrentRotation, SpawnParams);
+
+		// Assign the pool location for the projectiles
+		Projectile1->PoolLocation = PoolProjectileLocation1;
+		Projectile2->PoolLocation = PoolProjectileLocation2;
+		Projectile3->PoolLocation = PoolProjectileLocation3;
+	}
+	else
+		GEngine->AddOnScreenDebugMessage(-3, 3.f, FColor::Red, TEXT("Projectile class not set to anything in bp star"));
+
+}
+
+void AStar::CoolDown()
+{
+	Super::CoolDown();
+}
+
+void AStar::FireProjectile()
+{
+	// Checks the projectile if projectile exists/is valid
+	if (ProjectileClass) {
+		
+		// Get the direction the character is facing
+		FRotator CurrentRotation = GetSprite()->GetComponentRotation();
+		Projectile1->SetActorRotation(CurrentRotation);
+		Projectile2->SetActorRotation(CurrentRotation);
+		Projectile3->SetActorRotation(CurrentRotation);
+
+		// Get the location of the 
+		Projectile1->SetActorLocation(FireComponent1->GetComponentLocation());
+		Projectile2->SetActorLocation(FireComponent2->GetComponentLocation());
+		Projectile3->SetActorLocation(FireComponent3->GetComponentLocation());
+
+		// Launch projectile
+		Projectile1->Fire(FacingRight);
+		Projectile2->Fire(FacingRight);
+		Projectile3->Fire(FacingRight);
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-2, 3.f, FColor::Red, TEXT("Could not spawn star projectiles.  Please make sure star projectile class is set inside the star bp"));
+	}
 }

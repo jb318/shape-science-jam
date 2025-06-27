@@ -13,7 +13,7 @@ AShape::AShape()
 	
 	// Properties for spring arm component
 	SpringArmComponent->SetupAttachment(RootComponent);
-	SpringArmComponent->TargetArmLength = 300.f;
+	SpringArmComponent->TargetArmLength = 400.f;
 	SpringArmComponent->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 	SpringArmComponent->bInheritPitch = false;
 	SpringArmComponent->bInheritYaw = false;
@@ -73,7 +73,7 @@ void AShape::CoolDown()
 void AShape::MakeInvincibleTimer()
 {
 	// Reset can be damaged after player is invicible for some time
-	CanBeDamaged = true;
+	Invincible = true;
 	GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Red, TEXT("Player no longer invincible"));
 }
 
@@ -100,7 +100,7 @@ void AShape::OnOverlapItemBegin(UPrimitiveComponent* OverlappedComponent, AActor
 				SetHealth(InterfaceItem->ItemValue());
 			}
 			if (ItemName == TEXT("Invincibilty")) {
-				CanBeDamaged = true;
+				Invincible = true;
 				GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Blue, TEXT("Player invincible"));
 				FTimerHandle InvincibilityTimer;
 				GetWorld()->GetTimerManager().SetTimer(InvincibilityTimer, this, &AShape::MakeInvincibleTimer, InterfaceItem->ItemValue(), false);
@@ -141,47 +141,66 @@ void AShape::LevelUp()
 		row = ShapeDT->FindRow<FShapeLevelData>(RowNames[ShapeLevelIndex], "");
 		if (row) {
 			CurrentHealth = row->MaxHealth;
-			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Congrats you have just leveled up!  Your new max health is: %f"), CurrentHealth));
+			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Congrats you have just leveled up!  Your new max health is: %.1f"), CurrentHealth));
 		}
 	}
 }
 
 void AShape::SetHealth(float amount)
 {
-	
-	if (CanBeDamaged) {
-		// amount can be a positive value such as when interacted with health pickup or negative when receiving damage
-		if (row) {
-			if (CurrentHealth + amount < row->MaxHealth && CurrentHealth + amount > 0) {
-				CurrentHealth += amount;
-			}
-			else if (CurrentHealth + amount >= row->MaxHealth) {
-				CurrentHealth = row->MaxHealth;
-			}
-			else {
-				GEngine->AddOnScreenDebugMessage(-3, 5.f, FColor::Red, TEXT("Warning, you are below 0 hp"));
-			}
-		}
-	}
-}
-
-void AShape::DamageCharacter(float amount)
-{
-	
+	// amount can be a positive value such as when interacted with health pickup or negative when receiving damage
 	if (row) {
-		if (CurrentHealth + amount > 0) {
-			CurrentHealth -= amount;
+		if (CurrentHealth + amount < row->MaxHealth && CurrentHealth + amount > 0) {
+			CurrentHealth += amount;
+		}
+		else if (CurrentHealth + amount >= row->MaxHealth) {
+			CurrentHealth = row->MaxHealth;
 		}
 		else {
-			GEngine->AddOnScreenDebugMessage(-3, 5.f, FColor::Red, TEXT("Cue the defeat function"));
+			GEngine->AddOnScreenDebugMessage(-3, 5.f, FColor::Red, TEXT("Warning, you are below 0 hp"));
 		}
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Current health after attack: %.1f"), CurrentHealth));
 }
 
-void AShape::HitReaction_Implementation(FVector LaunchVelocity)
+void AShape::DamageCharacter(float amount, bool IsProjectile)
 {
+	
+	if (!Invincible && !InDamageCoolDown) {
+		// Executes damage no matter what on melee attack so long as shape is not invincible
+		if (!IsProjectile) {
+			if (row) {
+				if (CurrentHealth + amount > 0) {
+					CurrentHealth -= amount;
+				}
+				else {
+					GEngine->AddOnScreenDebugMessage(-3, 5.f, FColor::Red, TEXT("Cue the defeat function"));
+				}
+			}
+			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Current health after attack: %.1f"), CurrentHealth));
+		}
+		// Only damages if shape is not invincible
+		if (IsProjectile && !ImmuneToProjectile) {
+			if (row) {
+				if (CurrentHealth + amount > 0) {
+					CurrentHealth -= amount;
+				}
+				else {
+					GEngine->AddOnScreenDebugMessage(-3, 5.f, FColor::Red, TEXT("Cue the defeat function"));
+				}
+			}
+			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Current health after attack: %.1f"), CurrentHealth));
+		}
+	}
+	
+}
+
+void AShape::HitReaction(FVector LaunchVelocity)
+{
+	// Add knockback
 	LaunchCharacter(LaunchVelocity, false, false);
+	
+	// Play character damage animation
+	PlayDamageAnimation();
 }
 
 
