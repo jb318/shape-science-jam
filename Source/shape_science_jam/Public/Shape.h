@@ -95,6 +95,10 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayDamageAnimation();
 
+	// How long shape change lasts for timer
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float ShapeChangeDuration;
+
 	// Checks if the shape is in their attack animation
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool InAttackAnimation = false;
@@ -148,8 +152,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 	bool CanChangeShape = true;
 
+	// Restricts ability to do anything while in hit animation
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 	bool InDamageCoolDown;
+
+	// Can do when not attacking, or taking damage.  Locks health and prevents damage animation from playing
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool ChangingShape;
+
+	// Start change shape animation
+	UFUNCTION(BlueprintImplementableEvent)
+	void ChangeShapeStart();
+
+	// Start change shape end animation
+	UFUNCTION(BlueprintImplementableEvent)
+	void ChangeShapeEnd();
 
 private:
 	// The actual values of stats

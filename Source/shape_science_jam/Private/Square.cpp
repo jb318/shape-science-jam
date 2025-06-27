@@ -22,6 +22,21 @@ void ASquare::BeginPlay()
 		BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ASquare::OnOverlapProjectile);
 	}
 
+	if (ProjectileClass) {
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Instigator = this;
+
+		// Get the direction the character is facing
+		FRotator CurrentRotation = GetSprite()->GetComponentRotation();
+
+		// Spawns the projectiles into level
+		Projectile1 = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, PoolProjectileLocation1, CurrentRotation, SpawnParams);
+		Projectile2 = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, PoolProjectileLocation2, CurrentRotation, SpawnParams);
+
+		// Assign the pool location for the projectiles
+		Projectile1->PoolLocation = PoolProjectileLocation1;
+		Projectile2->PoolLocation = PoolProjectileLocation2;
+	}
 }
 
 void ASquare::OnOverlapProjectile(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -29,16 +44,55 @@ void ASquare::OnOverlapProjectile(UPrimitiveComponent* OverlappedComponent, AAct
 	if (InAttackAnimation) {
 		if (OtherActor) {
 			if (AProjectile* IncomingProjectile = Cast<AProjectile>(OtherActor)) {
-				FRotator ProjectileRotation = OtherActor->GetActorRotation();
-				// Check if the projectile class is set to something and if so spawn and fire triangle bp
-				if (ProjectileClass) {
-					// Spawn Params
-					FActorSpawnParameters SpawnParams;
-					SpawnParams.Instigator = this;
-
-					// change from spawning to object pooling
-					//Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, OtherActor->GetActorLocation(), FRotator(ProjectileRotation.Roll, ProjectileRotation.Pitch, (-1 * ProjectileRotation.Yaw)), SpawnParams);
-					//Projectile->Fire();
+				
+				if (IncomingProjectile->IsReflectable) {
+					bool FromRight = IncomingProjectile->FiredOnRightside;
+	
+					// Fires a reflect projectile back to the left side
+					if (ProjectileClass && FromRight) {
+						switch (ProjectileIndex) {
+						case 0:
+							Projectile1->SetActorLocation(FVector(GetActorLocation().X - 40.f, 0.f, 0.f));
+							// Adjust z rotation in second slot (yaw rotation)
+							Projectile1->SetActorRotation(FRotator(0.f, 180.f, 0.f));
+							Projectile1->Fire(false);
+							ProjectileIndex++;
+							break;
+						case 1:
+							Projectile2->SetActorLocation(FVector(GetActorLocation().X - 40.f, 0.f, 0.f));
+							// Adjust z rotation in second slot (yaw rotation)
+							Projectile2->SetActorRotation(FRotator(0.f, 180.f, 0.f));
+							Projectile2->Fire(false);
+							ProjectileIndex = 0;
+							break;
+						default:
+							GEngine->AddOnScreenDebugMessage(-5, 5.f, FColor::Red, TEXT("1"));
+							ProjectileIndex = 0;
+							break;
+						}
+					}
+					// Fires a reflect projectile back to the right side
+					if (ProjectileClass && !FromRight) {
+						switch (ProjectileIndex) {
+						case 0:
+							Projectile1->SetActorLocation(FVector(GetActorLocation().X + 40.f, 0.f, 0.f));
+							Projectile1->SetActorRotation(FRotator(0.f, 0.f, 0.f));
+							Projectile1->Fire(true);
+							
+							ProjectileIndex++;
+							break;
+						case 1:
+							Projectile2->SetActorLocation(FVector(GetActorLocation().X + 40.f, 0.f, 0.f));
+							Projectile2->SetActorRotation((FRotator(0.f, 0.f, 0.f)));
+							Projectile2->Fire(true);
+							ProjectileIndex = 0;
+							break;
+						default:
+							GEngine->AddOnScreenDebugMessage(-5, 5.f, FColor::Red, TEXT("2"));
+							ProjectileIndex = 0;
+							break;
+						}
+					}
 				}
 			}
 		}

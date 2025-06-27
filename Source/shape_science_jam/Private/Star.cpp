@@ -50,9 +50,10 @@ void AStar::BeginPlay()
 		// Get the direction the character is facing
 		FRotator CurrentRotation = GetSprite()->GetComponentRotation();
 
-		Projectile1 = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, FireComponent1->GetComponentLocation(), CurrentRotation, SpawnParams);
-		Projectile2 = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, FireComponent2->GetComponentLocation(), CurrentRotation, SpawnParams);
-		Projectile3 = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, FireComponent3->GetComponentLocation(), CurrentRotation, SpawnParams);
+		// Spawn and pool projectiles
+		Projectile1 = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, PoolProjectileLocation1, CurrentRotation, SpawnParams);
+		Projectile2 = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, PoolProjectileLocation2, CurrentRotation, SpawnParams);
+		Projectile3 = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, PoolProjectileLocation3, CurrentRotation, SpawnParams);
 
 		// Assign the pool location for the projectiles
 		Projectile1->PoolLocation = PoolProjectileLocation1;
@@ -80,7 +81,7 @@ void AStar::FireProjectile()
 		Projectile2->SetActorRotation(CurrentRotation);
 		Projectile3->SetActorRotation(CurrentRotation);
 
-		// Get the location of the 
+		// Attach projectile to arrow component
 		Projectile1->SetActorLocation(FireComponent1->GetComponentLocation());
 		Projectile2->SetActorLocation(FireComponent2->GetComponentLocation());
 		Projectile3->SetActorLocation(FireComponent3->GetComponentLocation());
