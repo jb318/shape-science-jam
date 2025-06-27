@@ -34,10 +34,21 @@ protected:
 	UFUNCTION()
 	void OnOverlapProjectile(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	// Pool for square projectile
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FVector PoolProjectileLocation1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FVector PoolProjectileLocation2;
+
 private:
 	void SwitchGravity();
 
 	// Projectile instance
-	AProjectile* Projectile;
+	AProjectile* Projectile1;
+	AProjectile* Projectile2;
+	AProjectile* Projectile3;
+
+	int ProjectileIndex = 0;
 	
 };

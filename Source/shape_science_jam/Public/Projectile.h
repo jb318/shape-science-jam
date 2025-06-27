@@ -27,9 +27,6 @@ protected:
 	float ProjectileDuration = 1.f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UPaperFlipbookComponent* Flipbook;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UBoxComponent* BoxComponent;
 
 	// Projectile overlaps combat interface actor
@@ -44,14 +41,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FVector ProjectileKnockbackForce;
 
-	// If true, hide actor when overlapping with 
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
-	bool HideProjectile;
-
-	// Projectiles speed
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float ProjectileSpeed;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool CanRotate;
 
@@ -59,21 +48,37 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPaperFlipbookComponent* Flipbook;
+
 	// Projectile movement component
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UProjectileMovementComponent* ProjectileMovement;
 
-	// fires a projectile
+	// Fires a projectile, exposed to UE5 for better testing
+	UFUNCTION(BlueprintCallable)
 	void Fire(bool FacingRight);
 
 	// Location of projectile pool
-	FVector PoolLocation;
+	FVector PoolLocation = FVector(-1000.f, 0.f, -1000.f);
+
+	// Determines if the projectile should pool when hitting a character
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool PoolOnHit;
+
+	// Projectile can be reflected
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool IsReflectable;
+
+	// Projectile can be overwhelmed by other projectiles
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool IsDestructable;
+
+	bool FiredOnRightside = true;
 
 private:
+	// Pools the projectile when duration is up or when character is hit
 	void PoolProjectile();
-
-	// sets the speed of projectile for firing
-	void RelocateProjectile();
 
 	// Reference to player character
 	APawn* Insigator;

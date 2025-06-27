@@ -110,9 +110,10 @@ private:
 	void Move(const FInputActionValue& value);
 	void Attack(const FInputActionValue& value);
 	void SpecialMove(const FInputActionValue& value);
-	void ChangeShape(const FInputActionValue& value);
 	void OpenPauseMenu(const FInputActionValue& value);	
 	void ShapeChangeSelect(const FInputActionValue& value);
+
+	void ChangeShape(int XValue, int YValue);
 	
 	// Pools shape out of view
 	void PoolShape(int index);

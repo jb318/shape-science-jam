@@ -20,6 +20,16 @@ public:
 	virtual void SpecialMove_Implementation() override;
 
 protected:
+	virtual void BeginPlay() override;
+
+	// Where to pool spawned projectile class
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shape Moves")
+	FVector PoolProjectileLocation1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shape Moves")
+	FVector PoolProjectileLocation2;
+
+	// Projectile class to spawn in
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shape Moves")
 	TSubclassOf<AProjectile> ProjectileClass;
 
@@ -35,6 +45,11 @@ protected:
 	float AttackDelay = 0.333;
 
 private:
-	AProjectile* Projectile;
+	// Instances of projectile spawned into the level
+	AProjectile* Projectile1;
+	AProjectile* Projectile2;
+
+	// Index of which projectile to fire
+	int ProjectileIndex = 0;
 
 };

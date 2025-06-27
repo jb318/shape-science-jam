@@ -31,21 +31,30 @@ void AProjectile::BeginPlay()
 	// Binds overlap event to box component
 	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnProjectileOverlap);
 
+	// Set the velocity to 0
+	ProjectileMovement->Velocity = FVector(0.f, 0.f, 0.f);
+
 }
 
 void AProjectile::OnProjectileOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	
 	if (OtherActor && OtherActor != GetInstigator()) {
 		// Filters overlapped Actors with those that implement combat interface
 		if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(OtherActor)) {
 			CombatInterface->DamageCharacter(ProjectileDamage, true);
 			CombatInterface->HitReaction(ProjectileKnockbackForce);
-			if (HideProjectile) {
-				SetActorHiddenInGame(true);
+			// If projectile should pool on hit then pool it and set speed to 0
+			if (PoolOnHit) {
+				SetActorLocation(PoolLocation);
+				ProjectileMovement->Velocity = FVector(0.f, 0.f, 0.f);
 			}
-			
-		}	
+		}
+		// If the projectile overlaps with another projectile that is destructable unlike itself, pool the hit projectile
+		if (AProjectile* OtherProjectile = Cast<AProjectile>(OtherActor)) {
+			if (OtherProjectile->IsDestructable && !IsDestructable) {
+				OtherProjectile->SetActorLocation(OtherProjectile->PoolLocation);
+			}
+		}
 	}
 }
 
@@ -61,15 +70,17 @@ void AProjectile::Fire(bool FacingRight)
 	// Enable rotation of the projectile
 	CanRotate = true;
 	if (FacingRight) {
+		FiredOnRightside = true;
 		// Sets a timer for that controls how long projectile lasts in level
 		FTimerHandle LaunchTimer;
-		ProjectileMovement->Velocity = FVector(ProjectileSpeed, 0.f, 0.f);
+		ProjectileMovement->Velocity = FVector(ProjectileMovement->InitialSpeed, 0.f, 0.f);
 		GetWorld()->GetTimerManager().SetTimer(LaunchTimer, this, &AProjectile::PoolProjectile, ProjectileDuration, false);
 	}
 	else {
+		FiredOnRightside = false;
 		// Sets a timer for that controls how long projectile lasts in level
 		FTimerHandle LaunchTimer;
-		ProjectileMovement->Velocity = FVector(-1 * ProjectileSpeed, 0.f, 0.f);
+		ProjectileMovement->Velocity = FVector(-1 * ProjectileMovement->InitialSpeed, 0.f, 0.f);
 		GetWorld()->GetTimerManager().SetTimer(LaunchTimer, this, &AProjectile::PoolProjectile, ProjectileDuration, false);
 	}
 	

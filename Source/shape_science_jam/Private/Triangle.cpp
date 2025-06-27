@@ -29,6 +29,29 @@ void ATriangle::SpecialMove_Implementation()
 	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue, TEXT("Triangle Destroy!"));
 }
 
+void ATriangle::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// Spawn the projectile in 
+	if (ProjectileClass) {
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Instigator = this;
+
+		// Get the direction the character is facing
+		FRotator CurrentRotation = GetSprite()->GetComponentRotation();
+		
+		// Spawns the projectiles into level
+		Projectile1 = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, PoolProjectileLocation1, CurrentRotation, SpawnParams);
+		Projectile2 = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, PoolProjectileLocation2, CurrentRotation, SpawnParams);
+
+		// Assign the pool location for the projectiles
+		Projectile1->PoolLocation = PoolProjectileLocation1;
+		Projectile2->PoolLocation = PoolProjectileLocation2;
+	}
+}
+
+
 void ATriangle::CoolDown()
 {
 	Super::CoolDown();
@@ -37,15 +60,29 @@ void ATriangle::CoolDown()
 void ATriangle::FireProjectile()
 {
 	if (ProjectileClass) {
-		// Spawn Params
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Instigator = this;
-
 		// Get the direction the character is facing
 		FRotator CurrentRotation = GetSprite()->GetComponentRotation();
-		// change from spawning to object pooling
-		Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, FireComponent->GetComponentLocation(), CurrentRotation, SpawnParams);
-		Projectile->Fire(FacingRight);
+
+		// Control the attaching and firing of the different projectile instances that were spawned on begin play
+		switch (ProjectileIndex) {
+		case 0:
+			Projectile1->SetActorRotation(CurrentRotation);
+			Projectile1->SetActorLocation(FireComponent->GetComponentLocation());
+			Projectile1->Fire(FacingRight);
+			ProjectileIndex++;
+			break;
+		case 1: 
+			Projectile2->SetActorRotation(CurrentRotation);
+			Projectile2->SetActorLocation(FireComponent->GetComponentLocation());
+			Projectile2->Fire(FacingRight);
+			ProjectileIndex = 0;
+			break;
+		default:
+			GEngine->AddOnScreenDebugMessage(-5, 5.f, FColor::Red, TEXT("Projectile index in triangle class is not within the correct set of integers 0-2"));
+			ProjectileIndex = 0;
+			break;
+		}
+		
 	}
 	else {
 		GEngine->AddOnScreenDebugMessage(-2, 3.f, FColor::Red, TEXT("Could not spawn triangle projectile.  Please make sure triangle projectile class is set inside the triange bp"));
