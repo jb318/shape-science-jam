@@ -44,7 +44,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FVector ProjectileKnockbackForce;
 
+	// If true, hide actor when overlapping with 
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	bool HideProjectile;
 
+	// Projectiles speed
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float ProjectileSpeed;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool CanRotate;
 
 public:	
 	// Called every frame
@@ -55,13 +64,16 @@ public:
 	UProjectileMovementComponent* ProjectileMovement;
 
 	// fires a projectile
-	void Fire();
+	void Fire(bool FacingRight);
+
+	// Location of projectile pool
+	FVector PoolLocation;
 
 private:
 	void PoolProjectile();
 
 	// sets the speed of projectile for firing
-	void DestroyProjectile();
+	void RelocateProjectile();
 
 	// Reference to player character
 	APawn* Insigator;

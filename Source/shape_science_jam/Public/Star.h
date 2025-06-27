@@ -22,6 +22,9 @@ public:
 	virtual void SpecialMove_Implementation() override;
 
 protected:
+	virtual void BeginPlay() override;
+	
+	// Components of star
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shape Moves")
 	TSubclassOf<AProjectile> ProjectileClass;
 
@@ -33,6 +36,28 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UArrowComponent* FireComponent3;
+
+	// Where to pool spawned projectile class
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shape Moves")
+	FVector PoolProjectileLocation1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shape Moves")
+	FVector PoolProjectileLocation2;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shape Moves")
+	FVector PoolProjectileLocation3;
+
+	// Animation related timers
+	virtual void CoolDown() override;
+	void FireProjectile();
+
+	// Attack cool down (could have separated shapes further into melee and range...)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shape Moves")
+	float AttackDelay = 0.0833;
+
+	// If false, should shoot projectile to the left
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool FireRightSide;
 
 private:
 	AProjectile* Projectile1;

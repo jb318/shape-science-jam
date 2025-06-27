@@ -3,13 +3,13 @@
 
 #include "CombatInterface.h"
 
-void ICombatInterface::DamageCharacter(float amount)
+void ICombatInterface::DamageCharacter(float amount, bool IsProjectile)
 {
-
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("%.1f damage applied")));
 }
 
-void ICombatInterface::HitReaction_Implementation(FVector LaunchVelocity)
+void ICombatInterface::HitReaction(FVector LaunchVelocity)
 {
-	GEngine->AddOnScreenDebugMessage(2, 4.f, FColor::Cyan, FString::Printf(TEXT("Hit reaction implementation called with %.0f, %.0f, %.0f being passed in as arguments"), LaunchVelocity.X, LaunchVelocity.Y, LaunchVelocity.Z));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Hit reaction implementation called with %.0f, %.0f, %.0f being passed in as arguments"), LaunchVelocity.X, LaunchVelocity.Y, LaunchVelocity.Z));
 }
 

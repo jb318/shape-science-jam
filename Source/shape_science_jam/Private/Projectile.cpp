@@ -9,7 +9,7 @@ AProjectile::AProjectile()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-	// Projectile movement component and properties
+	// Projectile movement component and other properties
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Movement"));
 	ProjectileMovement->InitialSpeed = 600.f; 
 	ProjectileMovement->MaxSpeed = 1200.f;
@@ -28,6 +28,7 @@ void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// Binds overlap event to box component
 	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnProjectileOverlap);
 
 }
@@ -36,10 +37,14 @@ void AProjectile::OnProjectileOverlap(UPrimitiveComponent* OverlappedComponent, 
 {
 	
 	if (OtherActor && OtherActor != GetInstigator()) {
+		// Filters overlapped Actors with those that implement combat interface
 		if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(OtherActor)) {
-			CombatInterface->DamageCharacter(ProjectileDamage);
-			CombatInterface->HitReaction_Implementation(ProjectileKnockbackForce);
-			DestroyProjectile();
+			CombatInterface->DamageCharacter(ProjectileDamage, true);
+			CombatInterface->HitReaction(ProjectileKnockbackForce);
+			if (HideProjectile) {
+				SetActorHiddenInGame(true);
+			}
+			
 		}	
 	}
 }
@@ -51,20 +56,34 @@ void AProjectile::Tick(float DeltaTime)
 
 }
 
-void AProjectile::DestroyProjectile()
-{	
-	// change to pool
-	Destroy();
-}
-
-void AProjectile::Fire()
+void AProjectile::Fire(bool FacingRight)
 {
-	FTimerHandle LaunchTimer;
-	GetWorld()->GetTimerManager().SetTimer(LaunchTimer, this, &AProjectile::DestroyProjectile, ProjectileDuration, false);
+	// Enable rotation of the projectile
+	CanRotate = true;
+	if (FacingRight) {
+		// Sets a timer for that controls how long projectile lasts in level
+		FTimerHandle LaunchTimer;
+		ProjectileMovement->Velocity = FVector(ProjectileSpeed, 0.f, 0.f);
+		GetWorld()->GetTimerManager().SetTimer(LaunchTimer, this, &AProjectile::PoolProjectile, ProjectileDuration, false);
+	}
+	else {
+		// Sets a timer for that controls how long projectile lasts in level
+		FTimerHandle LaunchTimer;
+		ProjectileMovement->Velocity = FVector(-1 * ProjectileSpeed, 0.f, 0.f);
+		GetWorld()->GetTimerManager().SetTimer(LaunchTimer, this, &AProjectile::PoolProjectile, ProjectileDuration, false);
+	}
+	
+	
 	
 }
 
 void AProjectile::PoolProjectile()
 {
+	// Disable rotation of projectile
+	CanRotate = false;
+	SetActorLocation(PoolLocation);
+	ProjectileMovement->Velocity = FVector(0.f,0.f,0.f);
+
+	//GEngine->AddOnScreenDebugMessage(-2, 5.f, FColor::Purple, FString::Printf(TEXT("Speed of star: %.1f"), ProjectileMovement->MaxSpeed));
 }
 
