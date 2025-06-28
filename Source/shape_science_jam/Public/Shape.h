@@ -9,6 +9,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Projectile.h"
 #include "CombatInterface.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameHUD.h"
 #include "Shape.generated.h"
 
 /**
@@ -43,20 +45,6 @@ public:
 protected: 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	// Data table reference
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shape Level Data")
-	UDataTable* ShapeDT;
-
-	// Individual row from the data table reference
-	FShapeLevelData* row;
-
-	// Level of the shape, change the starting level in editor
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shape Level Data")
-	int ShapeLevelIndex = 0;
-
-	// Array of the rows inside datatable
-	TArray<FName> RowNames;
 
 	// Cooldowns for each of the shapes attack moves
 	virtual void CoolDown();
@@ -102,6 +90,20 @@ protected:
 	// Checks if the shape is in their attack animation
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool InAttackAnimation = false;
+
+	// Data table reference
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shape Level Data")
+	UDataTable* ShapeDT;
+
+	// Individual row from the data table reference
+	FShapeLevelData* row;
+
+	// Level of the shape, change the starting level in editor
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shape Level Data")
+	int ShapeLevelIndex = 0;
+
+	// Array of the rows inside datatable
+	TArray<FName> RowNames;
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -166,11 +168,18 @@ public:
 
 	// Start change shape end animation
 	UFUNCTION(BlueprintImplementableEvent)
-	void ChangeShapeEnd();
+	void ChangeShapeEnd();	
 
-private:
 	// The actual values of stats
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
 	float CurrentHealth;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
 	float CurrentExperience;
 
+
+private:
+	
+	// reference to HUD
+	AGameHUD* HUD;
 };

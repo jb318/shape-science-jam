@@ -62,6 +62,17 @@ void AShape::BeginPlay()
 	if (BoxComponent) 
 		BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AShape::OnOverlapItemBegin);
 
+	// Setting variables on player widget
+	HUD = Cast<AGameHUD>(UGameplayStatics::GetPlayerController(this, 0)->GetHUD());
+	if (HUD) {
+		if (row) {
+			if (HUD->PlayerWidget) {
+				HUD->PlayerWidget->SetHealthBar(CurrentHealth, row->MaxHealth);
+				HUD->PlayerWidget->SetExperienceBar(CurrentExperience, row->MaxExperience);
+			}
+			
+		}
+	}
 }
 
 void AShape::CoolDown()
@@ -83,8 +94,13 @@ void AShape::AddExperience(float amount)
 	// update player current experience with the amount provided
 	CurrentExperience += amount;
 	if (row) {
-		if (CurrentExperience >= row->MaxExperience)
+		if (CurrentExperience >= row->MaxExperience) {
 			LevelUp();
+			if (HUD->PlayerWidget) 
+				HUD->PlayerWidget->SetExperienceBar(row->MaxHealth, row->MaxHealth);
+		}
+		if (HUD->PlayerWidget)
+			HUD->PlayerWidget->SetExperienceBar(CurrentExperience, row->MaxExperience);
 	}
 	
 }
@@ -107,6 +123,11 @@ void AShape::OnOverlapItemBegin(UPrimitiveComponent* OverlappedComponent, AActor
 			}	
 			if (ItemName == TEXT("Experience")) {
 				AddExperience(InterfaceItem->ItemValue());
+			}
+			if (ItemName == TEXT("Objective")) {
+				if (HUD->PlayerWidget) {
+					HUD->PlayerWidget->UpdateObjectiveBar_Implementation();
+				}
 			}
 			// Destroy the item
 			InterfaceItem->Interact();
@@ -159,6 +180,10 @@ void AShape::SetHealth(float amount)
 		else {
 			GEngine->AddOnScreenDebugMessage(-3, 5.f, FColor::Red, TEXT("Warning, you are below 0 hp"));
 		}
+		// Update widget
+		if (HUD->PlayerWidget) {
+			HUD->PlayerWidget->SetHealthBar(CurrentHealth, row->MaxHealth);
+		}
 	}
 }
 
@@ -175,7 +200,12 @@ void AShape::DamageCharacter(float amount, bool IsProjectile)
 				else {
 					GEngine->AddOnScreenDebugMessage(-3, 5.f, FColor::Red, TEXT("Cue the defeat function"));
 				}
+				// Set health
+				if (HUD->PlayerWidget) {
+					HUD->PlayerWidget->SetHealthBar(CurrentHealth, row->MaxHealth);
+				}
 			}
+			
 			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Current health after attack: %.1f"), CurrentHealth));
 		}
 		// Only damages if shape is not invincible
@@ -186,6 +216,10 @@ void AShape::DamageCharacter(float amount, bool IsProjectile)
 				}
 				else {
 					GEngine->AddOnScreenDebugMessage(-3, 5.f, FColor::Red, TEXT("Cue the defeat function"));
+				}
+				// Set Health
+				if (HUD->PlayerWidget) {
+					HUD->PlayerWidget->SetHealthBar(CurrentHealth, row->MaxHealth);
 				}
 			}
 			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Current health after attack: %.1f"), CurrentHealth));

@@ -13,6 +13,7 @@
 #include "Square.h"
 #include "Triangle.h"
 #include "Star.h"
+#include "GameHUD.h"
 #include "ShapeController.generated.h"
 
 /**
