@@ -74,9 +74,6 @@ void AShapeController::SetupInputComponent()
 			if (SpecialMoveAction) {
 				Subsystem->BindAction(SpecialMoveAction, ETriggerEvent::Started, this, &AShapeController::SpecialMove);
 			}
-			if (ChangeShapeAction) {
-				Subsystem->BindAction(ChangeShapeAction, ETriggerEvent::Started, this, &AShapeController::ShapeChangeSelect);
-			}
 			if (PauseMenuAction) {
 				Subsystem->BindAction(PauseMenuAction, ETriggerEvent::Started, this, &AShapeController::OpenPauseMenu);
 			}
@@ -211,7 +208,7 @@ void AShapeController::ShapeChangeSelect(const FInputActionValue& value)
 	// Add functionality for character switch
 	if (Player) {
 		// Allows switch only when player bool value is set to true and the player is not currently falling
-		if (Player->CanChangeShape && !Player->GetCharacterMovement()->IsFalling()) {
+		if (Player->CanChangeShape && !Player->GetCharacterMovement()->IsFalling() && !Player->ChangingShape) {
 			// Start the shape change animation inside shape blueprints
 			Player->ChangeShapeStart();
 

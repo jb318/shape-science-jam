@@ -3,6 +3,11 @@
 #include "Square.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
+void ASquare::Attack_Implementation()
+{
+	GEngine->AddOnScreenDebugMessage(-5, 5.f, FColor::Red, TEXT("2 Attack or not"));
+}
+
 void ASquare::SpecialMove_Implementation()
 {
 	// Call switch gravity with the user defined delay
@@ -52,21 +57,21 @@ void ASquare::OnOverlapProjectile(UPrimitiveComponent* OverlappedComponent, AAct
 					if (ProjectileClass && FromRight) {
 						switch (ProjectileIndex) {
 						case 0:
-							Projectile1->SetActorLocation(FVector(GetActorLocation().X - 40.f, 0.f, 0.f));
+							Projectile1->SetActorLocation(FVector(GetActorLocation().X - ReflectOffset, 0.f, 0.f));
 							// Adjust z rotation in second slot (yaw rotation)
 							Projectile1->SetActorRotation(FRotator(0.f, 180.f, 0.f));
 							Projectile1->Fire(false);
 							ProjectileIndex++;
 							break;
 						case 1:
-							Projectile2->SetActorLocation(FVector(GetActorLocation().X - 40.f, 0.f, 0.f));
+							Projectile2->SetActorLocation(FVector(GetActorLocation().X - ReflectOffset, 0.f, 0.f));
 							// Adjust z rotation in second slot (yaw rotation)
 							Projectile2->SetActorRotation(FRotator(0.f, 180.f, 0.f));
 							Projectile2->Fire(false);
 							ProjectileIndex = 0;
 							break;
 						default:
-							GEngine->AddOnScreenDebugMessage(-5, 5.f, FColor::Red, TEXT("1"));
+							GEngine->AddOnScreenDebugMessage(-5, 5.f, FColor::Red, FString::Printf(TEXT("%d"), ProjectileIndex));
 							ProjectileIndex = 0;
 							break;
 						}
@@ -75,20 +80,19 @@ void ASquare::OnOverlapProjectile(UPrimitiveComponent* OverlappedComponent, AAct
 					if (ProjectileClass && !FromRight) {
 						switch (ProjectileIndex) {
 						case 0:
-							Projectile1->SetActorLocation(FVector(GetActorLocation().X + 40.f, 0.f, 0.f));
+							Projectile1->SetActorLocation(FVector(GetActorLocation().X + ReflectOffset, 0.f, 0.f));
 							Projectile1->SetActorRotation(FRotator(0.f, 0.f, 0.f));
 							Projectile1->Fire(true);
 							
 							ProjectileIndex++;
 							break;
 						case 1:
-							Projectile2->SetActorLocation(FVector(GetActorLocation().X + 40.f, 0.f, 0.f));
+							Projectile2->SetActorLocation(FVector(GetActorLocation().X + ReflectOffset, 0.f, 0.f));
 							Projectile2->SetActorRotation((FRotator(0.f, 0.f, 0.f)));
 							Projectile2->Fire(true);
 							ProjectileIndex = 0;
 							break;
 						default:
-							GEngine->AddOnScreenDebugMessage(-5, 5.f, FColor::Red, TEXT("2"));
 							ProjectileIndex = 0;
 							break;
 						}

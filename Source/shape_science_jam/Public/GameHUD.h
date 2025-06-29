@@ -23,6 +23,12 @@ public:
 	// Player widget instance
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
 	UPlayerWidget* PlayerWidget;
+
+	// Spawns game over widget into game
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void GameOver();
+
+	virtual void GameOver_Implementation();
 	
 protected:
 	virtual void BeginPlay() override;

@@ -13,3 +13,8 @@ void ICombatInterface::HitReaction(FVector LaunchVelocity)
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Hit reaction implementation called with %.0f, %.0f, %.0f being passed in as arguments"), LaunchVelocity.X, LaunchVelocity.Y, LaunchVelocity.Z));
 }
 
+void ICombatInterface::TriggerCounter()
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 4.f, FColor::Red, TEXT("Set the auto reflect boolean variable to true on square enemy blueprint"));
+}
+

@@ -64,15 +64,6 @@ void AShape::BeginPlay()
 
 	// Setting variables on player widget
 	HUD = Cast<AGameHUD>(UGameplayStatics::GetPlayerController(this, 0)->GetHUD());
-	if (HUD) {
-		if (row) {
-			if (HUD->PlayerWidget) {
-				HUD->PlayerWidget->SetHealthBar(CurrentHealth, row->MaxHealth);
-				HUD->PlayerWidget->SetExperienceBar(CurrentExperience, row->MaxExperience);
-			}
-			
-		}
-	}
 }
 
 void AShape::CoolDown()
@@ -194,16 +185,24 @@ void AShape::DamageCharacter(float amount, bool IsProjectile)
 		// Executes damage no matter what on melee attack so long as shape is not invincible
 		if (!IsProjectile) {
 			if (row) {
-				if (CurrentHealth + amount > 0) {
+				if (CurrentHealth - amount > 0) {
 					CurrentHealth -= amount;
+					// Set health
+					if (HUD->PlayerWidget) {
+						HUD->PlayerWidget->SetHealthBar(CurrentHealth, row->MaxHealth);
+					}
 				}
 				else {
-					GEngine->AddOnScreenDebugMessage(-3, 5.f, FColor::Red, TEXT("Cue the defeat function"));
+					FTimerHandle DeathTimer;
+					GetWorld()->GetTimerManager().SetTimer(DeathTimer, this, &AShape::DestroyCharacter, 0.25f, false);
+					if (HUD) {
+						HUD->GameOver();
+						HUD->GameOver_Implementation();
+						DestroyCharacter();
+					}
+					
 				}
-				// Set health
-				if (HUD->PlayerWidget) {
-					HUD->PlayerWidget->SetHealthBar(CurrentHealth, row->MaxHealth);
-				}
+				
 			}
 			
 			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Current health after attack: %.1f"), CurrentHealth));
@@ -211,15 +210,22 @@ void AShape::DamageCharacter(float amount, bool IsProjectile)
 		// Only damages if shape is not invincible
 		if (IsProjectile && !ImmuneToProjectile) {
 			if (row) {
-				if (CurrentHealth + amount > 0) {
+				if (CurrentHealth - amount > 0) {
 					CurrentHealth -= amount;
+					// Set Health
+					if (HUD->PlayerWidget) {
+						HUD->PlayerWidget->SetHealthBar(CurrentHealth, row->MaxHealth);
+					}
 				}
 				else {
-					GEngine->AddOnScreenDebugMessage(-3, 5.f, FColor::Red, TEXT("Cue the defeat function"));
-				}
-				// Set Health
-				if (HUD->PlayerWidget) {
-					HUD->PlayerWidget->SetHealthBar(CurrentHealth, row->MaxHealth);
+					FTimerHandle DeathTimer;
+					GetWorld()->GetTimerManager().SetTimer(DeathTimer, this, &AShape::DestroyCharacter, 0.25f, false);
+					if (HUD) {
+						HUD->GameOver();
+						HUD->GameOver_Implementation();
+						DestroyCharacter();
+					}
+					
 				}
 			}
 			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Current health after attack: %.1f"), CurrentHealth));
@@ -235,6 +241,11 @@ void AShape::HitReaction(FVector LaunchVelocity)
 	
 	// Play character damage animation
 	PlayDamageAnimation();
+}
+
+void AShape::DestroyCharacter()
+{
+	Destroy();
 }
 
 
