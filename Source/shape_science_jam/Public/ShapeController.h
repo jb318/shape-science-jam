@@ -14,6 +14,7 @@
 #include "Triangle.h"
 #include "Star.h"
 #include "GameHUD.h"
+#include "InteractInterface.h"
 #include "ShapeController.generated.h"
 
 /**
@@ -22,7 +23,7 @@
 class AShape;
 
 UCLASS()
-class SHAPE_SCIENCE_JAM_API AShapeController : public APlayerController
+class SHAPE_SCIENCE_JAM_API AShapeController : public APlayerController, public IInteractInterface
 {
 	GENERATED_BODY() 
 
@@ -102,6 +103,12 @@ public:
 	TSubclassOf<UUserWidget> PauseMenuClass;
 	UUserWidget* PauseMenu;
 
+	// Restores players hp after dying
+	UFUNCTION(BlueprintCallable)
+	virtual void RestoreHealth();
+
+	virtual void UpdateObjective() override;
+
 private: 
 	
 	// Input functions and bindings
@@ -122,4 +129,6 @@ private:
 	// Index to indentify and switch shapes too
 	int ShapeIndex = 0;
 
+	// reference to HUD
+	AGameHUD* HUD;
 };

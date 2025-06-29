@@ -56,6 +56,11 @@ void AShapeController::BeginPlay()
 			}
 		}
 	}
+	// Setting variables on player widget
+	HUD = Cast<AGameHUD>(UGameplayStatics::GetPlayerController(this, 0)->GetHUD());
+	if (HUD) {
+		HUD->CreatePlayerWidget();
+	}
 }
 
 void AShapeController::SetupInputComponent()
@@ -81,6 +86,49 @@ void AShapeController::SetupInputComponent()
 				Subsystem->BindAction(ShapeChangeSelectAction, ETriggerEvent::Started, this, &AShapeController::ShapeChangeSelect);
 			}
 		}
+	}
+}
+
+void AShapeController::RestoreHealth()
+{
+	// Restore for every spawned in class after clicking retry level
+	if (Circle) {
+		Circle->CurrentHealth = Circle->MaxHealth;
+	}
+	if (Square) {
+		Square->CurrentHealth = Square->MaxHealth;
+
+	}
+	if (Triangle) {
+		Triangle->CurrentHealth = Triangle->MaxHealth;
+	}
+	if (Star) {
+		Star->CurrentHealth = Star->MaxHealth;
+	}
+	if (HUD) {
+		HUD->ToggleWidget();
+		if (Player) {
+			HUD->SetHealthPercent(Player->CurrentHealth, Player->MaxHealth);
+		}
+		
+	}
+}
+
+void AShapeController::UpdateObjective()
+{
+	// Restore for every spawned in class after clicking retry level
+	if (Circle) {
+		Circle->ObjectiveCounter++;
+	}
+	if (Square) {
+		Square->ObjectiveCounter++;
+
+	}
+	if (Triangle) {
+		Triangle->ObjectiveCounter++;
+	}
+	if (Star) {
+		Star->ObjectiveCounter++;
 	}
 }
 
@@ -135,6 +183,9 @@ void AShapeController::ChangeShape(int XValue, int YValue)
 				Player = Triangle;
 				Player->ChangeShapeEnd();
 				ShapeIndex = 2;
+				if (HUD) {
+					HUD->SetHealthPercent(Triangle->CurrentHealth, Triangle->MaxHealth);
+				}
 			}
 			break;
 		case 1:
@@ -145,6 +196,9 @@ void AShapeController::ChangeShape(int XValue, int YValue)
 				Player = Circle;
 				Player->ChangeShapeEnd();
 				ShapeIndex = 0;
+				if (HUD) {
+					HUD->SetHealthPercent(Circle->CurrentHealth, Circle->MaxHealth);
+				}
 			}
 			break;
 		default:
@@ -161,6 +215,9 @@ void AShapeController::ChangeShape(int XValue, int YValue)
 				Player = Star;
 				Player->ChangeShapeEnd();
 				ShapeIndex = 3;
+				if (HUD) {
+					HUD->SetHealthPercent(Star->CurrentHealth, Star->MaxHealth);
+				}
 			}
 			break;
 		case 1:
@@ -171,6 +228,9 @@ void AShapeController::ChangeShape(int XValue, int YValue)
 				Player = Square;
 				Player->ChangeShapeEnd();
 				ShapeIndex = 1;
+				if (HUD) {
+					HUD->SetHealthPercent(Square->CurrentHealth, Square->MaxHealth);
+				}
 			}
 			break;
 		default:

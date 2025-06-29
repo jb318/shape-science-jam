@@ -29,7 +29,17 @@ public:
 	void GameOver();
 
 	virtual void GameOver_Implementation();
+
+	void CreatePlayerWidget();
 	
+	// Sets the health percent of the player widget
+	void SetHealthPercent(float MinimumHealth, float MaximumHealth);
+	
+	// Toggles player widget back when restart level 
+	void ToggleWidget();
+
 protected:
 	virtual void BeginPlay() override;
+
+	bool PlayerWidgetCreated;
 };

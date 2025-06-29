@@ -63,12 +63,16 @@ void ATriangle::CoolDown()
 void ATriangle::FireProjectile()
 {
 	if (FacingRight) {
-		Projectile1->FiredOnRightside = true;
-		Projectile2->FiredOnRightside = true;
+		if (Projectile1 && Projectile2) {
+			Projectile1->FiredOnRightside = true;
+			Projectile2->FiredOnRightside = true;
+		}
 	}
 	else {
-		Projectile1->FiredOnRightside = false;
-		Projectile2->FiredOnRightside = false;
+		if (Projectile1 && Projectile2) {
+			Projectile1->FiredOnRightside = false;
+			Projectile2->FiredOnRightside = false;
+		}
 	}
 	if (ProjectileClass) {
 		// Get the direction the character is facing

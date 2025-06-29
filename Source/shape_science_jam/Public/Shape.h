@@ -9,6 +9,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Projectile.h"
 #include "CombatInterface.h"
+#include "InteractInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameHUD.h"
 #include "Shape.generated.h"
@@ -115,9 +116,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	USpringArmComponent* SpringArmComponent;
 
-	// This is the objective
+	// Objective points needed to beat the game
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int objectivecounter=0;
+	int ObjectiveCounter = 0;
+
 	// Player overlaps item
 	UFUNCTION()
 	void OnOverlapItemBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -175,10 +177,16 @@ public:
 
 	// The actual values of stats
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
-	float CurrentHealth;
+	float CurrentHealth = 3.f;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
+	float MaxHealth = 3.f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
-	float CurrentExperience;
+	float CurrentExperience = 0.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
+	float MaxExperience = 10.f;
 
 	// Wandering tracker for the AI
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
@@ -197,7 +205,7 @@ public:
 	float AttackIntervals;
 
 	// Destroys character
-	virtual void DestroyCharacter();
+	virtual void CharacterDefeat();
 
 private:
 	

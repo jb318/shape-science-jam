@@ -29,5 +29,8 @@ public:
 	
 	// Returns the value of the collectible (i.e. a value of 7 on invincibily would make player invicible for 7 secons)
 	virtual float ItemValue();
+
+	// Updates objective for all players involved
+	virtual void UpdateObjective();
 };
 

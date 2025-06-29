@@ -45,6 +45,7 @@ public:
 	void UpdateObjectiveBar_Implementation();
 
 	// Keeps track of objective
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int ObjectiveCount = 0;
 	
 };
