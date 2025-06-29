@@ -35,7 +35,7 @@ protected:
 	float DashDamage = 0.5;
 
 	// Knockback velocity
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector KnockbackVelocity;
 
 	UFUNCTION()

@@ -29,8 +29,7 @@ void UPlayerWidget::SetExperienceBar(float current, float max)
 
 void UPlayerWidget::UpdateObjectiveBar_Implementation()
 {
+	// Incrememnt Objective Count
 	ObjectiveCount++;
-	if (ObjectiveCount == 4) {
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue, TEXT("Set the victory widget and stuff in bp"));
-	}
+	
 }
