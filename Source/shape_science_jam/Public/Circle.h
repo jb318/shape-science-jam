@@ -41,6 +41,9 @@ protected:
 	UFUNCTION()
 	void OnOverlapEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool SameVeloDash;
+
 private:
 	// Helper function, delays the circle from jumping to match with animation
 	void CircleJump();

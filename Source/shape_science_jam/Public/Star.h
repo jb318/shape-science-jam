@@ -58,9 +58,14 @@ protected:
 	// If false, should shoot projectile to the left
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool FireRightSide;
-
-private:
+	
+	// Projectile instances to editor for flipbook changing
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AProjectile* Projectile1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AProjectile* Projectile2;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AProjectile* Projectile3;
 };

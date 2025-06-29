@@ -26,8 +26,7 @@ public:
 
 	// Controls the logic behind a character being hit including things like knockback
 	virtual void HitReaction(FVector LaunchVelocity);
-	
-	// Implement in circle enemy to ensure that reflect is reflecting attack
-	bool canReflectAttack;
+	// Triggers the attack for square enemy
+	virtual void TriggerCounter();
 
 };

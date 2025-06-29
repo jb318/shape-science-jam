@@ -17,6 +17,7 @@ class SHAPE_SCIENCE_JAM_API ASquare : public AShape
 
 public:
 	// Base class function implementations
+	void Attack_Implementation() override;
 	void SpecialMove_Implementation() override;
 
 protected:
@@ -26,6 +27,10 @@ protected:
 	// Instance of projectile to spawn on reflect
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shape Moves")
 	TSubclassOf<AProjectile> ProjectileClass;
+
+	// Implement in square enemy to ensure that reflect is reflecting attack
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool AutoReflectAttack;
 
 	// Checks if anti-gravity mode is in effect
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -41,13 +46,19 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FVector PoolProjectileLocation2;
 
+	// Projectile instances, exposed to BP so the flipbook can be modified
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	AProjectile* Projectile1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	AProjectile* Projectile2;
+
+	// Which side to reflect projectile
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float ReflectOffset = 40.f;
+
 private:
 	void SwitchGravity();
-
-	// Projectile instance
-	AProjectile* Projectile1;
-	AProjectile* Projectile2;
-	AProjectile* Projectile3;
 
 	int ProjectileIndex = 0;
 	

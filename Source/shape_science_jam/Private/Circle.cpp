@@ -8,7 +8,7 @@
 void ACircle::Attack_Implementation()
 {
 	if (!JumpButtonPressed && !GetCharacterMovement()->IsFalling() && !CoolDownActive) {
-		if (FacingLeft) {
+		if (FacingLeft && !SameVeloDash) {
 			LaunchCharacter(GetActorForwardVector() * -1500.f, false, false);
 		}
 		else {
@@ -38,9 +38,11 @@ void ACircle::OnOverlapEnemy(UPrimitiveComponent* OverlappedComponent, AActor* O
 {
 	// Checks if the window to hit enemy is active
 	if (CanHitEnemy) {
-		if (OtherActor) {
+		if (OtherActor && OtherActor != this) {
+			
 			// Filters overlapped Actors with those that implement combat interface
 			if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(OtherActor)) {
+				
 				CombatInterface->DamageCharacter(DashDamage, false);
 				CombatInterface->HitReaction(KnockbackVelocity);
 			}

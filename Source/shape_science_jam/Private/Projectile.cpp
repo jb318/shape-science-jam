@@ -84,8 +84,6 @@ void AProjectile::Fire(bool FacingRight)
 		GetWorld()->GetTimerManager().SetTimer(LaunchTimer, this, &AProjectile::PoolProjectile, ProjectileDuration, false);
 	}
 	
-	
-	
 }
 
 void AProjectile::PoolProjectile()
