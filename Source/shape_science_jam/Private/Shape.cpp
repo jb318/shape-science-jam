@@ -87,13 +87,14 @@ void AShape::AddExperience(float amount)
 	if (row) {
 		if (CurrentExperience >= row->MaxExperience) {
 			LevelUp();
-			if (HUD->PlayerWidget) 
+			if (HUD->PlayerWidget)
 				HUD->PlayerWidget->SetExperienceBar(row->MaxHealth, row->MaxHealth);
 		}
-		if (HUD->PlayerWidget)
-			HUD->PlayerWidget->SetExperienceBar(CurrentExperience, row->MaxExperience);
+		if (HUD) {
+			if (HUD->PlayerWidget)
+				HUD->PlayerWidget->SetExperienceBar(CurrentExperience, row->MaxExperience);
+		}
 	}
-	
 }
 
 void AShape::OnOverlapItemBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -116,8 +117,10 @@ void AShape::OnOverlapItemBegin(UPrimitiveComponent* OverlappedComponent, AActor
 				AddExperience(InterfaceItem->ItemValue());
 			}
 			if (ItemName == TEXT("Objective")) {
-				if (HUD->PlayerWidget) {
-					HUD->PlayerWidget->UpdateObjectiveBar_Implementation();
+				if (HUD) {
+					if (HUD->PlayerWidget) {
+						HUD->PlayerWidget->UpdateObjectiveBar_Implementation();
+					}
 				}
 			}
 			// Destroy the item
@@ -172,9 +175,11 @@ void AShape::SetHealth(float amount)
 			GEngine->AddOnScreenDebugMessage(-3, 5.f, FColor::Red, TEXT("Warning, you are below 0 hp"));
 		}
 		// Update widget
-		if (HUD->PlayerWidget) {
-			HUD->PlayerWidget->SetHealthBar(CurrentHealth, row->MaxHealth);
-		}
+		if (HUD) {
+			if (HUD->PlayerWidget) {
+				HUD->PlayerWidget->SetHealthBar(CurrentHealth, row->MaxHealth);
+			}
+		}	
 	}
 }
 
@@ -188,9 +193,12 @@ void AShape::DamageCharacter(float amount, bool IsProjectile)
 				if (CurrentHealth - amount > 0) {
 					CurrentHealth -= amount;
 					// Set health
-					if (HUD->PlayerWidget) {
-						HUD->PlayerWidget->SetHealthBar(CurrentHealth, row->MaxHealth);
+					if (HUD) {
+						if (HUD->PlayerWidget) {
+							HUD->PlayerWidget->SetHealthBar(CurrentHealth, row->MaxHealth);
+						}
 					}
+					
 				}
 				else {
 					FTimerHandle DeathTimer;
@@ -213,8 +221,10 @@ void AShape::DamageCharacter(float amount, bool IsProjectile)
 				if (CurrentHealth - amount > 0) {
 					CurrentHealth -= amount;
 					// Set Health
-					if (HUD->PlayerWidget) {
-						HUD->PlayerWidget->SetHealthBar(CurrentHealth, row->MaxHealth);
+					if (HUD) {
+						if (HUD->PlayerWidget) {
+							HUD->PlayerWidget->SetHealthBar(CurrentHealth, row->MaxHealth);
+						}
 					}
 				}
 				else {
