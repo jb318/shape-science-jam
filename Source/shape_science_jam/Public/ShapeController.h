@@ -48,9 +48,6 @@ protected:
 	UInputAction* SpecialMoveAction;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
-	UInputAction* ChangeShapeAction;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 	UInputAction* PauseMenuAction;
 
 	// Chorded action for changing shape

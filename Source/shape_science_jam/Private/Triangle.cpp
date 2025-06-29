@@ -45,9 +45,12 @@ void ATriangle::BeginPlay()
 		Projectile1 = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, PoolProjectileLocation1, CurrentRotation, SpawnParams);
 		Projectile2 = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, PoolProjectileLocation2, CurrentRotation, SpawnParams);
 
-		// Assign the pool location for the projectiles
+		// Sets the necessary properties of and pool locations for the projectiles
 		Projectile1->PoolLocation = PoolProjectileLocation1;
 		Projectile2->PoolLocation = PoolProjectileLocation2;
+
+		Projectile1->IsReflectable = true;
+		Projectile2->IsReflectable = true;
 	}
 }
 
@@ -59,6 +62,14 @@ void ATriangle::CoolDown()
 
 void ATriangle::FireProjectile()
 {
+	if (FacingRight) {
+		Projectile1->FiredOnRightside = true;
+		Projectile2->FiredOnRightside = true;
+	}
+	else {
+		Projectile1->FiredOnRightside = false;
+		Projectile2->FiredOnRightside = false;
+	}
 	if (ProjectileClass) {
 		// Get the direction the character is facing
 		FRotator CurrentRotation = GetSprite()->GetComponentRotation();
@@ -82,7 +93,6 @@ void ATriangle::FireProjectile()
 			ProjectileIndex = 0;
 			break;
 		}
-		
 	}
 	else {
 		GEngine->AddOnScreenDebugMessage(-2, 3.f, FColor::Red, TEXT("Could not spawn triangle projectile.  Please make sure triangle projectile class is set inside the triange bp"));

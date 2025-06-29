@@ -80,7 +80,7 @@ protected:
 	void AddExperience(float amount);
 
 	// Controls animation to be played when a hit is successful
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void PlayDamageAnimation();
 
 	// How long shape change lasts for timer
@@ -124,7 +124,7 @@ public:
 	// and should only be declared in base class! Also, do not create definition in the cpp file 
 	// The second function is for the cpp functionality of the function and should be overriden 
 	// in derived classes
-	UFUNCTION(BlueprintNativeEvent, Category = "Shape Moves")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Shape Moves")
 	void Attack();
 	virtual void Attack_Implementation();
 
@@ -177,6 +177,24 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
 	float CurrentExperience;
 
+	// Wandering tracker for the AI
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+	bool Walking;
+
+	// AI controller will call attack on members that have this set to true
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly , Category = "AI")
+	bool UseControllerForAttacking = true;
+
+	// How close the AI needs to be to attack player
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI")
+	float AttackRange;
+
+	// How often to attack player
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI")
+	float AttackIntervals;
+
+	// Destroys character
+	virtual void DestroyCharacter();
 
 private:
 	

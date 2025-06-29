@@ -46,4 +46,5 @@ public:
 
 	// Keeps track of objective
 	int ObjectiveCount = 0;
+	
 };

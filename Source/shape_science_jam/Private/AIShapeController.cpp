@@ -2,26 +2,34 @@
 
 
 #include "AIShapeController.h"
-#include "NavigationSystem.h"
-#include "Kismet/GameplayStatics.h"
 
 void AAIShapeController::AAIController()
 {
-	// uncomment if using behavior tree
-	// BehaviorTreeComponent = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("Behavior Tree"));
-	// BlackBoardComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("Blackboard"));
+	AIPerception = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Shape Perception"));
+	Sight = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight"));
+
+	// Sight settings
+	Sight->SightRadius = 450.f;
+	Sight->LoseSightRadius = 500.f;
+	Sight->PeripheralVisionAngleDegrees = 90.f;
+	Sight->DetectionByAffiliation.bDetectEnemies = true;
+	Sight->DetectionByAffiliation.bDetectFriendlies = true;
+	Sight->DetectionByAffiliation.bDetectNeutrals = true;
+
+	// Adding and registering sight and perception
+	AIPerception->ConfigureSense(*Sight);
+	SetPerceptionComponent(*AIPerception);
 }
 
 void AAIShapeController::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	GEngine->AddOnScreenDebugMessage(-3, 3.f, FColor::Blue, TEXT("Possessed"));
-	// uncomment if using behavior tree
-	/*if (BehaviorTree) {
-		RunBehaviorTree(BehaviorTree);
-		BehaviorTreeComponent->StartTree(*BehaviorTree);
-	}*/
+	// Establishes binding for sight updating function
+	if (AIPerception) {
+		AIPerception->OnTargetPerceptionUpdated.AddDynamic(this, &AAIShapeController::OnTargetDetected);
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue, TEXT("AI Perception"));
+	}
 }
 
 void AAIShapeController::OnPossess(APawn* InPawn)
@@ -31,34 +39,45 @@ void AAIShapeController::OnPossess(APawn* InPawn)
 	// Get reference to shape
 	AI = Cast<AShape>(InPawn);
 	if (AI) {
-		GetWorldTimerManager().SetTimer(RoamTimerHandle, this, &AAIShapeController::PickNewRoamDestination, FMath::RandRange(1.f, 4.f), true);
+		FTimerHandle AttackTimer;
+		//GetWorld()->GetTimerManager().SetTimer(AttackTimer, this, &AAIShapeController::Attack, 3.f, false);
 	}
-	
-	// uncomment if using behavior tree
-	/*if (Blackboard && BehaviorTree) {
-		Blackboard->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
-	}*/
+
 }
 
-void AAIShapeController::PickNewRoamDestination()
+
+void AAIShapeController::Attack()
 {
-	// Might want to limit where the AI can move to in the level
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), RoamTag, Points);
-	GEngine->AddOnScreenDebugMessage(-3, 3.f, FColor::Blue, TEXT("Possessed"));
-	
-	// Pick one at random
-	if (Points.Num() > 0) {
-		AActor* Dest = Points[FMath::RandRange(0, Points.Num() - 1)];
-		if (AI) {
-			FString name = Dest->GetName();
-			GEngine->AddOnScreenDebugMessage(-3, 3.f, FColor::Blue, name);
-			MoveToActor(Dest, 1000.f);
+	// Attack if the player is within range
+	if (AI && GetWorld()->GetFirstPlayerController()->GetPawn()) {
+		if (FVector::Distance(AI->GetActorLocation(), GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation()) <= AI->AttackRange) {
+			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue, TEXT("Within range of player"));
+			AI->Attack_Implementation();
+			AI->Attack();
 		}
+		else
+			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue, TEXT("Not within range of player"));
 	}
 	
+}
+
+void AAIShapeController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
+{
+	if (AI) {
+		if (AI->UseControllerForAttacking) {
+			FTimerHandle AttackTimer;
+			GetWorld()->GetTimerManager().SetTimer(AttackTimer, this, &AAIShapeController::Attack, 0.05, true);
+		}
+	}
 }
 
 void AAIShapeController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// Only fires tick event if in wander state 
+	if (!CanSeePlayer && AI) {
+		AI->AddMovementInput(AI->GetActorForwardVector(), MovementSpeed);
+	}
+
 }

@@ -10,6 +10,7 @@ UPlayerWidget::UPlayerWidget(const FObjectInitializer& ObjectInitializer) : Supe
 void UPlayerWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+	SetHealthBar(3.f, 3.f);
 }
 
 void UPlayerWidget::SetHealthBar(float current, float max)

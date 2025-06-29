@@ -3,6 +3,13 @@
 
 #include "GameHUD.h"
 
+void AGameHUD::GameOver_Implementation()
+{
+	if (PlayerWidget) {
+		PlayerWidget->RemoveFromParent();
+	}
+}
+
 void AGameHUD::BeginPlay()
 {
 	Super::BeginPlay();

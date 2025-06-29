@@ -44,10 +44,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shape Moves")
 	float AttackDelay = 0.333;
 
-private:
 	// Instances of projectile spawned into the level
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AProjectile* Projectile1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AProjectile* Projectile2;
+
+private:
 
 	// Index of which projectile to fire
 	int ProjectileIndex = 0;
