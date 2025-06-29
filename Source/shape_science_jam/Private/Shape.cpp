@@ -117,6 +117,7 @@ void AShape::OnOverlapItemBegin(UPrimitiveComponent* OverlappedComponent, AActor
 				AddExperience(InterfaceItem->ItemValue());
 			}
 			if (ItemName == TEXT("Objective")) {
+				objectivecounter++;
 				if (HUD) {
 					if (HUD->PlayerWidget) {
 						HUD->PlayerWidget->UpdateObjectiveBar_Implementation();
