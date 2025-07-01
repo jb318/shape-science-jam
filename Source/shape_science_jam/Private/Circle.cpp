@@ -7,8 +7,13 @@
 
 void ACircle::Attack_Implementation()
 {
-	if (!JumpButtonPressed && !GetCharacterMovement()->IsFalling() && !CoolDownActive) {
-		if (FacingLeft && !SameVeloDash) {
+	// Execute dash if not jumping or hit, not falling, and once the cool down is up
+	if (!InputDisabled && !GetCharacterMovement()->IsFalling() && !CoolDownActive) {
+		// Turn off input and make sure can hit is true
+		InputDisabled = true;
+		CanHitEnemy = true;
+
+		if (FacingLeft) {
 			LaunchCharacter(GetActorForwardVector() * -1500.f, false, false);
 		}
 		else {
@@ -19,8 +24,13 @@ void ACircle::Attack_Implementation()
 
 void ACircle::SpecialMove_Implementation()
 {
-	FTimerHandle CircleJumpTimer;
-	GetWorld()->GetTimerManager().SetTimer(CircleJumpTimer, this, &ACircle::CircleJump, SpecialMoveDelay, false);
+	// Check if is falling is false otherwise jump will lock if clicked a second time in air
+	if (!InputDisabled && !GetCharacterMovement()->IsFalling()) {
+		InputDisabled = true;
+		FTimerHandle CircleJumpTimer;
+		GetWorld()->GetTimerManager().SetTimer(CircleJumpTimer, this, &ACircle::CircleJump, SpecialMoveDelay, false);
+	}
+	
 }
 
 void ACircle::BeginPlay()
@@ -53,5 +63,6 @@ void ACircle::OnOverlapEnemy(UPrimitiveComponent* OverlappedComponent, AActor* O
 
 void ACircle::CircleJump()
 {
-	Jump();
+	if (!GetCharacterMovement()->IsFalling()) 
+		Jump();
 }

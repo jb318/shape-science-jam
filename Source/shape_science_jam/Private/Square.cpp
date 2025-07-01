@@ -5,15 +5,22 @@
 
 void ASquare::Attack_Implementation()
 {
-	GEngine->AddOnScreenDebugMessage(-5, 5.f, FColor::Red, TEXT("2 Attack or not"));
+	if (!InputDisabled && !CoolDownActive) {
+		// Disable input after attacking.  Enable it again after animation ends in blueprints
+		InputDisabled = true;
+		InAttackAnimation = true;
+	}
 }
 
 void ASquare::SpecialMove_Implementation()
 {
-	// Call switch gravity with the user defined delay
+	
 	FTimerHandle SwitchGravityTimer;
-	// Check if player is in attack animation
-	if (!InAttackAnimation) 
+
+	// Calls invert gravity after the time in special move delay expires if Input is not disabled
+	if (!InputDisabled)
+		// Disables other moves and animations from being used on startup
+		InputDisabled = true;
 		GetWorld()->GetTimerManager().SetTimer(SwitchGravityTimer, this, &ASquare::SwitchGravity, SpecialMoveDelay, false);
 
 }
@@ -110,11 +117,13 @@ void ASquare::SwitchGravity()
 	if (!UsingAntiGravity) {
 		GetCharacterMovement()->SetGravityDirection(GetActorUpVector());
 		UsingAntiGravity = true;
-		CanChangeShape = false;
+		
+		// Re enable InputDisabled by setting it to false once character begins going up
+		InputDisabled = false;
 	}
 	else {
 		GetCharacterMovement()->SetGravityDirection(-1 * GetActorUpVector());
 		UsingAntiGravity = false;
-		CanChangeShape = true;
+		InputDisabled = false;
 	}
 }

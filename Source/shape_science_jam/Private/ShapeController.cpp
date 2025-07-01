@@ -138,7 +138,7 @@ void AShapeController::Move(const FInputActionValue& value)
 	float MovementDirection = value.Get<float>();
 	if (Player) {
 		// Checks if the player is locked from moving after getting hit
-		if (!Player->InDamageCoolDown)
+		if (!Player->CannotMove)
 		Player->AddMovementInput(Player->GetActorForwardVector(), MovementDirection);
 		
 	}
@@ -147,7 +147,7 @@ void AShapeController::Move(const FInputActionValue& value)
 void AShapeController::Attack(const FInputActionValue& value)
 {
 	// Perform validity checks of player and then call corresponding functions
-	if (Player && !Player->InDamageCoolDown) {
+	if (Player && !Player->InputDisabled) {
 		Player->Attack();
 		Player->Attack_Implementation();
 	}		
@@ -155,7 +155,7 @@ void AShapeController::Attack(const FInputActionValue& value)
 
 void AShapeController::SpecialMove(const FInputActionValue& value)
 {
-	if (Player && !Player->InDamageCoolDown) {
+	if (Player && !Player->InputDisabled) {
 		Player->SpecialMove();
 		Player->SpecialMove_Implementation();
 	}
@@ -165,7 +165,11 @@ void AShapeController::SpecialMove(const FInputActionValue& value)
 
 void AShapeController::ChangeShape(int XValue, int YValue)
 {
+	
+
 	if (Player) {
+		// On shape switch, disable input and movement immediately and reapply in blueprints at the end of animation
+		
 		// Location and orientation of former shape for incoming shape to inherit
 		FVector PlayerLocation = Player->GetActorLocation();
 		FRotator PlayerRotation = Player->GetActorRotation();
@@ -182,6 +186,11 @@ void AShapeController::ChangeShape(int XValue, int YValue)
 				Possess(Triangle);
 				Player = Triangle;
 				Player->ChangeShapeEnd();
+
+				// Prevent players from moving for a short time when changing shapes
+				Player->InputDisabled = true;
+				Player->CannotMove = true;
+
 				ShapeIndex = 2;
 				if (HUD) {
 					HUD->SetHealthPercent(Triangle->CurrentHealth, Triangle->MaxHealth);
@@ -195,6 +204,11 @@ void AShapeController::ChangeShape(int XValue, int YValue)
 				Possess(Circle);
 				Player = Circle;
 				Player->ChangeShapeEnd();
+
+				// Prevent players from moving for a short time when changing shapes
+				Player->InputDisabled = true;
+				Player->CannotMove = true;
+
 				ShapeIndex = 0;
 				if (HUD) {
 					HUD->SetHealthPercent(Circle->CurrentHealth, Circle->MaxHealth);
@@ -214,6 +228,11 @@ void AShapeController::ChangeShape(int XValue, int YValue)
 				Possess(Star);
 				Player = Star;
 				Player->ChangeShapeEnd();
+
+				// Prevent players from moving for a short time when changing shapes
+				Player->InputDisabled = true;
+				Player->CannotMove = true;
+
 				ShapeIndex = 3;
 				if (HUD) {
 					HUD->SetHealthPercent(Star->CurrentHealth, Star->MaxHealth);
@@ -227,6 +246,11 @@ void AShapeController::ChangeShape(int XValue, int YValue)
 				Possess(Square);
 				Player = Square;
 				Player->ChangeShapeEnd();
+
+				// Prevent players from moving for a short time when changing shapes
+				Player->InputDisabled = true;
+				Player->CannotMove = true;
+
 				ShapeIndex = 1;
 				if (HUD) {
 					HUD->SetHealthPercent(Square->CurrentHealth, Square->MaxHealth);
@@ -265,21 +289,26 @@ void AShapeController::ShapeChangeSelect(const FInputActionValue& value)
 	int XValue = XYValue.X;
 	int YValue = XYValue.Y;
 
-	// Add functionality for character switch
+	
 	if (Player) {
-		// Allows switch only when player bool value is set to true and the player is not currently falling
-		if (Player->CanChangeShape && !Player->GetCharacterMovement()->IsFalling() && !Player->ChangingShape) {
-			// Start the shape change animation inside shape blueprints
-			Player->ChangeShapeStart();
+		// Switch only to a different shape
+		if (Player->ShapeKey != XYValue) {
+			// Allows switch only when character is grounded and inputs are enabled
+			if (!Player->InputDisabled && !Player->GetCharacterMovement()->IsFalling()) {
+				Player->InputDisabled = true;
+				Player->CannotMove = true;
+				// Start the shape change animation inside shape blueprints
+				Player->ChangeShapeStart();
 
-			// Set a timer for shape switch to begin
-			FTimerDelegate ChangeShapeDelegate;
-			FTimerHandle ChangeShapeTimer;
-			ChangeShapeDelegate.BindUObject(this, &AShapeController::ChangeShape, XValue, YValue);
-			GetWorld()->GetTimerManager().SetTimer(ChangeShapeTimer, ChangeShapeDelegate, 1.f, false);
+				// Set a timer for shape switch to begin
+				FTimerDelegate ChangeShapeDelegate;
+				FTimerHandle ChangeShapeTimer;
+				ChangeShapeDelegate.BindUObject(this, &AShapeController::ChangeShape, XValue, YValue);
+				GetWorld()->GetTimerManager().SetTimer(ChangeShapeTimer, ChangeShapeDelegate, 1.f, false);
+			}
+			else
+				GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, FString::Printf(TEXT("Can't access player")));
 		}
-		else
-			GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, FString::Printf(TEXT("Can't access player")));
 	}
 }
 

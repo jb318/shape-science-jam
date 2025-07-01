@@ -12,8 +12,9 @@ ATriangle::ATriangle()
 
 void ATriangle::Attack_Implementation()
 {
-	if (!CoolDownActive) {
+	if (!CoolDownActive && !InputDisabled) {
 		CoolDownActive = true;
+		InputDisabled = true;
 		// Timers for both the attack delay and attack cool down
 		FTimerHandle CoolDownTimer;
 		FTimerHandle AttackTimer;

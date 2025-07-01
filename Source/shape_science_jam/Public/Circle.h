@@ -21,10 +21,6 @@ public:
 
 protected: 
 	virtual void BeginPlay() override;
-	
-	// When the jump button is pressed locks attack inputs
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool JumpButtonPressed;
 
 	// Lasts duration of launch
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

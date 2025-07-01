@@ -21,7 +21,8 @@ AStar::AStar()
 
 void AStar::Attack_Implementation()
 {
-	if (!CoolDownActive) {
+	if (!CoolDownActive && !InputDisabled) {
+		InputDisabled = true;
 		CoolDownActive = true;
 		// Timers for both the attack delay and attack cool down
 		FTimerHandle CoolDownTimer;
