@@ -203,7 +203,7 @@ void AShape::SetHealth(float amount)
 void AShape::DamageCharacter(float amount, bool IsProjectile)
 {
 	
-	if (!Invincible && !InDamageCoolDown) {
+	if (!Invincible) {
 		// Executes damage no matter what on melee attack so long as shape is not invincible
 		if (!IsProjectile) {
 			if (row) {

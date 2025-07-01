@@ -57,6 +57,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float ReflectOffset = 40.f;
 
+	// Checks if the square is in their attack animation
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool InAttackAnimation = false;
+
 private:
 	void SwitchGravity();
 

@@ -88,10 +88,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float ShapeChangeDuration;
 
-	// Checks if the shape is in their attack animation
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool InAttackAnimation = false;
-
 	// Data table reference
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shape Level Data")
 	UDataTable* ShapeDT;
@@ -115,6 +111,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	USpringArmComponent* SpringArmComponent;
+
+	// Index of shape so it doesn't transform into itself
+	UPROPERTY(EditDefaultsOnly)
+	FVector2D ShapeKey = FVector2D(0.f,0.f);
 
 	// Objective points needed to beat the game
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -155,17 +155,13 @@ public:
 
 	virtual void HitReaction(FVector LaunchVelocity) override;
 
-	// Checks if shape can be changed
+	// Bools to control input and movement
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
-	bool CanChangeShape = true;
+	bool InputDisabled;
 
 	// Restricts ability to do anything while in hit animation
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
-	bool InDamageCoolDown;
-
-	// Can do when not attacking, or taking damage.  Locks health and prevents damage animation from playing
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool ChangingShape;
+	bool CannotMove;
 
 	// Start change shape animation
 	UFUNCTION(BlueprintImplementableEvent)
