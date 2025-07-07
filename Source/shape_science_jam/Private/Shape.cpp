@@ -13,7 +13,7 @@ AShape::AShape()
 	
 	// Properties for spring arm component
 	SpringArmComponent->SetupAttachment(RootComponent);
-	SpringArmComponent->TargetArmLength = 400.f;
+	SpringArmComponent->TargetArmLength = 600.f;
 	SpringArmComponent->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 	SpringArmComponent->bInheritPitch = false;
 	SpringArmComponent->bInheritYaw = false;
