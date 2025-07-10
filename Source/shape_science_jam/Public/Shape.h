@@ -184,10 +184,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
 	float MaxExperience = 10.f;
 
-	// Wandering tracker for the AI
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
-	bool Walking;
-
 	// AI controller will call attack on members that have this set to true
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly , Category = "AI")
 	bool UseControllerForAttacking = true;
@@ -195,10 +191,6 @@ public:
 	// How close the AI needs to be to attack player
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI")
 	float AttackRange;
-
-	// How often to attack player
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI")
-	float AttackIntervals;
 
 	// Destroys character
 	virtual void CharacterDefeat();
