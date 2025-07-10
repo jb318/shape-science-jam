@@ -13,7 +13,7 @@ AShape::AShape()
 	
 	// Properties for spring arm component
 	SpringArmComponent->SetupAttachment(RootComponent);
-	SpringArmComponent->TargetArmLength = 600.f;
+	SpringArmComponent->TargetArmLength = 960.f;
 	SpringArmComponent->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 	SpringArmComponent->bInheritPitch = false;
 	SpringArmComponent->bInheritYaw = false;
@@ -102,7 +102,7 @@ void AShape::AddExperience(float amount)
 
 void AShape::OnOverlapItemBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// Checks if its the player picking up exp
+	// Checks if its the player picking up exp, should work for all players
 	if (GetController() == GetWorld()->GetFirstPlayerController()) {
 		if (OtherActor) {
 			if (IInteractInterface* InterfaceItem = Cast<IInteractInterface>(OtherActor)) {
@@ -234,6 +234,8 @@ void AShape::DamageCharacter(float amount, bool IsProjectile)
 		}
 		// Only damages if shape is not invincible
 		if (IsProjectile && !ImmuneToProjectile) {
+			
+			// Set projectile immunity to true so damage instance happens only once, reset once damage animation 
 			if (row) {
 				if (CurrentHealth - amount > 0) {
 					CurrentHealth -= amount;

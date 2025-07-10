@@ -64,7 +64,7 @@ void AAIShapeController::Attack()
 void AAIShapeController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)
 {
 	if (AI) {
-		if (AI->UseControllerForAttacking) {
+		if (!AI->InputDisabled) {
 			FTimerHandle AttackTimer;
 			GetWorld()->GetTimerManager().SetTimer(AttackTimer, this, &AAIShapeController::Attack, 0.05, true);
 		}
@@ -75,9 +75,12 @@ void AAIShapeController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// Only fires tick event if in wander state 
-	if (!CanSeePlayer && AI) {
-		AI->AddMovementInput(AI->GetActorForwardVector(), MovementSpeed);
+	// Move AI only when this bool value is set to false
+	if (AI) {
+		if (!AI->InputDisabled && !AI->CannotMove) {
+			AI->AddMovementInput(AI->GetActorForwardVector(), MovementSpeed);
+		}
 	}
+	
 
 }

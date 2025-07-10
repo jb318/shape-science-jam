@@ -8,7 +8,7 @@
 void ACircle::Attack_Implementation()
 {
 	// Execute dash if not jumping or hit, not falling, and once the cool down is up
-	if (!InputDisabled && !GetCharacterMovement()->IsFalling() && !CoolDownActive) {
+	if (!InputDisabled && !GetCharacterMovement()->IsFalling()) {
 		// Turn off input and make sure can hit is true
 		InputDisabled = true;
 		CanHitEnemy = true;
