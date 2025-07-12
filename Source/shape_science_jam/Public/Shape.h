@@ -67,9 +67,6 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool FacingLeft = false;
-
-	// Checks player invincibility status
-	bool Invincible;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shape Moves")
 	bool ImmuneToProjectile;
@@ -194,6 +191,13 @@ public:
 
 	// Destroys character
 	virtual void CharacterDefeat();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool SpecialMoveClicked;
+
+	// Checks player invincibility status
+	UPROPERTY(BlueprintReadOnly)
+	bool Invincible;
 
 private:
 	

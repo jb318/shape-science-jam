@@ -138,8 +138,8 @@ void AShapeController::Move(const FInputActionValue& value)
 	float MovementDirection = value.Get<float>();
 	if (Player) {
 		// Checks if the player is locked from moving after getting hit
-		if (!Player->CannotMove)
-		Player->AddMovementInput(Player->GetActorForwardVector(), MovementDirection);
+		if (!Player->CannotMove && !Player->InputDisabled)
+			Player->AddMovementInput(Player->GetActorForwardVector(), MovementDirection);
 		
 	}
 }
@@ -260,6 +260,7 @@ void AShapeController::ChangeShape(int XValue, int YValue)
 		default:
 			break;
 		}
+		Player->Invincible = false;
 	}
 }
 
@@ -291,10 +292,11 @@ void AShapeController::ShapeChangeSelect(const FInputActionValue& value)
 
 	
 	if (Player) {
+		Player->Invincible = true;
 		// Switch only to a different shape
 		if (Player->ShapeKey != XYValue) {
 			// Allows switch only when character is grounded and inputs are enabled
-			if (!Player->InputDisabled && !Player->GetCharacterMovement()->IsFalling()) {
+			if (!Player->InputDisabled && !Player->GetCharacterMovement()->IsFalling() && !Player->SpecialMoveClicked) {
 				Player->InputDisabled = true;
 				Player->CannotMove = true;
 				// Start the shape change animation inside shape blueprints

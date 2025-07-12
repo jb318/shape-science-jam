@@ -68,4 +68,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AProjectile* Projectile3;
+
+	void Glide();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FVector VerticalBoost = FVector(0.f, 0.f, 200.f);
 };
