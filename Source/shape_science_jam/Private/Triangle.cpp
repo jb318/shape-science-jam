@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Triangle.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
 
 ATriangle::ATriangle()
 {
@@ -12,7 +14,7 @@ ATriangle::ATriangle()
 
 void ATriangle::Attack_Implementation()
 {
-	if (!CoolDownActive && !InputDisabled) {
+	if (!CoolDownActive && !InputDisabled && !GetCharacterMovement()->IsFalling()) {
 		CoolDownActive = true;
 		InputDisabled = true;
 		// Timers for both the attack delay and attack cool down
@@ -27,7 +29,11 @@ void ATriangle::Attack_Implementation()
 
 void ATriangle::SpecialMove_Implementation()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue, TEXT("Triangle Destroy!"));
+	if (!InputDisabled && !GetCharacterMovement()->IsFalling()) {
+		// Disable after half a second or so.  Fire line trace and move or break actor in level through casting by interact interface
+		InputDisabled = true;
+	}
+	
 }
 
 void ATriangle::BeginPlay()

@@ -208,6 +208,7 @@ void AShape::DamageCharacter(float amount, bool IsProjectile)
 		if (!IsProjectile) {
 			if (row) {
 				if (CurrentHealth - amount > 0) {
+					InputDisabled = true;
 					CurrentHealth -= amount;
 					// Only update player widget if its the player character taking damage
 					if (GetController() == GetWorld()->GetFirstPlayerController()) {
@@ -238,6 +239,7 @@ void AShape::DamageCharacter(float amount, bool IsProjectile)
 			// Set projectile immunity to true so damage instance happens only once, reset once damage animation 
 			if (row) {
 				if (CurrentHealth - amount > 0) {
+					InputDisabled = true;
 					CurrentHealth -= amount;
 					// Only update player widget if its the player character taking damage
 					if (GetController() == GetWorld()->GetFirstPlayerController()) {

@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Star.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AStar::AStar()
 {
@@ -17,25 +18,36 @@ AStar::AStar()
 	FireComponent2->SetupAttachment(GetSprite());
 	FireComponent3->SetupAttachment(GetSprite());
 
+	// Air controls
+	GetCharacterMovement()->AirControl = 0.75;
+	GetCharacterMovement()->GravityScale = 0.25;
+
 }
 
 void AStar::Attack_Implementation()
 {
-	if (!CoolDownActive && !InputDisabled) {
-		InputDisabled = true;
-		CoolDownActive = true;
-		// Timers for both the attack delay and attack cool down
-		FTimerHandle CoolDownTimer;
-		FTimerHandle AttackTimer;
-		GetWorld()->GetTimerManager().SetTimer(CoolDownTimer, this, &AStar::CoolDown, AttackCoolDown, false);
-		GetWorld()->GetTimerManager().SetTimer(AttackTimer, this, &AStar::FireProjectile, AttackDelay, false);
+	if (!SpecialMoveClicked) {
+		if (!CoolDownActive && !InputDisabled && !GetCharacterMovement()->IsFalling()) {
+			InputDisabled = true;
+			CoolDownActive = true;
+			// Timers for both the attack delay and attack cool down
+			FTimerHandle CoolDownTimer;
+			FTimerHandle AttackTimer;
+			GetWorld()->GetTimerManager().SetTimer(CoolDownTimer, this, &AStar::CoolDown, AttackCoolDown, false);
+			GetWorld()->GetTimerManager().SetTimer(AttackTimer, this, &AStar::FireProjectile, AttackDelay, false);
 
+		}
 	}
 }
 
 void AStar::SpecialMove_Implementation()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue, TEXT("Star Glide!"));
+	SpecialMoveClicked = true;
+	if (!InputDisabled && !GetCharacterMovement()->IsFalling()) {
+		InputDisabled = true;
+		FTimerHandle GlideTimer;
+		GetWorld()->GetTimerManager().SetTimer(GlideTimer, this, &AStar::Glide, SpecialMoveDelay, false);
+	}
 }
 
 void AStar::BeginPlay()
@@ -95,4 +107,9 @@ void AStar::FireProjectile()
 	else {
 		GEngine->AddOnScreenDebugMessage(-2, 3.f, FColor::Red, TEXT("Could not spawn star projectiles.  Please make sure star projectile class is set inside the star bp"));
 	}
+}
+
+void AStar::Glide()
+{
+	LaunchCharacter(VerticalBoost, false, false);
 }

@@ -15,14 +15,18 @@ class SHAPE_SCIENCE_JAM_API ACircle : public AShape
 	GENERATED_BODY()
 
 public: 
+	ACircle();
+
 	// Base class function implementations
 	virtual void Attack_Implementation() override;
 	virtual void SpecialMove_Implementation() override;
 
+	
+
 protected: 
 	virtual void BeginPlay() override;
 
-	// Lasts duration of launch
+	// Lasts duration of dash
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool CanHitEnemy;
 
@@ -39,6 +43,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool SameVeloDash;
+
 
 private:
 	// Helper function, delays the circle from jumping to match with animation

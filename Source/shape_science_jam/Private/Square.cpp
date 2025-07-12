@@ -117,13 +117,15 @@ void ASquare::SwitchGravity()
 	if (!UsingAntiGravity) {
 		GetCharacterMovement()->SetGravityDirection(GetActorUpVector());
 		UsingAntiGravity = true;
-		
-		// Re enable InputDisabled by setting it to false once character begins going up
-		InputDisabled = false;
+		FVector TransformLocation = GetSprite()->GetRelativeLocation();
+		TransformLocation.Z = 4.f;
+		GetSprite()->SetRelativeLocation(TransformLocation);
 	}
 	else {
 		GetCharacterMovement()->SetGravityDirection(-1 * GetActorUpVector());
 		UsingAntiGravity = false;
-		InputDisabled = false;
+		FVector TransformLocation = GetSprite()->GetRelativeLocation();
+		TransformLocation.Z = -4.f;
+		GetSprite()->SetRelativeLocation(TransformLocation);
 	}
 }
