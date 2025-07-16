@@ -13,6 +13,9 @@ AItem::AItem()
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>("Interact Box");
 	BoxComponent->SetGenerateOverlapEvents(true);
 	BoxComponent->SetupAttachment(Flipbook);
+
+	// Multiplayer functionality
+	bReplicates = true;
 }
 
 // Called when the game starts or when spawned
