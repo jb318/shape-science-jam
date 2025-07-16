@@ -9,6 +9,8 @@ ACircle::ACircle()
 {
 	// Air control
 	GetCharacterMovement()->AirControl = 0.2;
+
+	ShapeIndex = 0;
 }
 
 void ACircle::Attack_Implementation()

@@ -7,43 +7,46 @@
 
 AShapeController::AShapeController()
 {
+	
 }
 
 void AShapeController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Spawns the different shape classes to object pool through
-	// Need to set the shape class template inside the details panel of player controller bp
-
-	if (CircleClass) 
-		Circle = GetWorld()->SpawnActor<ACircle>(CircleClass, CircleSpawn, FRotator(0, 0, 0));
-
-	if (SquareClass)
-		Square = GetWorld()->SpawnActor<ASquare>(SquareClass, SquareSpawn, FRotator(0, 0, 0));
-
-	if (TriangleClass)
-		Triangle = GetWorld()->SpawnActor<ATriangle>(TriangleClass, TriangleSpawn, FRotator(0, 0, 0));
-
-	if (StarClass)
-		Star = GetWorld()->SpawnActor<AStar>(StarClass, StarSpawn, FRotator(0, 0, 0));
-	
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 4.f, FColor::Green, FString::Printf(TEXT("Game Start")));
-
-	// No longer needed since we are removing default pawn class from game mode
-	// and possessing one of the spawned shapes but leaving here if needed later
-	/*Player = Cast<AShape>(GetCharacter());*/
-
-	// Possess shape on begin play
-	if (Circle) {
-		Possess(Circle);
-		// Assign the player class to whatever is possessed so we can call access member variables
-		// and functions using the Shape class
-		Player = Circle;
-		Player->SetActorLocation(PlayerSpawn);
+	if (GetPawn()) {
+		GEngine->AddOnScreenDebugMessage(1, 7.f, FColor::Blue, TEXT("Game started with character blueprint set in game mode"));
+		if (AShape* SpawnedShape = Cast<AShape>(GetPawn())) {
+			for (int i = 0; i < sizeof(Shapes) / sizeof(Shapes[0]); i++) {
+				if (i != SpawnedShape->ShapeIndex) {
+					// Spawns the shape and pools it
+					SpawnShape(i);
+				}
+				else {
+					Shapes[i] = SpawnedShape;
+					Player = Shapes[i];
+					ShapeKey = Player->ShapeIndex;
+				}
+			}
+		}
+		else {
+			GEngine->AddOnScreenDebugMessage(1, 7.f, FColor::Red, TEXT("Spawned character is not a member of the shape class"));
+		}
+		
 	}
-	
+	else {
+		
+		// Spawns the different shape classes to object pool through
+		for (int i = 0; i < sizeof(Shapes) / sizeof(Shapes[0]); i++) {
+			SpawnShape(i);
+			if (Shapes[i] && !Player) {
+				Player = Shapes[i];
+				Possess(Player);
+				Player->SetActorLocation(PlayerSpawn);
+			}	
+		}
+	}
+
 	if (AShapeController* PC = Cast<AShapeController>(this)) {
 
 		// Enables possessed character to access the controllers Input Mapping Context and Inputs and use them in game
@@ -91,19 +94,9 @@ void AShapeController::SetupInputComponent()
 
 void AShapeController::RestoreHealth()
 {
-	// Restore for every spawned in class after clicking retry level
-	if (Circle) {
-		Circle->CurrentHealth = Circle->MaxHealth;
-	}
-	if (Square) {
-		Square->CurrentHealth = Square->MaxHealth;
-
-	}
-	if (Triangle) {
-		Triangle->CurrentHealth = Triangle->MaxHealth;
-	}
-	if (Star) {
-		Star->CurrentHealth = Star->MaxHealth;
+	for (int i = 0; i < sizeof(Shapes) / sizeof(Shapes[0]); i++) {
+		Shapes[i]->ObjectiveCounter++;
+		int j = Shapes[i]->ObjectiveCounter++;
 	}
 	if (HUD) {
 		HUD->ToggleWidget();
@@ -116,20 +109,12 @@ void AShapeController::RestoreHealth()
 
 void AShapeController::UpdateObjective()
 {
-	// Restore for every spawned in class after clicking retry level
-	if (Circle) {
-		Circle->ObjectiveCounter++;
+	for (int i = 0; i < sizeof(Shapes) / sizeof(Shapes[0]); i++) {
+		if (Shapes[i]) {
+			Shapes[i]->ObjectiveCounter++;
+		}
 	}
-	if (Square) {
-		Square->ObjectiveCounter++;
-
-	}
-	if (Triangle) {
-		Triangle->ObjectiveCounter++;
-	}
-	if (Star) {
-		Star->ObjectiveCounter++;
-	}
+	
 }
 
 void AShapeController::Move(const FInputActionValue& value)
@@ -165,8 +150,6 @@ void AShapeController::SpecialMove(const FInputActionValue& value)
 
 void AShapeController::ChangeShape(int XValue, int YValue)
 {
-	
-
 	if (Player) {
 		// On shape switch, disable input and movement immediately and reapply in blueprints at the end of animation
 		
@@ -175,44 +158,28 @@ void AShapeController::ChangeShape(int XValue, int YValue)
 		FRotator PlayerRotation = Player->GetActorRotation();
 
 		// pool the previous shape so it is out of view
-		PoolShape(ShapeIndex);
+		PoolShape(ShapeKey);
 
 		// Switch the shape if X returned a value and update ShapeIndex to the one that corresponds with new shape
 		switch (XValue) {
 		case -1:
-			if (Triangle) {
-				Triangle->SetActorLocation(PlayerLocation);
-				Triangle->SetActorRotation(PlayerRotation);
-				Possess(Triangle);
-				Player = Triangle;
+			if (Shapes[2]) {
+				Shapes[2]->SetActorLocation(PlayerLocation);
+				Shapes[2]->SetActorRotation(PlayerRotation);
+				Possess(Shapes[2]);
+				Player = Shapes[2];
 				Player->ChangeShapeEnd();
-
-				// Prevent players from moving for a short time when changing shapes
-				Player->InputDisabled = true;
-				Player->CannotMove = true;
-
-				ShapeIndex = 2;
-				if (HUD) {
-					HUD->SetHealthPercent(Triangle->CurrentHealth, Triangle->MaxHealth);
-				}
+				ShapeKey = 2;
 			}
 			break;
 		case 1:
-			if (Circle) {
-				Circle->SetActorLocation(PlayerLocation);
-				Circle->SetActorRotation(PlayerRotation);
-				Possess(Circle);
-				Player = Circle;
+			if (Shapes[0]) {
+				Shapes[0]->SetActorLocation(PlayerLocation);
+				Shapes[0]->SetActorRotation(PlayerRotation);
+				Possess(Shapes[0]);
+				Player = Shapes[0];
 				Player->ChangeShapeEnd();
-
-				// Prevent players from moving for a short time when changing shapes
-				Player->InputDisabled = true;
-				Player->CannotMove = true;
-
-				ShapeIndex = 0;
-				if (HUD) {
-					HUD->SetHealthPercent(Circle->CurrentHealth, Circle->MaxHealth);
-				}
+				ShapeKey = 0;
 			}
 			break;
 		default:
@@ -222,44 +189,42 @@ void AShapeController::ChangeShape(int XValue, int YValue)
 		// Switch the shape if Y returned a value
 		switch (YValue) {
 		case -1:
-			if (Star) {
-				Star->SetActorLocation(PlayerLocation);
-				Star->SetActorRotation(PlayerRotation);
-				Possess(Star);
-				Player = Star;
+			if (Shapes[3]) {
+				Shapes[3]->SetActorLocation(PlayerLocation);
+				Shapes[3]->SetActorRotation(PlayerRotation);
+				Possess(Shapes[3]);
+				Player = Shapes[3];
 				Player->ChangeShapeEnd();
-
-				// Prevent players from moving for a short time when changing shapes
-				Player->InputDisabled = true;
-				Player->CannotMove = true;
-
-				ShapeIndex = 3;
-				if (HUD) {
-					HUD->SetHealthPercent(Star->CurrentHealth, Star->MaxHealth);
-				}
+				ShapeKey = 3;
+				
 			}
 			break;
 		case 1:
-			if (Square) {
-				Square->SetActorLocation(PlayerLocation);
-				Square->SetActorRotation(PlayerRotation);
-				Possess(Square);
-				Player = Square;
+			if (Shapes[1]) {
+				Shapes[1]->SetActorLocation(PlayerLocation);
+				Shapes[1]->SetActorRotation(PlayerRotation);
+				Possess(Shapes[1]);
+				Player = Shapes[1];
 				Player->ChangeShapeEnd();
-
-				// Prevent players from moving for a short time when changing shapes
-				Player->InputDisabled = true;
-				Player->CannotMove = true;
-
-				ShapeIndex = 1;
-				if (HUD) {
-					HUD->SetHealthPercent(Square->CurrentHealth, Square->MaxHealth);
-				}
+				ShapeKey = 1;
 			}
 			break;
 		default:
 			break;
 		}
+		for (int i = 0; i < sizeof(Shapes) / sizeof(Shapes[0]); i++) {
+			if (i == Player->ShapeIndex) {
+				if (HUD && Shapes[i]) {
+					HUD->SetHealthPercent(Shapes[i]->CurrentHealth, Shapes[i]->MaxHealth);
+				}
+			}
+		}
+
+		// Prevent players from moving for a short time when changing shapes
+		Player->InputDisabled = true;
+		Player->CannotMove = true;
+
+		// Can be punished immediately after changing shape however, prevents thoughtless spamming
 		Player->Invincible = false;
 	}
 }
@@ -290,13 +255,19 @@ void AShapeController::ShapeChangeSelect(const FInputActionValue& value)
 	int XValue = XYValue.X;
 	int YValue = XYValue.Y;
 
-	
+	bool TargetShapeExists = false;
 	if (Player) {
-		Player->Invincible = true;
-		// Switch only to a different shape
-		if (Player->ShapeKey != XYValue) {
+		// checks if target shape exists
+		for (int i = 0; i < sizeof(Shapes) / sizeof(Shapes[0]); i++) {
+			if (Shapes[i] && Shapes[i]->ShapeKey == XYValue) {
+				TargetShapeExists = true;
+			}
+		}
+		// Switch only to a different shape that exists
+		if (Player->ShapeKey != XYValue && TargetShapeExists) {
 			// Allows switch only when character is grounded and inputs are enabled
 			if (!Player->InputDisabled && !Player->GetCharacterMovement()->IsFalling() && !Player->SpecialMoveClicked) {
+				Player->Invincible = true;
 				Player->InputDisabled = true;
 				Player->CannotMove = true;
 				// Start the shape change animation inside shape blueprints
@@ -314,25 +285,34 @@ void AShapeController::ShapeChangeSelect(const FInputActionValue& value)
 	}
 }
 
-void AShapeController::PoolShape(int index)
+void AShapeController::SpawnShape(int ShapeIndex)
 {
-	if (Player) {
-		switch (index) {
-		case 0:
-			Circle->SetActorLocation(CircleSpawn);
-			break;
-		case 1:
-			Square->SetActorLocation(SquareSpawn);
-			break;
-		case 2:
-			Triangle->SetActorLocation(TriangleSpawn);
-			break;
-		case 3:
-			Star->SetActorLocation(StarSpawn);
-			break;
-		default:
-			break;
-		}
+	// Take the argument and spawn the shape if class is assigned in blueprint
+	switch (ShapeIndex) {
+	case 0:
+		if (CircleClass)
+			Shapes[0] = GetWorld()->SpawnActor<ACircle>(CircleClass, CircleSpawn, FRotator(0, 0, 0));
+		break;
+	case 1:
+		if (SquareClass)
+			Shapes[1] = GetWorld()->SpawnActor<ASquare>(SquareClass, SquareSpawn, FRotator(0, 0, 0));
+		break;
+	case 2:
+		if (TriangleClass)
+			Shapes[2] = GetWorld()->SpawnActor<ATriangle>(TriangleClass, TriangleSpawn, FRotator(0, 0, 0));
+		break;
+	case 3:
+		if (StarClass)
+			Shapes[3] = GetWorld()->SpawnActor<AStar>(StarClass, StarSpawn, FRotator(0, 0, 0));
+		break;
+	default: 
+		break;
 	}
 	
+}
+
+void AShapeController::PoolShape(int index)
+{
+	if (Shapes[index])
+		Shapes[index]->SetActorLocation(ShapeSpawnPoints[index]);
 }

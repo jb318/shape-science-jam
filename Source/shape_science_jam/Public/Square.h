@@ -16,6 +16,8 @@ class SHAPE_SCIENCE_JAM_API ASquare : public AShape
 	GENERATED_BODY()
 
 public:
+	ASquare();
+
 	// Base class function implementations
 	void Attack_Implementation() override;
 	void SpecialMove_Implementation() override;

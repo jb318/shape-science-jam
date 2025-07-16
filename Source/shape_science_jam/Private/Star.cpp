@@ -22,6 +22,8 @@ AStar::AStar()
 	GetCharacterMovement()->AirControl = 0.75;
 	GetCharacterMovement()->GravityScale = 0.25;
 
+	ShapeIndex = 3;
+
 }
 
 void AStar::Attack_Implementation()

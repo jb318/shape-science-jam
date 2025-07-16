@@ -99,7 +99,23 @@ protected:
 	// Array of the rows inside datatable
 	TArray<FName> RowNames;
 
+	/** RepNotify for changes made to current health.*/
+	UFUNCTION()
+	void OnRep_CurrentHealth();
+
+	void OnHealthUpdate();
+
 public:
+	/** Property replication */
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	// Using ReplicatedUsing tag with corresponding function to transfer this value to other clients?
+	UPROPERTY(ReplicatedUsing = OnRep_CurrentHealth)
+	float CurrentHealth;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Stats")
+	float MaxHealth = 3.f;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UCameraComponent* CameraComponent;
 
@@ -168,13 +184,6 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void ChangeShapeEnd();	
 
-	// The actual values of stats
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
-	float CurrentHealth = 3.f;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
-	float MaxHealth = 3.f;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
 	float CurrentExperience = 0.f;
 
@@ -198,6 +207,8 @@ public:
 	// Checks player invincibility status
 	UPROPERTY(BlueprintReadOnly)
 	bool Invincible;
+
+	int ShapeIndex;
 
 private:
 	

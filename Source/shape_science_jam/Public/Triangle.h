@@ -51,6 +51,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AProjectile* Projectile2;
 
+	// random comment
+
 private:
 
 	// Index of which projectile to fire

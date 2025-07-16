@@ -4,6 +4,8 @@
 #include "Components/CapsuleComponent.h"
 #include "CombatInterface.h"
 #include "InteractInterface.h"
+#include "Net/UnrealNetwork.h"
+#include "Engine/Engine.h"
 
 AShape::AShape()
 {
@@ -29,6 +31,8 @@ AShape::AShape()
 	// Box component
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
 	BoxComponent->SetupAttachment(RootComponent);
+
+	CurrentHealth = MaxHealth;
 }
 
 void AShape::BeginPlay()
@@ -98,6 +102,47 @@ void AShape::AddExperience(float amount)
 				HUD->PlayerWidget->SetExperienceBar(CurrentExperience, MaxExperience);
 		}
 	}
+}
+
+void AShape::OnRep_CurrentHealth()
+{
+	OnHealthUpdate();
+}
+
+void AShape::OnHealthUpdate()
+{
+	// Client-specific functionality
+	if (IsLocallyControlled())
+	{
+		FString healthMessage = FString::Printf(TEXT("You now have %f health remaining."), CurrentHealth);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, healthMessage);
+
+		if (CurrentHealth <= 0)
+		{
+			FString deathMessage = FString::Printf(TEXT("You have been killed."));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, deathMessage);
+		}
+	}
+
+	//Server-specific functionality
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		FString healthMessage = FString::Printf(TEXT("%s now has %f health remaining."), *GetFName().ToString(), CurrentHealth);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, healthMessage);
+	}
+
+	//Functions that occur on all machines.
+	/*
+		Any special functionality that should occur as a result of damage or death should be placed here.
+	*/
+}
+
+void AShape::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	// Replicate current health.
+	DOREPLIFETIME(AShape, CurrentHealth);
 }
 
 void AShape::OnOverlapItemBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -182,9 +227,11 @@ void AShape::SetHealth(float amount)
 		if (row) {
 			if (CurrentHealth + amount < MaxHealth && CurrentHealth + amount > 0) {
 				CurrentHealth += amount;
+				OnHealthUpdate();
 			}
 			else if (CurrentHealth + amount >= MaxHealth) {
 				CurrentHealth = MaxHealth;
+				OnHealthUpdate();
 			}
 			else {
 				GEngine->AddOnScreenDebugMessage(-3, 5.f, FColor::Red, TEXT("Warning, you are below 0 hp"));

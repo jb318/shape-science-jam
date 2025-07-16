@@ -3,6 +3,11 @@
 #include "Square.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
+ASquare::ASquare()
+{
+	ShapeIndex = 1;
+}
+
 void ASquare::Attack_Implementation()
 {
 	if (!InputDisabled && !CoolDownActive) {

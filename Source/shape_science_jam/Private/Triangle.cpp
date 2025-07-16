@@ -10,6 +10,8 @@ ATriangle::ATriangle()
 	FireComponent = CreateDefaultSubobject<UArrowComponent>(TEXT("Fire Point"));
 	FireComponent->SetupAttachment(GetSprite());
 	FireComponent->SetRelativeLocation(FVector(45.f, 0.f, 0.f));
+
+	ShapeIndex = 2;
 }
 
 void ATriangle::Attack_Implementation()

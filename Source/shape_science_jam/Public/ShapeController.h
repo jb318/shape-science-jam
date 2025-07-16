@@ -25,21 +25,21 @@ class AShape;
 UCLASS()
 class SHAPE_SCIENCE_JAM_API AShapeController : public APlayerController, public IInteractInterface
 {
-	GENERATED_BODY() 
+	GENERATED_BODY()
 
 public:
 	// Constructor
 	AShapeController();
-	
+
 protected:
 	virtual void BeginPlay() override;
 
 	// Allow for input mapping context and actions to be set inside the details panel in UE5
 	// *Example of Reflection system in action.  Things defined with UPROPERTY can generally be seen in Unreal Editor*
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 	UInputMappingContext* PlayerInputContext;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 	UInputAction* MoveAction;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
@@ -57,16 +57,16 @@ protected:
 
 	// Spawn locations for each of the shapes player will possess
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn Points")
-	FVector CircleSpawn;
-	
+	FVector CircleSpawn = FVector(-100000.0, 0.f, -400000.0);
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn Points")
-	FVector SquareSpawn;
-	
+	FVector SquareSpawn = FVector(-100000.0, 0.f, -200000.0);
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn Points")
-	FVector TriangleSpawn;
-	
+	FVector TriangleSpawn = FVector(-100000.0, 0.f, 200000.0);
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn Points")
-	FVector StarSpawn;
+	FVector StarSpawn = FVector(-100000.0, 0.f, 400000.0);
 
 	// Main spawn point
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn Points")
@@ -88,15 +88,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Shapes")
 	TSubclassOf<AStar> StarClass;
-	
-	// Shape class instances to cast to
-	ACircle* Circle;
-	ASquare* Square;
-	ATriangle* Triangle;
-	AStar* Star;
 
-	// Player Reference
-	AShape* Player;
+	// Possessable Shapes
+	AShape* Shapes[4] = {};
 
 	// Pause menu widget instance and class reference
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
@@ -109,26 +103,39 @@ public:
 
 	virtual void UpdateObjective() override;
 
-private: 
-	
+private:
 	// Input functions and bindings
 	void Move(const FInputActionValue& value);
 	void Attack(const FInputActionValue& value);
 	void SpecialMove(const FInputActionValue& value);
-	void OpenPauseMenu(const FInputActionValue& value);	
+	void OpenPauseMenu(const FInputActionValue& value);
 	void ShapeChangeSelect(const FInputActionValue& value);
 
+	void SpawnShape(int ShapeIndex);
+
 	void ChangeShape(int XValue, int YValue);
-	
+
 	// Pools shape out of view
 	void PoolShape(int index);
 
 	// Tracks if widget is currently on screen or not
 	bool PauseMenuVisible = false;
 
-	// Index to indentify and switch shapes too
-	int ShapeIndex = 0;
+	// Key to indentify and switch shapes too
+	int ShapeKey = 0;
 
 	// reference to HUD
 	AGameHUD* HUD;
+
+	// Shape class instances to cast to
+	/*ACircle* Circle;
+	ASquare* Square;
+	ATriangle* Triangle;
+	AStar* Star;*/
+
+	// Each shape's pool point
+	FVector ShapeSpawnPoints[4] = {CircleSpawn, SquareSpawn, TriangleSpawn, StarSpawn};
+
+	// Player Reference
+	AShape* Player;
 };
