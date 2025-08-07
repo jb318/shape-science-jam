@@ -10,6 +10,7 @@ ASquare::ASquare()
 
 void ASquare::Attack_Implementation()
 {
+	Attack();
 	if (!InputDisabled && !CoolDownActive) {
 		// Disable input after attacking.  Enable it again after animation ends in blueprints
 		InputDisabled = true;
@@ -19,7 +20,8 @@ void ASquare::Attack_Implementation()
 
 void ASquare::SpecialMove_Implementation()
 {
-	
+	Super::SpecialMove_Implementation();
+
 	FTimerHandle SwitchGravityTimer;
 
 	// Calls invert gravity after the time in special move delay expires if Input is not disabled
@@ -122,6 +124,7 @@ void ASquare::SwitchGravity()
 	if (!UsingAntiGravity) {
 		GetCharacterMovement()->SetGravityDirection(GetActorUpVector());
 		UsingAntiGravity = true;
+		CanChangeShape = false;
 		FVector TransformLocation = GetSprite()->GetRelativeLocation();
 		TransformLocation.Z = 4.f;
 		GetSprite()->SetRelativeLocation(TransformLocation);
@@ -129,6 +132,7 @@ void ASquare::SwitchGravity()
 	else {
 		GetCharacterMovement()->SetGravityDirection(-1 * GetActorUpVector());
 		UsingAntiGravity = false;
+		CanChangeShape = true;
 		FVector TransformLocation = GetSprite()->GetRelativeLocation();
 		TransformLocation.Z = -4.f;
 		GetSprite()->SetRelativeLocation(TransformLocation);

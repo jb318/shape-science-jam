@@ -146,7 +146,7 @@ public:
 	void Attack();
 	virtual void Attack_Implementation();
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Shape Moves")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Shape Moves")
 	void SpecialMove();
 	virtual void SpecialMove_Implementation();
 
@@ -176,6 +176,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 	bool CannotMove;
 
+	bool CanChangeShape = true;
 	// Start change shape animation
 	UFUNCTION(BlueprintImplementableEvent)
 	void ChangeShapeStart();

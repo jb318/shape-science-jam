@@ -15,6 +15,8 @@ ACircle::ACircle()
 
 void ACircle::Attack_Implementation()
 {
+	Super::Attack_Implementation();
+
 	if (!SpecialMoveClicked) {
 		// Execute dash if not jumping or hit, not falling, and once the cool down is up
 		if (!InputDisabled && !GetCharacterMovement()->IsFalling()) {
@@ -35,6 +37,7 @@ void ACircle::Attack_Implementation()
 
 void ACircle::SpecialMove_Implementation()
 {
+	Super::SpecialMove_Implementation();
 	SpecialMoveClicked = true;
 	// Check if is falling is false otherwise jump will lock if clicked a second time in air
 	if (!InputDisabled && !GetCharacterMovement()->IsFalling()) {

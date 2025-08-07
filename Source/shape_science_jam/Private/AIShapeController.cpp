@@ -2,6 +2,7 @@
 
 
 #include "AIShapeController.h"
+#include "Shape.h"
 
 void AAIShapeController::AAIController()
 {

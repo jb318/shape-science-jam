@@ -28,6 +28,7 @@ AStar::AStar()
 
 void AStar::Attack_Implementation()
 {
+	Attack();
 	if (!SpecialMoveClicked) {
 		if (!CoolDownActive && !InputDisabled && !GetCharacterMovement()->IsFalling()) {
 			InputDisabled = true;
@@ -44,6 +45,7 @@ void AStar::Attack_Implementation()
 
 void AStar::SpecialMove_Implementation()
 {
+	Super::SpecialMove_Implementation();
 	SpecialMoveClicked = true;
 	if (!InputDisabled && !GetCharacterMovement()->IsFalling()) {
 		InputDisabled = true;

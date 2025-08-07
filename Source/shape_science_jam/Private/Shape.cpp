@@ -33,6 +33,9 @@ AShape::AShape()
 	BoxComponent->SetupAttachment(RootComponent);
 
 	CurrentHealth = MaxHealth;
+
+	SetReplicates(true);
+	SetReplicateMovement(true);
 }
 
 void AShape::BeginPlay()
@@ -187,16 +190,18 @@ void AShape::OnOverlapItemBegin(UPrimitiveComponent* OverlappedComponent, AActor
 
 void AShape::Attack_Implementation()
 {
+	Attack();
 	if (!CoolDownActive) {
 		CoolDownActive = true;
 		FTimerHandle CoolDownTimer;
 		GetWorld()->GetTimerManager().SetTimer(CoolDownTimer, this, &AShape::CoolDown, AttackCoolDown, false);
-	}
+	}	
 }
 
 void AShape::SpecialMove_Implementation()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("SpecialMove")));
+	// Calls special move for each child when Super::SpecialMove_Implementation is used
+	SpecialMove();
 }
 
 void AShape::LevelUp()
@@ -255,6 +260,7 @@ void AShape::DamageCharacter(float amount, bool IsProjectile)
 		if (!IsProjectile) {
 			if (row) {
 				if (CurrentHealth - amount > 0) {
+					ImmuneToProjectile = true;
 					InputDisabled = true;
 					CurrentHealth -= amount;
 					// Only update player widget if its the player character taking damage
