@@ -57,20 +57,31 @@ protected:
 
 	// Spawn locations for each of the shapes player will possess
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn Points")
-	FVector CircleSpawn = FVector(-100000.0, 0.f, -400000.0);
+	FVector CirclePoolLocation = FVector(0.f, -100.f, 2000.f);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn Points")
-	FVector SquareSpawn = FVector(-100000.0, 0.f, -200000.0);
+	FVector SquarePoolLocation = FVector(0.f, -100.f, 1000.f);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn Points")
-	FVector TriangleSpawn = FVector(-100000.0, 0.f, 200000.0);
+	FVector TrianglePoolLocation = FVector(0.f, -100.f, -1000.f);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn Points")
-	FVector StarSpawn = FVector(-100000.0, 0.f, 400000.0);
+	FVector StarPoolLocation = FVector(0.f, -100.f, -2000.f);
 
 	// Main spawn point
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn Points")
 	FVector PlayerSpawn;
+
+	// Call to server for local player controller to possess shape in multiplayer, needs WithValidation to create parameters in function signature
+	UFUNCTION(Server, Reliable, WithValidation)
+	void PossessRequest(AShapeController* LocalShapeController, int ShapeKeyX, int ShapeKeyY, bool AllowedSwitch);
+
+	// Pools shape out of view and multicast to all clients if needed
+	UFUNCTION(Server, Reliable)
+	void PoolShapeServerRequest(int index);
+	
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastPoolShape(int index, FVector Location);
 
 public:
 	// Sets the input mapping context to the game mode character class
@@ -90,7 +101,8 @@ public:
 	TSubclassOf<AStar> StarClass;
 
 	// Possessable Shapes
-	AShape* Shapes[4] = {};
+	UPROPERTY(Replicated)
+	AShape* AccessibleShapes[4] = {};
 
 	// Pause menu widget instance and class reference
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
@@ -103,6 +115,13 @@ public:
 
 	virtual void UpdateObjective() override;
 
+	// Assigns Player to the corresponding entry in Accessible Shapes array
+	void AssignPlayer(int ShapeIndex, FVector Location, FRotator Rotation);
+
+	AShape* Player;
+
+	void SpawnShapes(int FirstShapeIndex, int LastShapeIndex, AShapeController* LocalShapeController);
+
 private:
 	// Input functions and bindings
 	void Move(const FInputActionValue& value);
@@ -111,12 +130,7 @@ private:
 	void OpenPauseMenu(const FInputActionValue& value);
 	void ShapeChangeSelect(const FInputActionValue& value);
 
-	void SpawnShape(int ShapeIndex);
-
-	void ChangeShape(int XValue, int YValue);
-
-	// Pools shape out of view
-	void PoolShape(int index);
+	void ChangeShape(int XValue, int YValue, AShapeController* LocalShapeController);
 
 	// Tracks if widget is currently on screen or not
 	bool PauseMenuVisible = false;
@@ -134,8 +148,8 @@ private:
 	AStar* Star;*/
 
 	// Each shape's pool point
-	FVector ShapeSpawnPoints[4] = {CircleSpawn, SquareSpawn, TriangleSpawn, StarSpawn};
+	FVector ShapePoolPoints[4] = {CirclePoolLocation, StarPoolLocation, TrianglePoolLocation, SquarePoolLocation};
 
-	// Player Reference
-	AShape* Player;
+	void SayHi();
+	void Goodbye();
 };

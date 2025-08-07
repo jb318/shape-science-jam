@@ -16,6 +16,7 @@ ATriangle::ATriangle()
 
 void ATriangle::Attack_Implementation()
 {
+	Attack();
 	if (!CoolDownActive && !InputDisabled && !GetCharacterMovement()->IsFalling()) {
 		CoolDownActive = true;
 		InputDisabled = true;
@@ -31,6 +32,7 @@ void ATriangle::Attack_Implementation()
 
 void ATriangle::SpecialMove_Implementation()
 {
+	Super::SpecialMove_Implementation();
 	if (!InputDisabled && !GetCharacterMovement()->IsFalling()) {
 		// Disable after half a second or so.  Fire line trace and move or break actor in level through casting by interact interface
 		InputDisabled = true;
