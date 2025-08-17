@@ -41,6 +41,7 @@ void AShapeController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(AShapeController, AccessibleShapes);
 
 }
+
 void AShapeController::PossessRequest_Implementation(AShapeController* LocalShapeController, int ShapeKeyX, int ShapeKeyY, bool AllowedSwitch)
 {
 	// Have the server control possess requests
@@ -59,10 +60,24 @@ void AShapeController::PossessRequest_Implementation(AShapeController* LocalShap
 					ControlledShape->ChangeShapeStart();
 					
 					// Set a timer for shape switch to begin
+					FTimerDelegate PoolShapeDelegate;
+					FTimerHandle PoolShapeTimer;
+					PoolShapeDelegate.BindUObject(this, &AShapeController::PoolShape, ShapeKey);
+					GetWorld()->GetTimerManager().SetTimer(PoolShapeTimer, PoolShapeDelegate, 1.0f, false);
+
+					// Location and orientation of former shape for incoming shape to inherit
+					FVector PlayerLocation = ControlledShape->GetActorLocation();
+					FRotator PlayerRotation = ControlledShape->GetActorRotation();
+
+					// Adds miniscule delay for shape teleport in so it doesn't cause collision
 					FTimerDelegate ChangeShapeDelegate;
 					FTimerHandle ChangeShapeTimer;
-					ChangeShapeDelegate.BindUObject(this, &AShapeController::ChangeShape, ShapeKeyX, ShapeKeyY, LocalShapeController);
-					GetWorld()->GetTimerManager().SetTimer(ChangeShapeTimer, ChangeShapeDelegate, 1.f, false);
+					ChangeShapeDelegate.BindUObject(this, &AShapeController::ChangeShape, ShapeKeyX, ShapeKeyY, PlayerLocation, PlayerRotation, LocalShapeController);
+					GetWorld()->GetTimerManager().SetTimer(ChangeShapeTimer, ChangeShapeDelegate, 1.0f, false);
+
+					// Server call and multicast shape locations
+					FTimerHandle RepShapeLocationsTimer;
+					GetWorld()->GetTimerManager().SetTimer(RepShapeLocationsTimer, this, &AShapeController::ServerRepShapeLocations, 1.01f, false);
 				}
 				else
 					GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, FString::Printf(TEXT("Can't access player")));
@@ -79,20 +94,29 @@ bool AShapeController::PossessRequest_Validate(AShapeController* LocalShapeContr
 	return false;
 }
 
-void AShapeController::PoolShapeServerRequest_Implementation(int index)
+void AShapeController::PoolShape(int index)
 {
+	// Push controlled shape out on change after a second
 	if (AccessibleShapes[index])
 		AccessibleShapes[index]->SetActorLocation(ShapePoolPoints[index]);
 
-	MulticastPoolShape(index, ShapePoolPoints[index]);
-
-	GEngine->AddOnScreenDebugMessage(-6, 3.f, FColor::Purple, FString::Printf(TEXT("$s"), *GetName()));
 }
 
-void AShapeController::MulticastPoolShape_Implementation(int index, FVector Location)
+void AShapeController::ServerRepShapeLocations_Implementation()
 {
-	AccessibleShapes[index]->SetActorLocation(Location);
-	GEngine->AddOnScreenDebugMessage(-7, 3.f, FColor::Purple, TEXT("Multicast!"));
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, FString::Printf(TEXT("Server Request Made")));
+	// Get all the shapes in the local player controller array and multicast their locations
+	for (int i = 0; i < sizeof(AccessibleShapes) / sizeof(AccessibleShapes[0]); i++) {
+		if (AccessibleShapes[i]) {
+			MulticastShapeLocations(i, AccessibleShapes[i]->GetActorLocation());
+		}
+	}
+}
+
+void AShapeController::MulticastShapeLocations_Implementation(int Index, FVector ShapeLocation)
+{
+	GEngine->AddOnScreenDebugMessage(Index, 2.f, FColor::Blue, FString::Printf(TEXT("Multicast Request Made")));
+	AccessibleShapes[Index]->SetActorLocation(ShapeLocation);
 }
 
 void AShapeController::SetupInputComponent()
@@ -197,25 +221,10 @@ void AShapeController::SpecialMove(const FInputActionValue& value)
 	}
 }
 
-void AShapeController::ChangeShape(int XValue, int YValue, AShapeController* LocalShapeController)
+void AShapeController::ChangeShape(int XValue, int YValue, FVector PlayerLocation, FRotator PlayerRotation, AShapeController* LocalShapeController)
 {
 	// Doing all of these casts since Player variable does not validate on client controllers in network multiplayer
-	if (AShape* ControlledShape = Cast<AShape>(GetPawn())) {
-		// On shape switch, disable input and movement immediately and reapply in blueprints at the end of animation
-		// Location and orientation of former shape for incoming shape to inherit
-		FVector PlayerLocation = ControlledShape->GetActorLocation();
-		FRotator PlayerRotation = ControlledShape->GetActorRotation();
-
-		// pool the previous shape so it is out of view
-		/*if (HasAuthority()) {
-			if (AccessibleShapes[ShapeKey])
-				AccessibleShapes[ShapeKey]->SetActorLocation(ShapePoolPoints[ShapeKey]);
-
-			MulticastPoolShape(ShapeKey, ShapePoolPoints[ShapeKey]);
-		}
-		else
-			PoolShapeServerRequest_Implementation(ShapeKey);*/
-		PoolShapeServerRequest_Implementation(ShapeKey);
+	if (AShape* ControlledShape = Cast<AShape>(GetPawn())) {	
 
 		// Switch the shape if X returned a value and update ShapeIndex to the one that corresponds with new shape
 		switch (XValue) {
@@ -302,8 +311,6 @@ void AShapeController::ShapeChangeSelect(const FInputActionValue& value)
 		// checks if target shape exists
 		for (int i = 0; i < sizeof(AccessibleShapes) / sizeof(AccessibleShapes[0]); i++) {
 			if (AccessibleShapes[i] && AccessibleShapes[i]->ShapeKey == XYValue) {
-				/*if (GEngine)
-					GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString::Printf(TEXT("Allowed switch is")));*/
 				TargetShapeExists = true;
 			}
 		}
