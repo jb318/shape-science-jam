@@ -77,11 +77,14 @@ protected:
 	void PossessRequest(AShapeController* LocalShapeController, int ShapeKeyX, int ShapeKeyY, bool AllowedSwitch);
 
 	// Pools shape out of view and multicast to all clients if needed
+	void PoolShape(int index);
+
+	// Server and Multicasting of updated shape locations
 	UFUNCTION(Server, Reliable)
-	void PoolShapeServerRequest(int index);
-	
+	void ServerRepShapeLocations();
+
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastPoolShape(int index, FVector Location);
+	void MulticastShapeLocations(int Index, FVector ShapeLocation);
 
 public:
 	// Sets the input mapping context to the game mode character class
@@ -130,7 +133,7 @@ private:
 	void OpenPauseMenu(const FInputActionValue& value);
 	void ShapeChangeSelect(const FInputActionValue& value);
 
-	void ChangeShape(int XValue, int YValue, AShapeController* LocalShapeController);
+	void ChangeShape(int XValue, int YValue, FVector PlayerLocation, FRotator PlayerRotation, AShapeController* LocalShapeController);
 
 	// Tracks if widget is currently on screen or not
 	bool PauseMenuVisible = false;
