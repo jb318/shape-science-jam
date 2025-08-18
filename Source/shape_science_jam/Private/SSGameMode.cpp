@@ -39,10 +39,12 @@ void ASSGameMode::PostLogin(APlayerController* NewPlayer)
 
 void ASSGameMode::AssignShapes(AShapeController* PC) 
 {
+	// Assigns the full list of shapes to player if playing single player
 	if (PlayerCount == 1) {
 		PC->SpawnShapes(0, 3, PC);
 		PC->AssignPlayer(FirstPlayer, FirstPlayerSpawn, FirstPlayerRotation);
 	}
+	// Otherwise, split the accessible shapes per player
 	else if (PlayerCount == 2) {
 		PlayerControllers[0]->SpawnShapes(0, 1, PlayerControllers[0]);
 		PlayerControllers[1]->SpawnShapes(2, 3, PlayerControllers[1]);

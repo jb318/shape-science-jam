@@ -76,15 +76,11 @@ protected:
 	UFUNCTION(Server, Reliable, WithValidation)
 	void PossessRequest(AShapeController* LocalShapeController, int ShapeKeyX, int ShapeKeyY, bool AllowedSwitch);
 
+	UFUNCTION(NetMulticast, Reliable)
+	void ClientPossess();
+
 	// Pools shape out of view and multicast to all clients if needed
 	void PoolShape(int index);
-
-	// Server and Multicasting of updated shape locations
-	UFUNCTION(Server, Reliable)
-	void ServerRepShapeLocations();
-
-	UFUNCTION(NetMulticast, Reliable)
-	void MulticastShapeLocations(int Index, FVector ShapeLocation);
 
 public:
 	// Sets the input mapping context to the game mode character class
@@ -123,6 +119,7 @@ public:
 
 	AShape* Player;
 
+	// Spawn shapes
 	void SpawnShapes(int FirstShapeIndex, int LastShapeIndex, AShapeController* LocalShapeController);
 
 private:
@@ -155,4 +152,5 @@ private:
 
 	void SayHi();
 	void Goodbye();
+
 };
