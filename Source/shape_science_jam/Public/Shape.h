@@ -12,6 +12,7 @@
 #include "InteractInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameHUD.h"
+#include "TransformComponent.h"
 #include "Shape.generated.h"
 
 /**
@@ -150,9 +151,12 @@ public:
 	void SpecialMove();
 	virtual void SpecialMove_Implementation();
 
-	/*UFUNCTION(BlueprintNativeEvent, Category = "Shape Moves")
-	void ChangeShape();
-	virtual void ChangeShape_Implementation();*/
+	// Replicates the location of shapes on switch
+	UFUNCTION(Server, Reliable)
+	void ServerPoolShapeRequest(FVector NewShapeLocation, FRotator NewShapeRotation = FRotator(0.f, 0.f, 0.f));
+
+	UFUNCTION(NetMulticast, Reliable)
+	void RepShapeLocation(FVector NewShapeLocation, FRotator NewShapeRotation = FRotator(0.f, 0.f, 0.f));
 
 	// Name of the item that was overlapped
 	FString ItemName;
@@ -211,6 +215,10 @@ public:
 
 	int ShapeIndex;
 
+	// Transform Actor Component class reference
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+	UTransformComponent* TransformComp;
+	
 private:
 	
 	// reference to HUD

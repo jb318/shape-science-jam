@@ -34,8 +34,13 @@ AShape::AShape()
 
 	CurrentHealth = MaxHealth;
 
+	// Network replication settings
+	bReplicates = true;
 	SetReplicates(true);
 	SetReplicateMovement(true);
+
+	// Components
+	TransformComp = CreateDefaultSubobject<UTransformComponent>("Transform Component");
 }
 
 void AShape::BeginPlay()
@@ -203,6 +208,23 @@ void AShape::SpecialMove_Implementation()
 	// Calls special move for each child when Super::SpecialMove_Implementation is used
 	SpecialMove();
 }
+
+void AShape::RepShapeLocation_Implementation(FVector NewShapeLocation, FRotator NewShapeRotation = FRotator(0.f, 0.f, 0.f))
+{
+	// Sets the location of shape to pool point to all clients
+	SetActorLocation(NewShapeLocation);
+	SetActorRotation(NewShapeRotation);
+}
+
+void AShape::ServerPoolShapeRequest_Implementation(FVector NewShapeLocation, FRotator NewShapeRotation = FRotator(0.f, 0.f, 0.f))
+{
+	// Server side functionality of shape pooling
+	GEngine->AddOnScreenDebugMessage(-5, 3.f, FColor::Red, TEXT("Pool shape from shape called on server"));
+	/*SetActorLocation(NewShapeLocation);
+	SetActorRotation(NewShapeRotation);*/
+	RepShapeLocation(NewShapeLocation, NewShapeRotation);
+}
+
 
 void AShape::LevelUp()
 {
