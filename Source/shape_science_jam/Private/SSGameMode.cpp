@@ -20,20 +20,27 @@ void ASSGameMode::PostLogin(APlayerController* NewPlayer)
 	Super::PostLogin(NewPlayer);
 
 	PlayerCount++;
-	if (AShapeController* PC = Cast<AShapeController>(NewPlayer)) {
-		PlayerControllers[PlayerCount - 1] = PC;
-		if (PlayerCount == 1) {
-			// Checks how many players there are after a second or two
-			FTimerDelegate AssignShapesDelegate;
-			FTimerHandle AssignShapesHandle;
-			AssignShapesDelegate.BindUObject(this, &ASSGameMode::AssignShapes, PC);
-			GetWorld()->GetTimerManager().SetTimer(AssignShapesHandle, AssignShapesDelegate, AssignShapesDelay, false);
+	ENetMode CurrentNetMode = GetWorld()->GetNetMode();
+	
+	if (CurrentNetMode == NM_ListenServer) {
+		if (AShapeController* PC = Cast<AShapeController>(NewPlayer)) {
+			PlayerControllers[PlayerCount - 1] = PC;
+			if (PlayerCount == 1) {
+				// Checks how many players there are after a second or two
+				FTimerDelegate AssignShapesDelegate;
+				FTimerHandle AssignShapesHandle;
+				AssignShapesDelegate.BindUObject(this, &ASSGameMode::AssignShapes, PC);
+				GetWorld()->GetTimerManager().SetTimer(AssignShapesHandle, AssignShapesDelegate, AssignShapesDelay, false);
+			}
+		}
+		else {
+			GEngine->AddOnScreenDebugMessage(7, 2.f, FColor::Red, TEXT("Wrong player controller"));
 		}
 	}
 	else {
-		GEngine->AddOnScreenDebugMessage(7, 2.f, FColor::Red, TEXT("Wrong player controller"));
+		if (AShapeController* PC = Cast<AShapeController>(NewPlayer))
+			AssignShapes(PC);
 	}
-
 
 }
 

@@ -57,16 +57,16 @@ protected:
 
 	// Spawn locations for each of the shapes player will possess
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn Points")
-	FVector CirclePoolLocation = FVector(0.f, -100.f, 2000.f);
+	FVector CirclePoolLocation = FVector(0.f, -100, 2000.f);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn Points")
-	FVector SquarePoolLocation = FVector(0.f, -100.f, 1000.f);
+	FVector SquarePoolLocation = FVector(2000.f, -100.f, 1000.f);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn Points")
 	FVector TrianglePoolLocation = FVector(0.f, -100.f, -1000.f);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn Points")
-	FVector StarPoolLocation = FVector(0.f, -100.f, -2000.f);
+	FVector StarPoolLocation = FVector(2000.f, -100.f, -2000.f);
 
 	// Main spawn point
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn Points")
@@ -75,9 +75,6 @@ protected:
 	// Call to server for local player controller to possess shape in multiplayer, needs WithValidation to create parameters in function signature
 	UFUNCTION(Server, Reliable, WithValidation)
 	void PossessRequest(AShapeController* LocalShapeController, int ShapeKeyX, int ShapeKeyY, bool AllowedSwitch);
-
-	UFUNCTION(NetMulticast, Reliable)
-	void ClientPossess();
 
 	// Pools shape out of view and multicast to all clients if needed
 	void PoolShape(int index);
@@ -149,8 +146,5 @@ private:
 
 	// Each shape's pool point
 	FVector ShapePoolPoints[4] = {CirclePoolLocation, StarPoolLocation, TrianglePoolLocation, SquarePoolLocation};
-
-	void SayHi();
-	void Goodbye();
 
 };

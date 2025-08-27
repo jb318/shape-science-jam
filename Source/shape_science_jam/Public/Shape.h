@@ -151,13 +151,6 @@ public:
 	void SpecialMove();
 	virtual void SpecialMove_Implementation();
 
-	// Replicates the location of shapes on switch
-	UFUNCTION(Server, Reliable)
-	void ServerPoolShapeRequest(FVector NewShapeLocation, FRotator NewShapeRotation = FRotator(0.f, 0.f, 0.f));
-
-	UFUNCTION(NetMulticast, Reliable)
-	void RepShapeLocation(FVector NewShapeLocation, FRotator NewShapeRotation = FRotator(0.f, 0.f, 0.f));
-
 	// Name of the item that was overlapped
 	FString ItemName;
 
@@ -189,6 +182,12 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void ChangeShapeEnd();	
 
+	UFUNCTION(Server, Reliable)
+	void RPCToggleShapeVisibility(bool SetHidden);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastShapeVisibility(bool SetHidden);
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
 	float CurrentExperience = 0.f;
 
@@ -217,8 +216,8 @@ public:
 
 	// Transform Actor Component class reference
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
-	UTransformComponent* TransformComp;
-	
+	UTransformComponent* TransformComp;	
+
 private:
 	
 	// reference to HUD
