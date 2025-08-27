@@ -95,11 +95,6 @@ bool AShapeController::PossessRequest_Validate(AShapeController* LocalShapeContr
 	return false;
 }
 
-void AShapeController::ClientPossess_Implementation()
-{
-
-}
-
 void AShapeController::PoolShape(int index)
 {
 	// Push controlled shape out on change after a second
@@ -107,11 +102,6 @@ void AShapeController::PoolShape(int index)
 		if (IsLocalController() && AccessibleShapes[index]->TransformComp)
 			AccessibleShapes[index]->TransformComp->TransformActor(ShapePoolPoints[index]);
 		else if (!IsLocalController()) {
-			if (AccessibleShapes[index])
-				GEngine->AddOnScreenDebugMessage(0, 3.f, FColor::Red, FString::Printf(TEXT("Other shape still here %s"), *AccessibleShapes[index]->GetName()));
-			else {
-				GEngine->AddOnScreenDebugMessage(0, 3.f, FColor::Red, TEXT("previous shape reference no longer valid"));
-			}
 			AccessibleShapes[index]->SetActorLocation(ShapePoolPoints[index]);
 		}
 		else {
@@ -179,10 +169,7 @@ void AShapeController::UpdateObjective()
 
 void AShapeController::AssignPlayer(int ShapeIndex, FVector Location, FRotator Rotation)
 {
-	GEngine->AddOnScreenDebugMessage(ShapeIndex, 3.f, FColor::Red, FString::Printf(TEXT("Shape Index: %d"), ShapeIndex));
 	if (AccessibleShapes[ShapeIndex] && AccessibleShapes[ShapeIndex]->TransformComp) {
-
-
 		// Possess and set player variable to the appropriate shape
 		Possess(AccessibleShapes[ShapeIndex]);
 		Player = AccessibleShapes[ShapeIndex];
@@ -190,7 +177,7 @@ void AShapeController::AssignPlayer(int ShapeIndex, FVector Location, FRotator R
 		AccessibleShapes[ShapeIndex]->TransformComp->TransformActor(Location, Rotation);
 
 		ShapeKey = ShapeIndex;
-		GEngine->AddOnScreenDebugMessage(-2, 1.f, FColor::Green, FString::Printf(TEXT("%s"), *this->GetName()));
+		Player->RPCToggleShapeVisibility(false);
 	}
 	else {
 		if (!AccessibleShapes[ShapeIndex])
@@ -236,7 +223,7 @@ void AShapeController::ChangeShape(int XValue, int YValue, FVector PlayerLocatio
 {
 	// Doing all of these casts since Player variable does not validate on client controllers in network multiplayer
 	if (AShape* ControlledShape = Cast<AShape>(GetPawn())) {
-
+		ControlledShape->RPCToggleShapeVisibility(true);
 		// Switch the shape if X returned a value and update ShapeIndex to the one that corresponds with new shape
 		switch (XValue) {
 		case -1:
@@ -361,16 +348,4 @@ void AShapeController::SpawnShapes(int FirstShapeIndex, int LastShapeIndex, ASha
 			}
 		}
 	}
-}
-
-void AShapeController::SayHi()
-{
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString::Printf(TEXT("Hi There %s"), *GetName()));
-}
-
-void AShapeController::Goodbye()
-{
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Goodbye %s"), *GetName()));
 }

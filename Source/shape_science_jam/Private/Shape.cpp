@@ -53,14 +53,6 @@ void AShape::BeginPlay()
 		if (RowNames.IsValidIndex(ShapeLevelIndex)) {
 			
 			row = ShapeDT->FindRow<FShapeLevelData>(RowNames[ShapeLevelIndex], "");
-			if (row) {
-				/*GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Purple, FString::Printf(TEXT("%f Experience"), CurrentExperience));*/
-				/*CurrentHealth = row->MaxHealth;*/
-				GEngine->AddOnScreenDebugMessage(2, 2.f, FColor::Purple, FString::Printf(TEXT("You are at level: %d\nCurrent hp is: %.0f\nExperience: %.0f\n%.0f more experience until next level"), row->Level, CurrentHealth, CurrentExperience, row->MaxExperience));
-			}
-			else {
-				GEngine->AddOnScreenDebugMessage(0, 2.f, FColor::Red, FString::Printf(TEXT("Could not find what level you are at.  Try setting the Shape Level Data values inside your shapes Details Panel")));
-			}
 		}
 		
 	}	
@@ -209,23 +201,6 @@ void AShape::SpecialMove_Implementation()
 	SpecialMove();
 }
 
-void AShape::RepShapeLocation_Implementation(FVector NewShapeLocation, FRotator NewShapeRotation = FRotator(0.f, 0.f, 0.f))
-{
-	// Sets the location of shape to pool point to all clients
-	SetActorLocation(NewShapeLocation);
-	SetActorRotation(NewShapeRotation);
-}
-
-void AShape::ServerPoolShapeRequest_Implementation(FVector NewShapeLocation, FRotator NewShapeRotation = FRotator(0.f, 0.f, 0.f))
-{
-	// Server side functionality of shape pooling
-	GEngine->AddOnScreenDebugMessage(-5, 3.f, FColor::Red, TEXT("Pool shape from shape called on server"));
-	/*SetActorLocation(NewShapeLocation);
-	SetActorRotation(NewShapeRotation);*/
-	RepShapeLocation(NewShapeLocation, NewShapeRotation);
-}
-
-
 void AShape::LevelUp()
 {
 	// Sets players hp to max at next level, increases level, and properly subtracts experience from current level
@@ -354,6 +329,16 @@ void AShape::HitReaction(FVector LaunchVelocity)
 	PlayDamageAnimation();
 }
 
+void AShape::RPCToggleShapeVisibility_Implementation(bool SetHidden)
+{
+	MulticastShapeVisibility(SetHidden);
+}
+
+void AShape::MulticastShapeVisibility_Implementation(bool SetHidden)
+{
+	GetSprite()->SetHiddenInGame(SetHidden);
+}
+
 void AShape::CharacterDefeat()
 {
 	if (HUD) {
@@ -362,6 +347,3 @@ void AShape::CharacterDefeat()
 
 	}
 }
-
-
-
