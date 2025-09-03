@@ -13,11 +13,14 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameHUD.h"
 #include "TransformComponent.h"
+#include "AbilitySystemInterface.h"
 #include "Shape.generated.h"
 
 /**
  * 
  */
+
+class UShapeAbilitySystemComponent;
 
 USTRUCT()
 struct FShapeLevelData : public FTableRowBase
@@ -36,13 +39,15 @@ struct FShapeLevelData : public FTableRowBase
 };
 
 UCLASS()
-class SHAPE_SCIENCE_JAM_API AShape : public APaperCharacter, public ICombatInterface
+class SHAPE_SCIENCE_JAM_API AShape : public APaperCharacter, public ICombatInterface, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 	
 public: 
 	// Sets default values for this character's properties
 	AShape();
+
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 protected: 
 	// Called when the game starts or when spawned
@@ -106,6 +111,9 @@ protected:
 
 	void OnHealthUpdate();
 
+	UPROPERTY()
+	TObjectPtr<UShapeAbilitySystemComponent> AbilitySystemComponent;
+
 public:
 	/** Property replication */
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
@@ -122,9 +130,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UBoxComponent* BoxComponent;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	USpringArmComponent* SpringArmComponent;
 
 	// Index of shape so it doesn't transform into itself
 	UPROPERTY(EditDefaultsOnly)
