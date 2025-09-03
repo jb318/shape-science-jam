@@ -13,7 +13,8 @@
 				"CoreUObject",
 				"Paper2D",
 				"UMG",
-				"AIModule"
+				"AIModule",
+				"GameplayAbilities"
 			]
 		}
 	],

@@ -6,24 +6,18 @@
 #include "InteractInterface.h"
 #include "Net/UnrealNetwork.h"
 #include "Engine/Engine.h"
+#include "ShapeAbilitySystemComponent.h"
 
 AShape::AShape()
 {
 	// Creates spring arm and camera
-	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	
-	// Properties for spring arm component
-	SpringArmComponent->SetupAttachment(RootComponent);
-	SpringArmComponent->TargetArmLength = 960.f;
-	SpringArmComponent->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
-	SpringArmComponent->bInheritPitch = false;
-	SpringArmComponent->bInheritYaw = false;
-	SpringArmComponent->bInheritRoll = false;
 
 	// Properties for camera component
-	CameraComponent->SetupAttachment(SpringArmComponent);
-	CameraComponent->SetRelativeScale3D(FVector(0.2f, 0.2f, 0.2f));
+	CameraComponent->SetRelativeLocation(FVector(0.f, 960.f, 0.f));
+	CameraComponent->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
+	CameraComponent->SetRelativeScale3D(FVector(1.f, 1.f, 1.f));
+	CameraComponent->SetupAttachment(RootComponent);
 
 	// Sets the capsule size
 	GetCapsuleComponent()->SetCapsuleSize(34.f, 34.f);
@@ -35,12 +29,16 @@ AShape::AShape()
 	CurrentHealth = MaxHealth;
 
 	// Network replication settings
-	bReplicates = true;
 	SetReplicates(true);
 	SetReplicateMovement(true);
 
 	// Components
 	TransformComp = CreateDefaultSubobject<UTransformComponent>("Transform Component");
+}
+
+UAbilitySystemComponent* AShape::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
 }
 
 void AShape::BeginPlay()
