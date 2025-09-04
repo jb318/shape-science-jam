@@ -32,7 +32,7 @@ protected:
 	UPaperFlipbookComponent* Flipbook;
 
 	// Item value (i.e. a value of 7 on invincibility would give the player 7 seconds of invincibility
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float ItemVal = 7.f;
 
 	// From the interact interface

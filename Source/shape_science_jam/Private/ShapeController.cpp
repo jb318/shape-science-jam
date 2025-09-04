@@ -151,7 +151,7 @@ void AShapeController::RestoreHealth()
 	if (HUD) {
 		HUD->ToggleWidget();
 		if (Player) {
-			HUD->SetHealthPercent(Player->CurrentHealth, Player->MaxHealth);
+			HUD->UpdateHealthDisplay(Player->CurrentHealth, Player->MaxHealth);
 		}
 
 	}
@@ -259,13 +259,9 @@ void AShapeController::ChangeShape(int XValue, int YValue, FVector PlayerLocatio
 		default:
 			break;
 		}
-		for (int i = 0; i < sizeof(AccessibleShapes) / sizeof(AccessibleShapes[0]); i++) {
-			if (i == ControlledShape->ShapeIndex) {
-				if (HUD && AccessibleShapes[i]) {
-					HUD->SetHealthPercent(AccessibleShapes[i]->CurrentHealth, AccessibleShapes[i]->MaxHealth);
-				}
-			}
-		}
+		
+		if (HUD)
+			HUD->UpdateHealthDisplay(Player->CurrentHealth, Player->MaxHealth, Player->ShapeIndex);
 
 		// Prevent players from moving for a short time when changing shapes
 		ControlledShape->InputDisabled = true;

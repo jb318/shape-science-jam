@@ -23,10 +23,10 @@ void AGameHUD::CreatePlayerWidget()
 	}
 }
 
-void AGameHUD::SetHealthPercent(float MinimumHealth, float MaximumHealth)
+void AGameHUD::UpdateHealthDisplay(float MinimumHealth, float MaximumHealth, int ShapeIndex)
 {
 	if (PlayerWidget) {
-		PlayerWidget->SetHealthBar(MinimumHealth, MaximumHealth);
+		PlayerWidget->UpdateHealthImage(MinimumHealth, MaximumHealth, ShapeIndex);
 	}
 	
 }

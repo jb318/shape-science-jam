@@ -22,22 +22,6 @@
 
 class UShapeAbilitySystemComponent;
 
-USTRUCT()
-struct FShapeLevelData : public FTableRowBase
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shape Stats")
-	int Level;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shape Stats")
-	float MaxHealth;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shape Stats")
-	float MaxExperience;
-
-};
-
 UCLASS()
 class SHAPE_SCIENCE_JAM_API AShape : public APaperCharacter, public ICombatInterface, public IAbilitySystemInterface
 {
@@ -81,7 +65,7 @@ protected:
 	void MakeInvincibleTimer();
 
 	// Adds amount of experience passed through to shapes experience 
-	void AddExperience(float amount);
+	void IncrementDiamondCountOnHUD(float amount);
 
 	// Controls animation to be played when a hit is successful
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
@@ -90,13 +74,6 @@ protected:
 	// How long shape change lasts for timer
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float ShapeChangeDuration;
-
-	// Data table reference
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shape Level Data")
-	UDataTable* ShapeDT;
-
-	// Individual row from the data table reference
-	FShapeLevelData* row;
 
 	// Level of the shape, change the starting level in editor
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shape Level Data")
@@ -123,7 +100,7 @@ public:
 	float CurrentHealth;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Stats")
-	float MaxHealth = 3.f;
+	float MaxHealth = 4.f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UCameraComponent* CameraComponent;
