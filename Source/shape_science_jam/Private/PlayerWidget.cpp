@@ -10,26 +10,7 @@ UPlayerWidget::UPlayerWidget(const FObjectInitializer& ObjectInitializer) : Supe
 void UPlayerWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	SetHealthBar(3.f, 3.f);
-}
 
-void UPlayerWidget::SetHealthBar(float current, float max)
-{
-	if (HealthBar) {
-		HealthBar->SetPercent(current / max);
-	}
-}
+	UpdateHealthImage(4.f, 4.f);
 
-void UPlayerWidget::SetExperienceBar(float current, float max)
-{
-	if (ExperienceBar) {
-		ExperienceBar->SetPercent(current / max);
-	}
-}
-
-void UPlayerWidget::UpdateObjectiveBar_Implementation()
-{
-	// Incrememnt Objective Count
-	ObjectiveCount++;
-	
 }

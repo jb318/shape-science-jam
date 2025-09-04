@@ -5,11 +5,11 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/ProgressBar.h"
+#include "Components/TextBlock.h"
 #include "PlayerWidget.generated.h"
 
-/**
- * 
- */
+class UImage;
+
 UCLASS()
 class SHAPE_SCIENCE_JAM_API UPlayerWidget : public UUserWidget
 {
@@ -22,30 +22,52 @@ public:
 	// Override NativeConstruct for C++ initialization
 	virtual void NativeConstruct() override;
 
-	// Health bar
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(BindWidget))
-	class UProgressBar* HealthBar;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* ObjectiveCountText;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	class UProgressBar* ExperienceBar;
+	UTextBlock* DiamondCountText;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	class UProgressBar* AttackCoolDown;
+	UImage* ObjectiveImage_Circle;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* ObjectiveImage_Square;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* ObjectiveImage_Triangle;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* ObjectiveImage_Star;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	class UTextBlock* ObjectiveCountText;
+	UImage* HealthImage_1;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* HealthImage_2;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* HealthImage_3;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* HealthImage_4;
 
-	void SetHealthBar(float current, float max);
-	void SetExperienceBar(float current, float max);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* DiamondImage;
 
-	// Updates the objective bar
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void UpdateObjectiveBar();
+	// Updates the objectives
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateDiamondCount();
 
-	void UpdateObjectiveBar_Implementation();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateHealthImage(float current, float max, int ShapeIndex = -1);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateObjectiveImage(int ObjectiveIndex);
 
 	// Keeps track of objective
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int ObjectiveCount = 0;
 	
 };

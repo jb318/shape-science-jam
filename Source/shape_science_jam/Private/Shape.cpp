@@ -21,7 +21,7 @@ AShape::AShape()
 
 	// Sets the capsule size
 	GetCapsuleComponent()->SetCapsuleSize(34.f, 34.f);
-	
+
 	// Box component
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
 	BoxComponent->SetupAttachment(RootComponent);
@@ -45,21 +45,8 @@ void AShape::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (ShapeDT) {
-		// Get the corresponding row you want the shape's level to be
-		RowNames = ShapeDT->GetRowNames();
-		if (RowNames.IsValidIndex(ShapeLevelIndex)) {
-			
-			row = ShapeDT->FindRow<FShapeLevelData>(RowNames[ShapeLevelIndex], "");
-		}
-		
-	}	
-	else {
-		GEngine->AddOnScreenDebugMessage(0, 2.f, FColor::Red, FString::Printf(TEXT("Data table not set")));
-	}
-
 	// Binds the item overlap event with the box component
-	if (BoxComponent) 
+	if (BoxComponent)
 		BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AShape::OnOverlapItemBegin);
 
 	// Setting variables on player widget
@@ -79,26 +66,11 @@ void AShape::MakeInvincibleTimer()
 	GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Red, TEXT("Player no longer invincible"));
 }
 
-void AShape::AddExperience(float amount)
+void AShape::IncrementDiamondCountOnHUD(float amount)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Gained %.0f experience"), amount));
-	// update player current experience with the amount provided
-	CurrentExperience += amount;
-	if (row) {
-		if (CurrentExperience >= MaxExperience) {
-			LevelUp();
-			MaxHealth += 0.5;
-			CurrentHealth = MaxHealth;
-			if (HUD) {
-				if (HUD->PlayerWidget)
-					HUD->PlayerWidget->SetExperienceBar(MaxHealth + 0.5, MaxHealth + 0.5);
-			}
-			
-		}
-		if (HUD) {
-			if (HUD->PlayerWidget)
-				HUD->PlayerWidget->SetExperienceBar(CurrentExperience, MaxExperience);
-		}
+	if (HUD) {
+		if (HUD->PlayerWidget)
+			HUD->PlayerWidget->UpdateDiamondCount();
 	}
 }
 
@@ -161,18 +133,18 @@ void AShape::OnOverlapItemBegin(UPrimitiveComponent* OverlappedComponent, AActor
 					GetWorld()->GetTimerManager().SetTimer(InvincibilityTimer, this, &AShape::MakeInvincibleTimer, InterfaceItem->ItemValue(), false);
 				}
 				if (ItemName == TEXT("Experience")) {
-					AddExperience(InterfaceItem->ItemValue());
+					IncrementDiamondCountOnHUD(InterfaceItem->ItemValue());
 				}
 				if (ItemName == TEXT("Objective")) {
-					
+
 					if (IInteractInterface* PlayerController = Cast<IInteractInterface>(GetController())) {
 						GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Red, TEXT("Player picked up objective"));
 						PlayerController->UpdateObjective();
 					}
-					
+
 					if (HUD) {
 						if (HUD->PlayerWidget) {
-							HUD->PlayerWidget->UpdateObjectiveBar_Implementation();
+							HUD->PlayerWidget->UpdateObjectiveImage(InterfaceItem->ItemValue());
 						}
 					}
 				}
@@ -190,7 +162,7 @@ void AShape::Attack_Implementation()
 		CoolDownActive = true;
 		FTimerHandle CoolDownTimer;
 		GetWorld()->GetTimerManager().SetTimer(CoolDownTimer, this, &AShape::CoolDown, AttackCoolDown, false);
-	}	
+	}
 }
 
 void AShape::SpecialMove_Implementation()
@@ -199,130 +171,88 @@ void AShape::SpecialMove_Implementation()
 	SpecialMove();
 }
 
-void AShape::LevelUp()
-{
-	// Sets players hp to max at next level, increases level, and properly subtracts experience from current level
-	// This function should not be called by the AI
-	ShapeLevelIndex++;
-	if (ShapeLevelIndex < RowNames.Num()) {
-		// Doing multiple validity checks to ensure the engine crashes under no circumstances
-		if (row) {
-			
-		}
-		CurrentExperience -= MaxExperience;
-		MaxExperience += 10;
-		row = ShapeDT->FindRow<FShapeLevelData>(RowNames[ShapeLevelIndex], "");
-		if (row) {
-			
-			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Congrats you have just leveled up!  Your new max health is: %.1f"), CurrentHealth));
-		}
-	}
-}
-
 void AShape::SetHealth(float amount)
 {
-	// Only works on player
-	if (GetController() == GetWorld()->GetFirstPlayerController()) {
-		// amount can be a positive value such as when interacted with health pickup or negative when receiving damage
-		if (row) {
-			if (CurrentHealth + amount < MaxHealth && CurrentHealth + amount > 0) {
-				CurrentHealth += amount;
-				OnHealthUpdate();
-			}
-			else if (CurrentHealth + amount >= MaxHealth) {
-				CurrentHealth = MaxHealth;
-				OnHealthUpdate();
-			}
-			else {
-				GEngine->AddOnScreenDebugMessage(-3, 5.f, FColor::Red, TEXT("Warning, you are below 0 hp"));
-			}
-			// Update widget
-			if (HUD) {
-				if (HUD->PlayerWidget) {
-					HUD->PlayerWidget->SetHealthBar(CurrentHealth, MaxHealth);
-				}
-			}
-		}
-	}
-	
+	if (CurrentHealth + amount > MaxHealth)
+		CurrentHealth = MaxHealth;
+	else if (CurrentHealth + amount <= 0)
+		CharacterDefeat();
+	else
+		CurrentHealth += amount;
 }
 
 void AShape::DamageCharacter(float amount, bool IsProjectile)
 {
-	
+
 	if (!Invincible) {
 		// Executes damage no matter what on melee attack so long as shape is not invincible
 		if (!IsProjectile) {
-			if (row) {
-				if (CurrentHealth - amount > 0) {
-					ImmuneToProjectile = true;
-					InputDisabled = true;
-					CurrentHealth -= amount;
-					// Only update player widget if its the player character taking damage
-					if (GetController() == GetWorld()->GetFirstPlayerController()) {
-						// Set health
-						if (HUD) {
-							if (HUD->PlayerWidget) {
-								HUD->PlayerWidget->SetHealthBar(CurrentHealth, MaxHealth);
-							}
+			if (CurrentHealth - amount > 0) {
+				ImmuneToProjectile = true;
+				InputDisabled = true;
+				CurrentHealth -= amount;
+				// Only update player widget if its the player character taking damage
+				if (GetController() == GetWorld()->GetFirstPlayerController()) {
+					// Set health
+					if (HUD) {
+						if (HUD->PlayerWidget) {
+							HUD->UpdateHealthDisplay(CurrentHealth, MaxHealth, ShapeIndex);
 						}
 					}
 				}
+			}
+			else {
+				if (GetController() == GetWorld()->GetFirstPlayerController()) {
+					FTimerHandle DeathTimer;
+					GetWorld()->GetTimerManager().SetTimer(DeathTimer, this, &AShape::CharacterDefeat, 0.25f, false);
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Player controlled character dead"));
+				}
 				else {
-					if (GetController() == GetWorld()->GetFirstPlayerController()) {
-						FTimerHandle DeathTimer;
-						GetWorld()->GetTimerManager().SetTimer(DeathTimer, this, &AShape::CharacterDefeat, 0.25f, false);
-						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Player controlled character dead"));
-					}
-					else {
-						Destroy();
-						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("AI controlled character dead"));
-					}
+					Destroy();
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("AI controlled character dead"));
 				}
 			}
+
 		}
 		// Only damages if shape is not invincible
 		if (IsProjectile && !ImmuneToProjectile) {
-			
+
 			// Set projectile immunity to true so damage instance happens only once, reset once damage animation 
-			if (row) {
-				if (CurrentHealth - amount > 0) {
-					InputDisabled = true;
-					CurrentHealth -= amount;
-					// Only update player widget if its the player character taking damage
-					if (GetController() == GetWorld()->GetFirstPlayerController()) {
-						// Set health
-						if (HUD) {
-							if (HUD->PlayerWidget) {
-								HUD->PlayerWidget->SetHealthBar(CurrentHealth, MaxHealth);
-							}
+			if (CurrentHealth - amount > 0) {
+				InputDisabled = true;
+				CurrentHealth -= amount;
+				// Only update player widget if its the player character taking damage
+				if (GetController() == GetWorld()->GetFirstPlayerController()) {
+					// Set health
+					if (HUD) {
+						if (HUD->PlayerWidget) {
+							HUD->UpdateHealthDisplay(CurrentHealth, MaxHealth, ShapeIndex);
 						}
 					}
 				}
-				else {
-					if (GetController() == GetWorld()->GetFirstPlayerController()) {
-						FTimerHandle DeathTimer;
-						GetWorld()->GetTimerManager().SetTimer(DeathTimer, this, &AShape::CharacterDefeat, 0.25f, false);
-						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Player controlled character dead"));
-					}
-					else {
-						Destroy();
-						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("AI controlled character dead"));
-					}
-					
-				}
 			}
-			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Current health after attack: %.1f"), CurrentHealth));
+			else {
+				if (GetController() == GetWorld()->GetFirstPlayerController()) {
+					FTimerHandle DeathTimer;
+					GetWorld()->GetTimerManager().SetTimer(DeathTimer, this, &AShape::CharacterDefeat, 0.25f, false);
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Player controlled character dead"));
+				}
+				else {
+					Destroy();
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("AI controlled character dead"));
+				}
+
+			}
 		}
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Current health after attack: %.1f"), CurrentHealth));
 	}
-	
 }
 
 void AShape::HitReaction(FVector LaunchVelocity)
 {
 	// Add knockback
 	LaunchCharacter(LaunchVelocity, false, false);
-	
+
 	// Play character damage animation
 	PlayDamageAnimation();
 }
