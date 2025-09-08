@@ -4,9 +4,6 @@
 #include "Components/CapsuleComponent.h"
 #include "CombatInterface.h"
 #include "InteractInterface.h"
-#include "Net/UnrealNetwork.h"
-#include "Engine/Engine.h"
-#include "ShapeAbilitySystemComponent.h"
 
 AShape::AShape()
 {
@@ -33,12 +30,7 @@ AShape::AShape()
 	SetReplicateMovement(true);
 
 	// Components
-	TransformComp = CreateDefaultSubobject<UTransformComponent>("Transform Component");
-}
-
-UAbilitySystemComponent* AShape::GetAbilitySystemComponent() const
-{
-	return AbilitySystemComponent;
+	ShapeAbilityComponent = CreateDefaultSubobject<UShapeAbilityComponent>("Transform Component");
 }
 
 void AShape::BeginPlay()
@@ -72,47 +64,6 @@ void AShape::IncrementDiamondCountOnHUD(float amount)
 		if (HUD->PlayerWidget)
 			HUD->PlayerWidget->UpdateDiamondCount();
 	}
-}
-
-void AShape::OnRep_CurrentHealth()
-{
-	OnHealthUpdate();
-}
-
-void AShape::OnHealthUpdate()
-{
-	// Client-specific functionality
-	if (IsLocallyControlled())
-	{
-		FString healthMessage = FString::Printf(TEXT("You now have %f health remaining."), CurrentHealth);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, healthMessage);
-
-		if (CurrentHealth <= 0)
-		{
-			FString deathMessage = FString::Printf(TEXT("You have been killed."));
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, deathMessage);
-		}
-	}
-
-	//Server-specific functionality
-	if (GetLocalRole() == ROLE_Authority)
-	{
-		FString healthMessage = FString::Printf(TEXT("%s now has %f health remaining."), *GetFName().ToString(), CurrentHealth);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, healthMessage);
-	}
-
-	//Functions that occur on all machines.
-	/*
-		Any special functionality that should occur as a result of damage or death should be placed here.
-	*/
-}
-
-void AShape::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	// Replicate current health.
-	DOREPLIFETIME(AShape, CurrentHealth);
 }
 
 void AShape::OnOverlapItemBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -168,7 +119,11 @@ void AShape::Attack_Implementation()
 void AShape::SpecialMove_Implementation()
 {
 	// Calls special move for each child when Super::SpecialMove_Implementation is used
-	SpecialMove();
+	if (ShapeAbilityComponent)
+	{
+		ShapeAbilityComponent->SpecialMoveAnimationCall();
+		GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Green, TEXT("Special Move called"));
+	}
 }
 
 void AShape::SetHealth(float amount)
@@ -252,19 +207,7 @@ void AShape::HitReaction(FVector LaunchVelocity)
 {
 	// Add knockback
 	LaunchCharacter(LaunchVelocity, false, false);
-
-	// Play character damage animation
-	PlayDamageAnimation();
-}
-
-void AShape::RPCToggleShapeVisibility_Implementation(bool SetHidden)
-{
-	MulticastShapeVisibility(SetHidden);
-}
-
-void AShape::MulticastShapeVisibility_Implementation(bool SetHidden)
-{
-	GetSprite()->SetHiddenInGame(SetHidden);
+	ShapeAbilityComponent->DamageAnimationCall();
 }
 
 void AShape::CharacterDefeat()
