@@ -33,7 +33,7 @@ void AShapeController::BeginPlay()
 	}
 }
 
-// Ensures replication and local use of accessible shapes array
+// DO NOT DELETE: Ensures replication and local use of accessible shapes array
 void AShapeController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -49,8 +49,6 @@ void AShapeController::PossessRequest_Implementation(AShapeController* LocalShap
 	if (AShape* ControlledShape = Cast<AShape>(GetPawn())) {
 
 		if (ControlledShape->ShapeKey != FVector2d(ShapeKeyX, ShapeKeyY) && AllowedSwitch) {
-
-			// Allows switch only when character is grounded and inputs are enabled
 			if (!ControlledShape->InputDisabled && !ControlledShape->GetCharacterMovement()->IsFalling() && !ControlledShape->SpecialMoveClicked && ControlledShape->CanChangeShape) {
 				ControlledShape->Invincible = true;
 				ControlledShape->InputDisabled = true;
@@ -61,16 +59,13 @@ void AShapeController::PossessRequest_Implementation(AShapeController* LocalShap
 				if (!IsLocalController())
 					AssignShapeDelay = 1.0125f;
 
-				// Start the shape change animation inside shape blueprints
-				ControlledShape->ChangeShapeStart();
+				ControlledShape->ShapeAbilityComponent->TransformOutAnimationCall();
 
-				// Set a timer for shape switch to begin
 				FTimerDelegate PoolShapeDelegate;
 				FTimerHandle PoolShapeTimer;
 				PoolShapeDelegate.BindUObject(this, &AShapeController::PoolShape, ShapeKey);
 				GetWorld()->GetTimerManager().SetTimer(PoolShapeTimer, PoolShapeDelegate, 1.0f, false);
 
-				// Location and orientation of former shape for incoming shape to inherit
 				FVector PlayerLocation = ControlledShape->GetActorLocation();
 				FRotator PlayerRotation = ControlledShape->GetActorRotation();
 
@@ -99,8 +94,8 @@ void AShapeController::PoolShape(int index)
 {
 	// Push controlled shape out on change after a second
 	if (AccessibleShapes[index]) {
-		if (IsLocalController() && AccessibleShapes[index]->TransformComp)
-			AccessibleShapes[index]->TransformComp->TransformActor(ShapePoolPoints[index]);
+		if (IsLocalController() && AccessibleShapes[index]->ShapeAbilityComponent)
+			AccessibleShapes[index]->ShapeAbilityComponent->TransformActor(ShapePoolPoints[index]);
 		else if (!IsLocalController()) {
 			AccessibleShapes[index]->SetActorLocation(ShapePoolPoints[index]);
 		}
@@ -169,15 +164,14 @@ void AShapeController::UpdateObjective()
 
 void AShapeController::AssignPlayer(int ShapeIndex, FVector Location, FRotator Rotation)
 {
-	if (AccessibleShapes[ShapeIndex] && AccessibleShapes[ShapeIndex]->TransformComp) {
+	if (AccessibleShapes[ShapeIndex] && AccessibleShapes[ShapeIndex]->ShapeAbilityComponent) {
 		// Possess and set player variable to the appropriate shape
 		Possess(AccessibleShapes[ShapeIndex]);
 		Player = AccessibleShapes[ShapeIndex];
 
-		AccessibleShapes[ShapeIndex]->TransformComp->TransformActor(Location, Rotation);
+		AccessibleShapes[ShapeIndex]->ShapeAbilityComponent->TransformActor(Location, Rotation);
 
 		ShapeKey = ShapeIndex;
-		Player->RPCToggleShapeVisibility(false);
 	}
 	else {
 		if (!AccessibleShapes[ShapeIndex])
@@ -192,7 +186,6 @@ void AShapeController::Move(const FInputActionValue& value)
 	// Obtain the axis value of the movement input (1 or -1)
 	float MovementDirection = value.Get<float>();
 
-	// Cast to shape since Player variable does not want to cooperate
 	if (AShape* ControlledShape = Cast<AShape>(GetPawn())) {
 		if (!ControlledShape->CannotMove && !ControlledShape->InputDisabled) {
 			ControlledShape->AddMovementInput(ControlledShape->GetActorForwardVector(), MovementDirection);
@@ -202,7 +195,6 @@ void AShapeController::Move(const FInputActionValue& value)
 
 void AShapeController::Attack(const FInputActionValue& value)
 {
-	// Perform validity checks of player and then call corresponding functions
 	if (AShape* ControlledShape = Cast<AShape>(GetPawn())) {
 		if (!ControlledShape->InputDisabled) {
 			ControlledShape->Attack_Implementation();
@@ -223,19 +215,16 @@ void AShapeController::ChangeShape(int XValue, int YValue, FVector PlayerLocatio
 {
 	// Doing all of these casts since Player variable does not validate on client controllers in network multiplayer
 	if (AShape* ControlledShape = Cast<AShape>(GetPawn())) {
-		ControlledShape->RPCToggleShapeVisibility(true);
 		// Switch the shape if X returned a value and update ShapeIndex to the one that corresponds with new shape
 		switch (XValue) {
 		case -1:
 			if (AccessibleShapes[3]) {
 				AssignPlayer(3, PlayerLocation, PlayerRotation);
-				Player->ChangeShapeEnd();
 			}
 			break;
 		case 1:
 			if (AccessibleShapes[0]) {
 				AssignPlayer(0, PlayerLocation, PlayerRotation);
-				Player->ChangeShapeEnd();
 			}
 			break;
 		default:
@@ -247,27 +236,22 @@ void AShapeController::ChangeShape(int XValue, int YValue, FVector PlayerLocatio
 		case -1:
 			if (AccessibleShapes[1]) {
 				AssignPlayer(1, PlayerLocation, PlayerRotation);
-				Player->ChangeShapeEnd();
 			}
 			break;
 		case 1:
 			if (AccessibleShapes[2]) {
 				AssignPlayer(2, PlayerLocation, PlayerRotation);
-				Player->ChangeShapeEnd();
 			}
 			break;
 		default:
 			break;
 		}
-		
+		Player->ShapeAbilityComponent->TransformInAnimationCall();
 		if (HUD)
 			HUD->UpdateHealthDisplay(Player->CurrentHealth, Player->MaxHealth, Player->ShapeIndex);
 
-		// Prevent players from moving for a short time when changing shapes
 		ControlledShape->InputDisabled = true;
 		ControlledShape->CannotMove = true;
-
-		// Can be punished immediately after changing shape however, prevents thoughtless spamming
 		ControlledShape->Invincible = false;
 	}
 }
