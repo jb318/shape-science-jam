@@ -63,6 +63,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool InAttackAnimation = false;
 
+	UFUNCTION(Server, Reliable)
+	void SwitchGravityRequest();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void SwitchGravityMulticast();
+
 private:
 	void SwitchGravity();
 

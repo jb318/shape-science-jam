@@ -30,7 +30,7 @@ AShape::AShape()
 	SetReplicateMovement(true);
 
 	// Components
-	ShapeAbilityComponent = CreateDefaultSubobject<UShapeAbilityComponent>("Transform Component");
+	ShapeAbilityComponent = CreateDefaultSubobject<UShapeAbilityComponent>("Shape Ability Component");
 }
 
 void AShape::BeginPlay()
@@ -139,7 +139,7 @@ void AShape::SetHealth(float amount)
 void AShape::DamageCharacter(float amount, bool IsProjectile)
 {
 
-	if (!Invincible) {
+	/*if (!Invincible) {
 		// Executes damage no matter what on melee attack so long as shape is not invincible
 		if (!IsProjectile) {
 			if (CurrentHealth - amount > 0) {
@@ -201,7 +201,14 @@ void AShape::DamageCharacter(float amount, bool IsProjectile)
 		}
 		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Current health after attack: %.1f"), CurrentHealth));
 	}
+	*/
+	if (ShapeAbilityComponent)
+		ShapeAbilityComponent->DamageAnimationCall();
+	else
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("Can't play damage animation as Shape Ability Component is not set"));
+	
 }
+		
 
 void AShape::HitReaction(FVector LaunchVelocity)
 {

@@ -5,6 +5,12 @@
 
 ASquare::ASquare()
 {
+	// Physical Properties
+	GetCharacterMovement()->MaxWalkSpeed = 500.0;
+	GetCharacterMovement()->AirControl = 0.25;
+	GetCharacterMovement()->GravityScale = 0.75;
+	GetCharacterMovement()->FallingLateralFriction = 1.0;
+
 	ShapeIndex = 1;
 }
 
@@ -24,9 +30,7 @@ void ASquare::SpecialMove_Implementation()
 
 	FTimerHandle SwitchGravityTimer;
 
-	// Calls invert gravity after the time in special move delay expires if Input is not disabled
 	if (!InputDisabled)
-		// Disables other moves and animations from being used on startup
 		InputDisabled = true;
 		GetWorld()->GetTimerManager().SetTimer(SwitchGravityTimer, this, &ASquare::SwitchGravity, SpecialMoveDelay, false);
 
@@ -56,10 +60,13 @@ void ASquare::BeginPlay()
 		Projectile1->PoolLocation = PoolProjectileLocation1;
 		Projectile2->PoolLocation = PoolProjectileLocation2;
 	}
+	
+	InputDisabled = false;
 }
 
 void ASquare::OnOverlapProjectile(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	// Might need to delete this function entirely
 	if (InAttackAnimation) {
 		if (OtherActor) {
 			if (AProjectile* IncomingProjectile = Cast<AProjectile>(OtherActor)) {
@@ -117,9 +124,13 @@ void ASquare::OnOverlapProjectile(UPrimitiveComponent* OverlappedComponent, AAct
 	}
 }
 
-void ASquare::SwitchGravity()
+void ASquare::SwitchGravityRequest_Implementation()
 {
-	
+	SwitchGravityMulticast();
+}
+
+void ASquare::SwitchGravityMulticast_Implementation()
+{
 	// Switch gravity on player
 	if (!UsingAntiGravity) {
 		GetCharacterMovement()->SetGravityDirection(GetActorUpVector());
@@ -128,6 +139,8 @@ void ASquare::SwitchGravity()
 		FVector TransformLocation = GetSprite()->GetRelativeLocation();
 		TransformLocation.Z = 4.f;
 		GetSprite()->SetRelativeLocation(TransformLocation);
+		GetSprite()->SetWorldRotation(FRotator(180.f, 0.f, 0.f));
+		
 	}
 	else {
 		GetCharacterMovement()->SetGravityDirection(-1 * GetActorUpVector());
@@ -136,5 +149,19 @@ void ASquare::SwitchGravity()
 		FVector TransformLocation = GetSprite()->GetRelativeLocation();
 		TransformLocation.Z = -4.f;
 		GetSprite()->SetRelativeLocation(TransformLocation);
+		GetSprite()->SetWorldRotation(FRotator(0.f, 0.f, 0.f));
+	}
+}
+
+void ASquare::SwitchGravity()
+{
+	InputDisabled = false;
+	if (HasAuthority()) {
+		GEngine->AddOnScreenDebugMessage(1, 4.f, FColor::Blue, TEXT("Server"));
+		SwitchGravityMulticast();
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(1, 4.f, FColor::Blue, TEXT("Client"));
+		SwitchGravityRequest();
 	}
 }
