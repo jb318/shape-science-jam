@@ -51,7 +51,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AProjectile* Projectile2;
 
-	// random comment
+	UFUNCTION(Server, Reliable)
+	void FireProjectileRequest();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void FireProjectileMulticast();
 
 private:
 

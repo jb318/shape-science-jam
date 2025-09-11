@@ -8,7 +8,9 @@
 ACircle::ACircle()
 {
 	// Air control
-	GetCharacterMovement()->AirControl = 0.2;
+	GetCharacterMovement()->JumpZVelocity = 500.0;
+	GetCharacterMovement()->MaxWalkSpeed = 600.0;
+	GetCharacterMovement()->AirControl = 0.25;
 
 	ShapeIndex = 0;
 }

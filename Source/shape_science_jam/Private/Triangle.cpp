@@ -11,12 +11,31 @@ ATriangle::ATriangle()
 	FireComponent->SetupAttachment(GetSprite());
 	FireComponent->SetRelativeLocation(FVector(45.f, 0.f, 0.f));
 
+	GetCharacterMovement()->MaxWalkSpeed = 400;
+
 	ShapeIndex = 2;
 }
 
 void ATriangle::Attack_Implementation()
 {
 	Attack();
+	//if (!CoolDownActive && !InputDisabled && !GetCharacterMovement()->IsFalling()) {
+	//	CoolDownActive = true;
+	//	InputDisabled = true;
+	//	// Timers for both the attack delay and attack cool down
+	//	FTimerHandle CoolDownTimer;
+	//	FTimerHandle AttackTimer;
+	//	GetWorld()->GetTimerManager().SetTimer(CoolDownTimer, this, &ATriangle::CoolDown, AttackCoolDown, false);
+	//	GetWorld()->GetTimerManager().SetTimer(AttackTimer, this, &ATriangle::FireProjectile, AttackDelay, false);
+
+	//}
+	
+}
+
+void ATriangle::SpecialMove_Implementation()
+{
+	Super::SpecialMove_Implementation();
+	
 	if (!CoolDownActive && !InputDisabled && !GetCharacterMovement()->IsFalling()) {
 		CoolDownActive = true;
 		InputDisabled = true;
@@ -26,16 +45,6 @@ void ATriangle::Attack_Implementation()
 		GetWorld()->GetTimerManager().SetTimer(CoolDownTimer, this, &ATriangle::CoolDown, AttackCoolDown, false);
 		GetWorld()->GetTimerManager().SetTimer(AttackTimer, this, &ATriangle::FireProjectile, AttackDelay, false);
 
-	}
-	
-}
-
-void ATriangle::SpecialMove_Implementation()
-{
-	Super::SpecialMove_Implementation();
-	if (!InputDisabled && !GetCharacterMovement()->IsFalling()) {
-		// Disable after half a second or so.  Fire line trace and move or break actor in level through casting by interact interface
-		InputDisabled = true;
 	}
 	
 }
@@ -73,6 +82,23 @@ void ATriangle::CoolDown()
 
 void ATriangle::FireProjectile()
 {
+	if (HasAuthority()) {
+		FireProjectileMulticast();
+		GEngine->AddOnScreenDebugMessage(1, 4.f, FColor::Blue, TEXT("Server"));
+	}
+	else {
+		FireProjectileRequest();
+		GEngine->AddOnScreenDebugMessage(1, 4.f, FColor::Blue, TEXT("Client"));
+	}
+}
+
+void ATriangle::FireProjectileRequest_Implementation()
+{
+	FireProjectileMulticast();
+}
+
+void ATriangle::FireProjectileMulticast_Implementation()
+{
 	if (FacingRight) {
 		if (Projectile1 && Projectile2) {
 			Projectile1->FiredOnRightside = true;
@@ -97,7 +123,7 @@ void ATriangle::FireProjectile()
 			Projectile1->Fire(FacingRight);
 			ProjectileIndex++;
 			break;
-		case 1: 
+		case 1:
 			Projectile2->SetActorRotation(CurrentRotation);
 			Projectile2->SetActorLocation(FireComponent->GetComponentLocation());
 			Projectile2->Fire(FacingRight);

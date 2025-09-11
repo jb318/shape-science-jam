@@ -45,7 +45,7 @@ protected:
 	float SpecialMoveDelay = 0.125f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shape Moves")
-	float SpecialMoveAnimationDuration = 0.125f;
+	float SpecialMoveAnimationDuration = 0.25f;
 
 	// Determine the direction shape is facing for sprite orientation
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -129,9 +129,6 @@ public:
 	UPaperFlipbook* IdleAnimation;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animations")
-	UPaperFlipbook* MoveAnimation;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animations")
 	UPaperFlipbook* SpecialMoveAnimation;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animations")
@@ -164,7 +161,7 @@ public:
 	void ChangeShapeEnd();	
 
 	// Transform Actor Component class reference
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UShapeAbilityComponent* ShapeAbilityComponent;
 
 	// AI controller will call attack on members that have this set to true

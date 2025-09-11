@@ -19,6 +19,8 @@ AStar::AStar()
 	FireComponent3->SetupAttachment(GetSprite());
 
 	// Air controls
+	GetCharacterMovement()->JumpZVelocity = 300.0;
+	GetCharacterMovement()->MaxWalkSpeed = 300.0;
 	GetCharacterMovement()->AirControl = 0.75;
 	GetCharacterMovement()->GravityScale = 0.25;
 
@@ -29,18 +31,18 @@ AStar::AStar()
 void AStar::Attack_Implementation()
 {
 	Attack();
-	if (!SpecialMoveClicked) {
-		if (!CoolDownActive && !InputDisabled && !GetCharacterMovement()->IsFalling()) {
-			InputDisabled = true;
-			CoolDownActive = true;
-			// Timers for both the attack delay and attack cool down
-			FTimerHandle CoolDownTimer;
-			FTimerHandle AttackTimer;
-			GetWorld()->GetTimerManager().SetTimer(CoolDownTimer, this, &AStar::CoolDown, AttackCoolDown, false);
-			GetWorld()->GetTimerManager().SetTimer(AttackTimer, this, &AStar::FireProjectile, AttackDelay, false);
+	//if (!SpecialMoveClicked) {
+	//	if (!CoolDownActive && !InputDisabled && !GetCharacterMovement()->IsFalling()) {
+	//		InputDisabled = true;
+	//		CoolDownActive = true;
+	//		// Timers for both the attack delay and attack cool down
+	//		FTimerHandle CoolDownTimer;
+	//		FTimerHandle AttackTimer;
+	//		GetWorld()->GetTimerManager().SetTimer(CoolDownTimer, this, &AStar::CoolDown, AttackCoolDown, false);
+	//		GetWorld()->GetTimerManager().SetTimer(AttackTimer, this, &AStar::FireProjectile, AttackDelay, false);
 
-		}
-	}
+	//	}
+	//}
 }
 
 void AStar::SpecialMove_Implementation()
@@ -116,4 +118,6 @@ void AStar::FireProjectile()
 void AStar::Glide()
 {
 	LaunchCharacter(VerticalBoost, false, false);
+	SpecialMoveClicked = false;
+	InputDisabled = false;
 }
