@@ -31,6 +31,7 @@ AShape::AShape()
 
 	// Components
 	ShapeAbilityComponent = CreateDefaultSubobject<UShapeAbilityComponent>("Shape Ability Component");
+
 }
 
 void AShape::BeginPlay()

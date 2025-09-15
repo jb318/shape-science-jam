@@ -119,8 +119,8 @@ void AShapeController::SetupInputComponent()
 			if (MoveAction) {
 				Subsystem->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AShapeController::Move);
 			}
-			if (AttackAction) {
-				Subsystem->BindAction(AttackAction, ETriggerEvent::Started, this, &AShapeController::Attack);
+			if (InteractAction) {
+				Subsystem->BindAction(InteractAction, ETriggerEvent::Started, this, &AShapeController::Interact);
 			}
 			if (SpecialMoveAction) {
 				Subsystem->BindAction(SpecialMoveAction, ETriggerEvent::Started, this, &AShapeController::SpecialMove);
@@ -193,11 +193,22 @@ void AShapeController::Move(const FInputActionValue& value)
 	}
 }
 
-void AShapeController::Attack(const FInputActionValue& value)
+void AShapeController::Interact(const FInputActionValue& value)
 {
 	if (AShape* ControlledShape = Cast<AShape>(GetPawn())) {
 		if (!ControlledShape->InputDisabled) {
-			ControlledShape->Attack_Implementation();
+			FVector StartingLocation = ControlledShape->GetActorLocation();
+			FVector EndLocation = ControlledShape->GetActorRightVector() + 200.f;
+
+			FHitResult HitResult;
+			FCollisionQueryParams CollisionParams;
+			CollisionParams.AddIgnoredActor(ControlledShape);
+
+			if (GetWorld()->LineTraceSingleByChannel(HitResult, StartingLocation, EndLocation, ECC_Visibility, CollisionParams)) {
+				if (HitResult.GetActor()) {
+					DrawDebugLine(GetWorld(), StartingLocation, EndLocation, FColor::Red, false, 2.f);
+				}
+			}
 		}
 	}
 }

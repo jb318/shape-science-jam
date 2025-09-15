@@ -43,7 +43,7 @@ protected:
 	UInputAction* MoveAction;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
-	UInputAction* AttackAction;
+	UInputAction* InteractAction;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 	UInputAction* SpecialMoveAction;
@@ -122,7 +122,7 @@ public:
 private:
 	// Input functions and bindings
 	void Move(const FInputActionValue& value);
-	void Attack(const FInputActionValue& value);
+	void Interact(const FInputActionValue& value);
 	void SpecialMove(const FInputActionValue& value);
 	void OpenPauseMenu(const FInputActionValue& value);
 	void ShapeChangeSelect(const FInputActionValue& value);
@@ -137,12 +137,6 @@ private:
 
 	// reference to HUD
 	AGameHUD* HUD;
-
-	// Shape class instances to cast to
-	/*ACircle* Circle;
-	ASquare* Square;
-	ATriangle* Triangle;
-	AStar* Star;*/
 
 	// Each shape's pool point
 	FVector ShapePoolPoints[4] = {CirclePoolLocation, StarPoolLocation, TrianglePoolLocation, SquarePoolLocation};
