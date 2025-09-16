@@ -167,7 +167,7 @@ void UMultiplayerSessionsSubsystems::OnFindSessionsComplete(bool bWasSuccessful)
 		FString ResultString = FString::Printf(TEXT("Number of sessions found: %d"), Results.Num());
 		PrintString(ResultString);
 
-		for (FOnlineSessionSearchResult& Result : Results)
+		for (FOnlineSessionSearchResult Result : Results)
 		{
 			if (Result.IsValid())
 			{
@@ -195,7 +195,7 @@ void UMultiplayerSessionsSubsystems::OnFindSessionsComplete(bool bWasSuccessful)
 	}
 	else
 	{
-		PrintString(FString::Printf(TEXT("ServerName: %s, ID: %s, Ping: %d ms"), *ServerNameToFind, *CorrectResult->GetSessionIdStr(), CorrectResult->PingInMs));
+		PrintString("Could not find the correct server");
 		ServerNameToFind = "";
 	}
 }
