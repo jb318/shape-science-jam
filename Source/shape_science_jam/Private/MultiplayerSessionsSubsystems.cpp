@@ -142,8 +142,8 @@ void UMultiplayerSessionsSubsystems::OnDestroySessionComplete(FName SessionName,
 		if (CreateServerAfterDestroy)
 		{
 
-		CreateServerAfterDestroy = false;
-		CreateServer(DestroyServerName);
+			CreateServerAfterDestroy = false;
+			CreateServer(DestroyServerName);
 
 		}
 	}
