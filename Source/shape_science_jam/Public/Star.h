@@ -69,8 +69,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AProjectile* Projectile3;
 
-	void Glide();
+	void LaunchStar();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FVector VerticalBoost = FVector(0.f, 0.f, 200.f);
+	FVector LaunchVector;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void SetSpecialMoveFlipbook();
+
+	UPROPERTY(BlueprintReadWrite)
+	UPaperFlipbook* StarSpecialMove;
 };

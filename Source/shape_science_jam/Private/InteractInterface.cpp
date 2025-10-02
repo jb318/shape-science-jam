@@ -3,6 +3,7 @@
 
 #include "InteractInterface.h"
 
+UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 void IInteractInterface::Interact()
 {
 }

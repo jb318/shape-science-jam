@@ -47,12 +47,32 @@ void AStar::Attack_Implementation()
 
 void AStar::SpecialMove_Implementation()
 {
+	SetSpecialMoveFlipbook();
+
+	if (StarSpecialMove)
+		SpecialMoveAnimation = StarSpecialMove;
+
 	Super::SpecialMove_Implementation();
+
 	SpecialMoveClicked = true;
-	if (!InputDisabled && !GetCharacterMovement()->IsFalling()) {
+	
+	if (!InputDisabled) {
 		InputDisabled = true;
+		if (!GetCharacterMovement()->IsFalling()) {
+			SpecialMoveDelay = 0.25f;
+			SpecialMoveAnimationDuration = 0.33f;
+			LaunchVector = FVector(0.f, 0.f, 200.f);
+		}
+		else {
+			SpecialMoveDelay = 0.001f;
+			SpecialMoveAnimationDuration = 0.25;
+			LaunchVector = FVector(300.f, 0.f, 0.f);
+			if (!FacingRight) {
+				LaunchVector.X *= -1;
+			}
+		}
 		FTimerHandle GlideTimer;
-		GetWorld()->GetTimerManager().SetTimer(GlideTimer, this, &AStar::Glide, SpecialMoveDelay, false);
+		GetWorld()->GetTimerManager().SetTimer(GlideTimer, this, &AStar::LaunchStar, SpecialMoveDelay, false);
 	}
 }
 
@@ -115,9 +135,10 @@ void AStar::FireProjectile()
 	}
 }
 
-void AStar::Glide()
+void AStar::LaunchStar()
 {
-	LaunchCharacter(VerticalBoost, false, false);
+	LaunchCharacter(LaunchVector, false, false);
 	SpecialMoveClicked = false;
 	InputDisabled = false;
+
 }
