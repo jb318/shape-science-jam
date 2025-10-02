@@ -196,19 +196,8 @@ void AShapeController::Move(const FInputActionValue& value)
 void AShapeController::Interact(const FInputActionValue& value)
 {
 	if (AShape* ControlledShape = Cast<AShape>(GetPawn())) {
-		if (!ControlledShape->InputDisabled) {
-			FVector StartingLocation = ControlledShape->GetActorLocation();
-			FVector EndLocation = ControlledShape->GetActorRightVector() + 200.f;
-
-			FHitResult HitResult;
-			FCollisionQueryParams CollisionParams;
-			CollisionParams.AddIgnoredActor(ControlledShape);
-
-			if (GetWorld()->LineTraceSingleByChannel(HitResult, StartingLocation, EndLocation, ECC_Visibility, CollisionParams)) {
-				if (HitResult.GetActor()) {
-					DrawDebugLine(GetWorld(), StartingLocation, EndLocation, FColor::Red, false, 2.f);
-				}
-			}
+		if (!ControlledShape->InputDisabled && ControlledShape->ShapeAbilityComponent) {
+			ControlledShape->ShapeAbilityComponent->DirectInteract();
 		}
 	}
 }

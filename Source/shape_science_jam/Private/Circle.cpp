@@ -40,10 +40,10 @@ void ACircle::Attack_Implementation()
 void ACircle::SpecialMove_Implementation()
 {
 	Super::SpecialMove_Implementation();
-	SpecialMoveClicked = true;
+	
 	// Check if is falling is false otherwise jump will lock if clicked a second time in air
 	if (!InputDisabled && !GetCharacterMovement()->IsFalling()) {
-		/*InputDisabled = true;*/
+		SpecialMoveClicked = true;
 		FTimerHandle CircleJumpTimer;
 		GetWorld()->GetTimerManager().SetTimer(CircleJumpTimer, this, &ACircle::CircleJump, SpecialMoveDelay, false);
 	}

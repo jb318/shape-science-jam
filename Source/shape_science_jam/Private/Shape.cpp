@@ -2,6 +2,7 @@
 
 #include "Shape.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "CombatInterface.h"
 #include "InteractInterface.h"
 
@@ -122,8 +123,15 @@ void AShape::SpecialMove_Implementation()
 	// Calls special move for each child when Super::SpecialMove_Implementation is used
 	if (ShapeAbilityComponent)
 	{
-		ShapeAbilityComponent->SpecialMoveAnimationCall();
-		GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Green, TEXT("Special Move called"));
+		// Play special move animation when falling only on square or star
+		if (GetCharacterMovement()->IsFalling()) {
+			if (ShapeIndex == 1 || ShapeIndex == 3) {
+				ShapeAbilityComponent->SpecialMoveAnimationCall();
+			}
+		}
+		else {
+			ShapeAbilityComponent->SpecialMoveAnimationCall();
+		}
 	}
 }
 

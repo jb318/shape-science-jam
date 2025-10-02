@@ -43,4 +43,7 @@ public:
 	
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "RPC")
 	void RotateShapeToMovement(FRotator Rotation = FRotator(0.f, 0.f, 0.f));
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void DirectInteract();
 };

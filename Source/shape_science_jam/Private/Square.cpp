@@ -139,7 +139,7 @@ void ASquare::SwitchGravityMulticast_Implementation()
 		FVector TransformLocation = GetSprite()->GetRelativeLocation();
 		TransformLocation.Z = 4.f;
 		GetSprite()->SetRelativeLocation(TransformLocation);
-		GetSprite()->SetWorldRotation(FRotator(180.f, 0.f, 0.f));
+		GetSprite()->SetWorldRotation(FRotator(0.f, 0.f, 180.f));
 		
 	}
 	else {
