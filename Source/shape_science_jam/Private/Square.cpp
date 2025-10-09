@@ -157,11 +157,9 @@ void ASquare::SwitchGravity()
 {
 	InputDisabled = false;
 	if (HasAuthority()) {
-		GEngine->AddOnScreenDebugMessage(1, 4.f, FColor::Blue, TEXT("Server"));
 		SwitchGravityMulticast();
 	}
 	else {
-		GEngine->AddOnScreenDebugMessage(1, 4.f, FColor::Blue, TEXT("Client"));
 		SwitchGravityRequest();
 	}
 }
