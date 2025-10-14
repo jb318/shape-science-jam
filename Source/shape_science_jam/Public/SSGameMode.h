@@ -28,8 +28,6 @@ protected:
 	// Stores the player controllers on the server
 	AShapeController* PlayerControllers[2] = {};
 
-	void SpawnShapes(int ShapeIndex);
-
 	// Spawn locations for each of the shapes player will possess
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn Points")
 	FVector CircleSpawn = FVector(-100000.0, 0.f, -400000.0);
@@ -72,19 +70,20 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Shapes")
 	TSubclassOf<AStar> StarClass;
 
-	// Shape to begin game with for players 1 and 2
-	UPROPERTY(EditDefaultsOnly, Meta = (ClampMin = "0", ClampMax = "1"))
-	int FirstPlayer = 0;
-
-	UPROPERTY(EditDefaultsOnly, Meta = (ClampMin = "2", ClampMax = "3"))
-	int SecondPlayer = 1;
-
-	void AssignShapes(AShapeController* PC);
+	void AssignShapes(int StartingShapeIndex, int EndingShapeIndex, AShapeController* PC);
 
 	UPROPERTY(EditDefaultsOnly)
 	float AssignShapesDelay = 1.5f;
 
+public: 
+	// Shape that is assigned to player controller on begin play
+	UPROPERTY(EditDefaultsOnly, Meta = (ClampMin = "0", ClampMax = "1"))
+	int FirstPlayer = 0;
+
+	UPROPERTY(EditDefaultsOnly, Meta = (ClampMin = "2", ClampMax = "3"))
+	int SecondPlayer = 2;
+
 private:
-	int PlayerCount = 0;
+	int ShapeCount = 0;
 
 };

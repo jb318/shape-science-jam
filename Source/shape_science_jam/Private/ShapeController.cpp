@@ -15,6 +15,9 @@ void AShapeController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	FInputModeGameOnly GameOnly;
+	SetInputMode(GameOnly);
+
 	if (AShapeController* PC = Cast<AShapeController>(this)) {
 		// Enables possessed character to access the controllers Input Mapping Context and Inputs and use them in game
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer())) {
@@ -23,6 +26,7 @@ void AShapeController::BeginPlay()
 			if (PlayerInputContext) {
 
 				Subsystem->AddMappingContext(PlayerInputContext, 0);
+				
 			}
 		}
 	}
@@ -164,6 +168,7 @@ void AShapeController::UpdateObjective()
 
 void AShapeController::AssignPlayer(int ShapeIndex, FVector Location, FRotator Rotation)
 {
+	
 	if (AccessibleShapes[ShapeIndex] && AccessibleShapes[ShapeIndex]->ShapeAbilityComponent) {
 		// Possess and set player variable to the appropriate shape
 		Possess(AccessibleShapes[ShapeIndex]);
@@ -172,6 +177,7 @@ void AShapeController::AssignPlayer(int ShapeIndex, FVector Location, FRotator R
 		AccessibleShapes[ShapeIndex]->ShapeAbilityComponent->TransformActor(Location, Rotation);
 
 		ShapeKey = ShapeIndex;
+		
 	}
 	else {
 		if (!AccessibleShapes[ShapeIndex])
@@ -189,8 +195,10 @@ void AShapeController::Move(const FInputActionValue& value)
 	if (AShape* ControlledShape = Cast<AShape>(GetPawn())) {
 		if (!ControlledShape->CannotMove && !ControlledShape->InputDisabled) {
 			ControlledShape->AddMovementInput(ControlledShape->GetActorForwardVector(), MovementDirection);
+			
 		}
 	}
+	
 }
 
 void AShapeController::Interact(const FInputActionValue& value)
