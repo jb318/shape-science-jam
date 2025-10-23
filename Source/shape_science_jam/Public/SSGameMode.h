@@ -23,6 +23,8 @@ protected:
 
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 
+	virtual void Logout(AController* Exiting) override;
+
 	//virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
 
 	// Stores the player controllers on the server
@@ -74,6 +76,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	float AssignShapesDelay = 1.5f;
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void MakeWorldUnlit();
 
 public: 
 	// Shape that is assigned to player controller on begin play

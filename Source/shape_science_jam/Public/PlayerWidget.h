@@ -55,10 +55,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* DiamondImage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* FirstPlayerName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* SecondPlayerName;
+
+	// Keeps track of objective
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int ObjectiveCount = 0;
+
 	// Updates the objectives
 	UFUNCTION(BlueprintImplementableEvent)
 	void UpdateDiamondCount();
-
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void UpdateHealthImage(float current, float max, int ShapeIndex = -1);
@@ -66,8 +75,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void UpdateObjectiveImage(int ObjectiveIndex);
 
-	// Keeps track of objective
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int ObjectiveCount = 0;
+	void UpdatePlayerNames(FText Player1, FText Player2);
+
 	
 };
