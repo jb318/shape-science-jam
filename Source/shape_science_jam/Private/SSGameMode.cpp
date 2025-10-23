@@ -24,7 +24,8 @@ void ASSGameMode::PostLogin(APlayerController* NewPlayer)
 		
 		if (AShapeController* PC = Cast<AShapeController>(NewPlayer)) {
 			AssignShapes(ShapeCount, ShapeCount + 1, PC);
-			ShapeCount = ShapeCount + 2;
+			// Assign a value of two after host joins so the second player is able to set it's shape controllers shape index array members properly
+			ShapeCount = 2;
 		}
 		else {
 			GEngine->AddOnScreenDebugMessage(7, 2.f, FColor::Red, TEXT("Wrong player controller"));
@@ -34,11 +35,30 @@ void ASSGameMode::PostLogin(APlayerController* NewPlayer)
 		if (AShapeController* PC = Cast<AShapeController>(NewPlayer))
 			AssignShapes(0, 3, PC);
 	}
+	MakeWorldUnlit();
+}
 
+void ASSGameMode::Logout(AController* Exiting)
+{
+	Super::Logout(Exiting);
+
+	ENetMode CurrentNetMode = GetWorld()->GetNetMode();
+
+	if (CurrentNetMode == NM_ListenServer) {
+		if (AShapeController* PC = Cast<AShapeController>(Exiting)) {
+			GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, TEXT("Player logged out"));
+			for (int i = 0; i < sizeof(PC->AccessibleShapes) / sizeof(PC->AccessibleShapes[0]); i++) {
+				if (PC->AccessibleShapes[i]) {
+					PC->AccessibleShapes[i]->Destroy();
+				}
+			}
+		}
+	}
 }
 
 void ASSGameMode::AssignShapes(int StartingShapeIndex, int EndingShapeIndex, AShapeController* PC)
 {
+
 	PC->SpawnShapes(StartingShapeIndex, EndingShapeIndex, PC);
 	if (PC->IsLocalController()) {
 		PC->AssignPlayer(FirstPlayer, FirstPlayerSpawn, FirstPlayerRotation);

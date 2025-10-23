@@ -5,6 +5,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Net/UnrealNetwork.h" // Required for replication macros
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Rendering.h"
 
 AShapeController::AShapeController()
 {
@@ -14,6 +15,8 @@ AShapeController::AShapeController()
 void AShapeController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	URendering::SetViewMode(VMI_Unlit);
 
 	FInputModeGameOnly GameOnly;
 	SetInputMode(GameOnly);
@@ -108,7 +111,7 @@ void AShapeController::PoolShape(int index)
 		}
 	}
 	else {
-		GEngine->AddOnScreenDebugMessage(0, 3.f, FColor::Red, TEXT("No valid shape to transform too"));
+		// GEngine->AddOnScreenDebugMessage(0, 3.f, FColor::Red, TEXT("No valid shape to transform too"));
 	}
 
 }
@@ -312,7 +315,6 @@ void AShapeController::SpawnShapes(int FirstShapeIndex, int LastShapeIndex, ASha
 {
 	if (HasAuthority()) {
 		for (int i = FirstShapeIndex; i <= LastShapeIndex; i++) {
-			// GEngine->AddOnScreenDebugMessage(i + 5, 1.f, FColor::Yellow, TEXT("SPawning"));
 			// Take the argument and spawn the shape if class is assigned in blueprint
 			switch (i) {
 			case 0:

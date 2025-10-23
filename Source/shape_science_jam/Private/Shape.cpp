@@ -5,6 +5,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "CombatInterface.h"
 #include "InteractInterface.h"
+#include "ShapeState.h"
 
 AShape::AShape()
 {
@@ -78,6 +79,9 @@ void AShape::OnOverlapItemBegin(UPrimitiveComponent* OverlappedComponent, AActor
 				// Call the necessary functions depending on which item was overlapped
 				if (ItemName == TEXT("Health")) {
 					SetHealth(InterfaceItem->ItemValue());
+					if (AShapeState* ShapeState = Cast<AShapeState>(GetPlayerState())) {
+						ShapeState->UpdatePlayerHealth();
+					}
 				}
 				if (ItemName == TEXT("Invincibilty")) {
 					Invincible = true;
@@ -148,69 +152,6 @@ void AShape::SetHealth(float amount)
 void AShape::DamageCharacter(float amount, bool IsProjectile)
 {
 
-	/*if (!Invincible) {
-		// Executes damage no matter what on melee attack so long as shape is not invincible
-		if (!IsProjectile) {
-			if (CurrentHealth - amount > 0) {
-				ImmuneToProjectile = true;
-				InputDisabled = true;
-				CurrentHealth -= amount;
-				// Only update player widget if its the player character taking damage
-				if (GetController() == GetWorld()->GetFirstPlayerController()) {
-					// Set health
-					if (HUD) {
-						if (HUD->PlayerWidget) {
-							HUD->UpdateHealthDisplay(CurrentHealth, MaxHealth, ShapeIndex);
-						}
-					}
-				}
-			}
-			else {
-				if (GetController() == GetWorld()->GetFirstPlayerController()) {
-					FTimerHandle DeathTimer;
-					GetWorld()->GetTimerManager().SetTimer(DeathTimer, this, &AShape::CharacterDefeat, 0.25f, false);
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Player controlled character dead"));
-				}
-				else {
-					Destroy();
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("AI controlled character dead"));
-				}
-			}
-
-		}
-		// Only damages if shape is not invincible
-		if (IsProjectile && !ImmuneToProjectile) {
-
-			// Set projectile immunity to true so damage instance happens only once, reset once damage animation 
-			if (CurrentHealth - amount > 0) {
-				InputDisabled = true;
-				CurrentHealth -= amount;
-				// Only update player widget if its the player character taking damage
-				if (GetController() == GetWorld()->GetFirstPlayerController()) {
-					// Set health
-					if (HUD) {
-						if (HUD->PlayerWidget) {
-							HUD->UpdateHealthDisplay(CurrentHealth, MaxHealth, ShapeIndex);
-						}
-					}
-				}
-			}
-			else {
-				if (GetController() == GetWorld()->GetFirstPlayerController()) {
-					FTimerHandle DeathTimer;
-					GetWorld()->GetTimerManager().SetTimer(DeathTimer, this, &AShape::CharacterDefeat, 0.25f, false);
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Player controlled character dead"));
-				}
-				else {
-					Destroy();
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("AI controlled character dead"));
-				}
-
-			}
-		}
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Current health after attack: %.1f"), CurrentHealth));
-	}
-	*/
 	if (ShapeAbilityComponent)
 		ShapeAbilityComponent->DamageAnimationCall();
 	else
