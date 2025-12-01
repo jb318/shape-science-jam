@@ -1,0 +1,34 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\steamcorepro\\module.steamcorepro.9.cpp",
+        "ProvidedModule": "",
+        "PCH": "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\steamcorepro\\pch.steamcorepro.h.pch",
+        "Includes": [
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamprogamesearch.gen.cpp",
+            "f:\\ue_5.4\\ue_5.4\\engine\\source\\runtime\\coreuobject\\public\\uobject\\generatedcppincludes.h",
+            "f:\\ue_5.4\\ue_5.4\\engine\\source\\runtime\\coreuobject\\public\\uobject\\metadata.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamgamesearch\\steamprogamesearch.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamgamesearch\\steamgamesearchtypes.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamgamesearchtypes.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamprogamesearch.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamprogameserver.gen.cpp",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamgameserver\\steamprogameserver.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamgameserver\\steamgameservertypes.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamgameservertypes.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamprogameserver.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamproparties.gen.cpp",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamparties\\steamproparties.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamparties\\steampartiestypes.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steampartiestypes.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamproparties.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamremoteplay.gen.cpp",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamremoteplay\\steamremoteplay.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamremoteplay\\steamremoteplaytypes.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamremoteplaytypes.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamremoteplay.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

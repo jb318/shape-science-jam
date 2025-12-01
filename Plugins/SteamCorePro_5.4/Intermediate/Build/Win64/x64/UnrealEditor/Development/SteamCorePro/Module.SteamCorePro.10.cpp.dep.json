@@ -1,0 +1,23 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\steamcorepro\\module.steamcorepro.10.cpp",
+        "ProvidedModule": "",
+        "PCH": "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\steamcorepro\\pch.steamcorepro.h.pch",
+        "Includes": [
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamremoteplaytypes.gen.cpp",
+            "f:\\ue_5.4\\ue_5.4\\engine\\source\\runtime\\coreuobject\\public\\uobject\\generatedcppincludes.h",
+            "f:\\ue_5.4\\ue_5.4\\engine\\source\\runtime\\coreuobject\\public\\uobject\\metadata.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamremoteplay\\steamremoteplaytypes.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamremoteplaytypes.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamremotestorage.gen.cpp",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamremotestorage\\steamremotestorage.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamremotestorage\\steamremotestoragetypes.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamremotestoragetypes.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamremotestorage.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamremotestoragetypes.gen.cpp"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

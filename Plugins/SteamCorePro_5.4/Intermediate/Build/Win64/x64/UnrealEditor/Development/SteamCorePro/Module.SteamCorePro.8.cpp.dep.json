@@ -1,0 +1,37 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\steamcorepro\\module.steamcorepro.8.cpp",
+        "ProvidedModule": "",
+        "PCH": "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\steamcorepro\\pch.steamcorepro.h.pch",
+        "Includes": [
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamnetworkingutils.gen.cpp",
+            "f:\\ue_5.4\\ue_5.4\\engine\\source\\runtime\\coreuobject\\public\\uobject\\generatedcppincludes.h",
+            "f:\\ue_5.4\\ue_5.4\\engine\\source\\runtime\\coreuobject\\public\\uobject\\metadata.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamnetworkingutils\\steamnetworkingutils.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamnetworkingutils\\steamnetworkingutilstypes.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamnetworkingutilstypes.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamnetworkingutils.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamnetworkingutilstypes.gen.cpp",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamparentalsettings.gen.cpp",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamparentalsettings\\steamparentalsettings.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamparentalsettings\\steamparentalsettingstypes.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamparentalsettingstypes.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamparentalsettings.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamparentalsettingstypes.gen.cpp",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steampartiesasyncactions.gen.cpp",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamparties\\steampartiesasyncactions.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamparties\\steampartiestypes.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steampartiestypes.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steampartiesasyncactions.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steampartiestypes.gen.cpp",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamproapps.gen.cpp",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamapps\\steamproapps.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamapps\\steamappstypes.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamappstypes.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamproapps.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

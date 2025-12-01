@@ -1,0 +1,30 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\steamcorepro\\module.steamcorepro.7.cpp",
+        "ProvidedModule": "",
+        "PCH": "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\steamcorepro\\pch.steamcorepro.h.pch",
+        "Includes": [
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steammatchmakingserverstypes.gen.cpp",
+            "f:\\ue_5.4\\ue_5.4\\engine\\source\\runtime\\coreuobject\\public\\uobject\\generatedcppincludes.h",
+            "f:\\ue_5.4\\ue_5.4\\engine\\source\\runtime\\coreuobject\\public\\uobject\\metadata.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steammatchmakingtypes.gen.cpp",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steammatchmaking\\steammatchmakingtypes.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steammatchmakingtypes.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steammusic.gen.cpp",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steammusic\\steammusic.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steammusic\\steammusictypes.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steammusictypes.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steammusic.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steammusictypes.gen.cpp",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamnetworking.gen.cpp",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamnetworking\\steamnetworking.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamnetworking\\steamnetworkingtypes.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamnetworkingtypes.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamnetworking.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamnetworkingtypes.gen.cpp"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
