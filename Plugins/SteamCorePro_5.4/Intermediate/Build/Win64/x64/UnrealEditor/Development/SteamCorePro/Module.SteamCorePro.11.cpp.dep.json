@@ -1,0 +1,32 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\steamcorepro\\module.steamcorepro.11.cpp",
+        "ProvidedModule": "",
+        "PCH": "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\steamcorepro\\pch.steamcorepro.h.pch",
+        "Includes": [
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamscreenshots.gen.cpp",
+            "f:\\ue_5.4\\ue_5.4\\engine\\source\\runtime\\coreuobject\\public\\uobject\\generatedcppincludes.h",
+            "f:\\ue_5.4\\ue_5.4\\engine\\source\\runtime\\coreuobject\\public\\uobject\\metadata.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamscreenshots\\steamscreenshots.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamscreenshots\\steamscreenshotstypes.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamscreenshotstypes.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamscreenshots.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamscreenshotstypes.gen.cpp",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamtimeline.gen.cpp",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamtimeline\\steamtimeline.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamtimeline\\steamtimelinetypes.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamtimelinetypes.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamtimeline.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamtimelinetypes.gen.cpp",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamtypes.gen.cpp",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamugc.gen.cpp",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamugc\\steamugc.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\source\\steamcorepro\\public\\steamugc\\steamugctypes.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamugctypes.generated.h",
+            "f:\\unreal projects\\shape-science-jam\\plugins\\steamcorepro_5.4\\intermediate\\build\\win64\\unrealeditor\\inc\\steamcorepro\\uht\\steamugc.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

@@ -1,0 +1,12 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UnrealEditor-SteamCoreSockets.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"F:\Unreal Projects\shape-science-jam\Intermediate\Build\Win64\x64\shape_science_jamEditor\Development\UnrealEd\SharedPCH.UnrealEd.Project.ValApi.Cpp20.h.obj"
+"F:\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCoreSockets\Module.SteamCoreSockets.cpp.obj"
+"F:\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCoreSockets\Default.rc2.res"
+/OUT:"F:\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCoreSockets\UnrealEditor-SteamCoreSockets.lib"
