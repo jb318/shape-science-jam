@@ -31,3 +31,4 @@
 #include "F:/Unreal Projects/shape-science-jam/Plugins/SteamCorePro_5.4/Source/SteamCorePro/Private/SteamTimeline/SteamTimeline.cpp"
 #include "F:/Unreal Projects/shape-science-jam/Plugins/SteamCorePro_5.4/Source/SteamCorePro/Private/SteamUGC/SteamUGC.cpp"
 #include "F:/Unreal Projects/shape-science-jam/Plugins/SteamCorePro_5.4/Source/SteamCorePro/Private/SteamUGC/SteamUGCAsyncActions.cpp"
+#include "F:/Unreal Projects/shape-science-jam/Plugins/SteamCorePro_5.4/Source/SteamCorePro/Private/SteamUGC/SteamUGCAsyncTasks.cpp"

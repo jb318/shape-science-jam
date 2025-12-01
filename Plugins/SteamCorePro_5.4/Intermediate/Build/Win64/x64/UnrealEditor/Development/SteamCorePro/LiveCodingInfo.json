@@ -134,10 +134,10 @@
 			"SteamScreenshots.cpp.obj",
 			"SteamTimeline.cpp.obj",
 			"SteamUGC.cpp.obj",
-			"SteamUGCAsyncActions.cpp.obj"
+			"SteamUGCAsyncActions.cpp.obj",
+			"SteamUGCAsyncTasks.cpp.obj"
 		],
 		"Module.SteamCorePro.18.cpp.obj": [
-			"SteamUGCAsyncTasks.cpp.obj",
 			"SteamUserStats.cpp.obj",
 			"SteamUserStatsAsyncActions.cpp.obj",
 			"SteamUserStatsAsyncTasks.cpp.obj",
