@@ -9,7 +9,7 @@ public class shape_science_jam : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", 
-			"UMG", "Slate", "SlateCore", "OnlineSubsystem", "OnlineSubsystemSteam" });
+			"UMG", "Slate", "SlateCore","SteamCorePro" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
