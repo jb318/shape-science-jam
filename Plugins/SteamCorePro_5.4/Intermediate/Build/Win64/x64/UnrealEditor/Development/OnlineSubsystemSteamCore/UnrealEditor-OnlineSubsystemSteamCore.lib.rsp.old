@@ -1,0 +1,12 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UnrealEditor-OnlineSubsystemSteamCore.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\OnlineSubsystemSteamCore\PCH.OnlineSubsystemSteamCore.h.obj"
+"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\OnlineSubsystemSteamCore\Module.OnlineSubsystemSteamCore.cpp.obj"
+"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\OnlineSubsystemSteamCore\Default.rc2.res"
+/OUT:"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\OnlineSubsystemSteamCore\UnrealEditor-OnlineSubsystemSteamCore.lib"

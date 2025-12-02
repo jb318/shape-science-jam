@@ -1,11 +1,11 @@
-"F:\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCorePro\Module.SteamCorePro.9.cpp"
-/FI"F:\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCorePro\PCH.SteamCorePro.h"
-/FI"F:\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCorePro\Definitions.h"
-/Yu"F:\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCorePro\PCH.SteamCorePro.h"
-/Fp"F:\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCorePro\PCH.SteamCorePro.h.pch"
-/Fo"F:\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCorePro\Module.SteamCorePro.9.cpp.obj"
-/sourceDependencies "F:\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCorePro\Module.SteamCorePro.9.cpp.dep.json"
-@"F:\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCorePro\SteamCorePro.Shared.rsp"
+"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCorePro\Module.SteamCorePro.9.cpp"
+/FI"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCorePro\PCH.SteamCorePro.h"
+/FI"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCorePro\Definitions.h"
+/Yu"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCorePro\PCH.SteamCorePro.h"
+/Fp"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCorePro\PCH.SteamCorePro.h.pch"
+/Fo"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCorePro\Module.SteamCorePro.9.cpp.obj"
+/sourceDependencies "C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCorePro\Module.SteamCorePro.9.cpp.dep.json"
+@"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCorePro\SteamCorePro.Shared.rsp"
 /Zc:inline
 /nologo
 /Oi

@@ -6,7 +6,13 @@
 /NAME:"UnrealEditor-OnlineSubsystemSteamCore.dll"
 /IGNORE:4221
 /NODEFAULTLIB
-"F:\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\OnlineSubsystemSteamCore\PCH.OnlineSubsystemSteamCore.h.obj"
-"F:\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\OnlineSubsystemSteamCore\Module.OnlineSubsystemSteamCore.cpp.obj"
-"F:\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\OnlineSubsystemSteamCore\Default.rc2.res"
-/OUT:"F:\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\OnlineSubsystemSteamCore\UnrealEditor-OnlineSubsystemSteamCore.lib"
+"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\OnlineSubsystemSteamCore\PCH.OnlineSubsystemSteamCore.h.obj"
+"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\OnlineSubsystemSteamCore\Module.OnlineSubsystemSteamCore.cpp.obj"
+"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\OnlineSubsystemSteamCore\OnlineAuthHandlerSteamCore.gen.cpp.obj"
+"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\OnlineSubsystemSteamCore\OnlineSessionInterfaceSteamCore.gen.cpp.obj"
+"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\OnlineSubsystemSteamCore\OnlineSubsystemSteamCore.init.gen.cpp.obj"
+"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\OnlineSubsystemSteamCore\OnlineSubsystemSteamCoreUtilities.gen.cpp.obj"
+"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\OnlineSubsystemSteamCore\SteamCoreNetConnection.gen.cpp.obj"
+"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\OnlineSubsystemSteamCore\SteamCoreNetDriver.gen.cpp.obj"
+"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\OnlineSubsystemSteamCore\Default.rc2.res"
+/OUT:"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\OnlineSubsystemSteamCore\UnrealEditor-OnlineSubsystemSteamCore.lib"

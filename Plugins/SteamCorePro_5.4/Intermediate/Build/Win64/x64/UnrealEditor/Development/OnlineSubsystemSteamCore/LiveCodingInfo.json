@@ -2,12 +2,6 @@
 	"RemapUnityFiles": 
 	{
 		"Module.OnlineSubsystemSteamCore.cpp.obj": [
-			"OnlineAuthHandlerSteamCore.gen.cpp.obj",
-			"OnlineSessionInterfaceSteamCore.gen.cpp.obj",
-			"OnlineSubsystemSteamCore.init.gen.cpp.obj",
-			"OnlineSubsystemSteamCoreUtilities.gen.cpp.obj",
-			"SteamCoreNetConnection.gen.cpp.obj",
-			"SteamCoreNetDriver.gen.cpp.obj",
 			"OnlineAchievementsInterfaceSteamCore.cpp.obj",
 			"OnlineAuthHandlerSteamCore.cpp.obj",
 			"OnlineAuthInterfaceSteamCore.cpp.obj",
@@ -36,7 +30,13 @@
 			"SocketSubsystemSteamCore.cpp.obj",
 			"OnlineAsyncTaskManagerSteamCore.cpp.obj",
 			"VoiceEngineSteamCore.cpp.obj",
-			"VoiceInterfaceSteamCore.cpp.obj"
+			"VoiceInterfaceSteamCore.cpp.obj",
+			"OnlineAuthHandlerSteamCore.gen.cpp.obj",
+			"OnlineSessionInterfaceSteamCore.gen.cpp.obj",
+			"OnlineSubsystemSteamCore.init.gen.cpp.obj",
+			"OnlineSubsystemSteamCoreUtilities.gen.cpp.obj",
+			"SteamCoreNetConnection.gen.cpp.obj",
+			"SteamCoreNetDriver.gen.cpp.obj"
 		]
 	}
 }

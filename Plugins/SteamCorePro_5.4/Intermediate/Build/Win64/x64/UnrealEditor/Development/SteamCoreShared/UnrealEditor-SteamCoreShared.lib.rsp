@@ -6,7 +6,10 @@
 /NAME:"UnrealEditor-SteamCoreShared.dll"
 /IGNORE:4221
 /NODEFAULTLIB
-"F:\Unreal Projects\shape-science-jam\Intermediate\Build\Win64\x64\shape_science_jamEditor\Development\UnrealEd\SharedPCH.UnrealEd.Project.ValApi.Cpp20.h.obj"
-"F:\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCoreShared\Module.SteamCoreShared.cpp.obj"
-"F:\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCoreShared\Default.rc2.res"
-/OUT:"F:\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCoreShared\UnrealEditor-SteamCoreShared.lib"
+"C:\Users\JB\Unreal Projects\shape-science-jam\Intermediate\Build\Win64\x64\shape_science_jamEditor\Development\UnrealEd\SharedPCH.UnrealEd.Project.ValApi.Cpp20.h.obj"
+"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCoreShared\Module.SteamCoreShared.cpp.obj"
+"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCoreShared\SteamCoreShared.init.gen.cpp.obj"
+"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCoreShared\SteamCoreSharedAudioSubsystem.gen.cpp.obj"
+"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCoreShared\SteamCoreSharedTypes.gen.cpp.obj"
+"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCoreShared\Default.rc2.res"
+/OUT:"C:\Users\JB\Unreal Projects\shape-science-jam\Plugins\SteamCorePro_5.4\Intermediate\Build\Win64\x64\UnrealEditor\Development\SteamCoreShared\UnrealEditor-SteamCoreShared.lib"
