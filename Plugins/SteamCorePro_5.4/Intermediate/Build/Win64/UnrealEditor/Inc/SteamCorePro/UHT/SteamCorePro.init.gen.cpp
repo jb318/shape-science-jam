@@ -463,7 +463,7 @@ void EmptyLinkFunctionForGeneratedCodeSteamCorePro_init() {}
 				SingletonFuncArray,
 				UE_ARRAY_COUNT(SingletonFuncArray),
 				PKG_CompiledIn | 0x00000000,
-				0x3C7464AE,
+				0xA8227B4A,
 				0xB1FC7CF4,
 				METADATA_PARAMS(0, nullptr)
 			};
@@ -471,5 +471,5 @@ void EmptyLinkFunctionForGeneratedCodeSteamCorePro_init() {}
 		}
 		return Z_Registration_Info_UPackage__Script_SteamCorePro.OuterSingleton;
 	}
-	static FRegisterCompiledInInfo Z_CompiledInDeferPackage_UPackage__Script_SteamCorePro(Z_Construct_UPackage__Script_SteamCorePro, TEXT("/Script/SteamCorePro"), Z_Registration_Info_UPackage__Script_SteamCorePro, CONSTRUCT_RELOAD_VERSION_INFO(FPackageReloadVersionInfo, 0x3C7464AE, 0xB1FC7CF4));
+	static FRegisterCompiledInInfo Z_CompiledInDeferPackage_UPackage__Script_SteamCorePro(Z_Construct_UPackage__Script_SteamCorePro, TEXT("/Script/SteamCorePro"), Z_Registration_Info_UPackage__Script_SteamCorePro, CONSTRUCT_RELOAD_VERSION_INFO(FPackageReloadVersionInfo, 0xA8227B4A, 0xB1FC7CF4));
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

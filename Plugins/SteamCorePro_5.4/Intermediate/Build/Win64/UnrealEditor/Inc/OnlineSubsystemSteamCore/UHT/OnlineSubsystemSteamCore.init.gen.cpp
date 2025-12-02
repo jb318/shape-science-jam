@@ -17,7 +17,7 @@ void EmptyLinkFunctionForGeneratedCodeOnlineSubsystemSteamCore_init() {}
 				nullptr,
 				0,
 				PKG_CompiledIn | 0x00000000,
-				0x7A1F9B69,
+				0x077BBFCD,
 				0x901D7EFA,
 				METADATA_PARAMS(0, nullptr)
 			};
@@ -25,5 +25,5 @@ void EmptyLinkFunctionForGeneratedCodeOnlineSubsystemSteamCore_init() {}
 		}
 		return Z_Registration_Info_UPackage__Script_OnlineSubsystemSteamCore.OuterSingleton;
 	}
-	static FRegisterCompiledInInfo Z_CompiledInDeferPackage_UPackage__Script_OnlineSubsystemSteamCore(Z_Construct_UPackage__Script_OnlineSubsystemSteamCore, TEXT("/Script/OnlineSubsystemSteamCore"), Z_Registration_Info_UPackage__Script_OnlineSubsystemSteamCore, CONSTRUCT_RELOAD_VERSION_INFO(FPackageReloadVersionInfo, 0x7A1F9B69, 0x901D7EFA));
+	static FRegisterCompiledInInfo Z_CompiledInDeferPackage_UPackage__Script_OnlineSubsystemSteamCore(Z_Construct_UPackage__Script_OnlineSubsystemSteamCore, TEXT("/Script/OnlineSubsystemSteamCore"), Z_Registration_Info_UPackage__Script_OnlineSubsystemSteamCore, CONSTRUCT_RELOAD_VERSION_INFO(FPackageReloadVersionInfo, 0x077BBFCD, 0x901D7EFA));
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
