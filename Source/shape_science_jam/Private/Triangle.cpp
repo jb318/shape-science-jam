@@ -16,22 +16,6 @@ ATriangle::ATriangle()
 	ShapeIndex = 2;
 }
 
-void ATriangle::Attack_Implementation()
-{
-	Attack();
-	//if (!CoolDownActive && !InputDisabled && !GetCharacterMovement()->IsFalling()) {
-	//	CoolDownActive = true;
-	//	InputDisabled = true;
-	//	// Timers for both the attack delay and attack cool down
-	//	FTimerHandle CoolDownTimer;
-	//	FTimerHandle AttackTimer;
-	//	GetWorld()->GetTimerManager().SetTimer(CoolDownTimer, this, &ATriangle::CoolDown, AttackCoolDown, false);
-	//	GetWorld()->GetTimerManager().SetTimer(AttackTimer, this, &ATriangle::FireProjectile, AttackDelay, false);
-
-	//}
-	
-}
-
 void ATriangle::SpecialMove_Implementation()
 {
 	Super::SpecialMove_Implementation();
@@ -78,32 +62,18 @@ void ATriangle::BeginPlay()
 void ATriangle::CoolDown()
 {
 	Super::CoolDown();
+	CoolDownActive = false;
+	InputDisabled = false;
 }
 
 void ATriangle::FireProjectile()
-{
-	if (HasAuthority()) {
-		FireProjectileMulticast();
-		GEngine->AddOnScreenDebugMessage(1, 4.f, FColor::Blue, TEXT("Server"));
-	}
-	else {
-		FireProjectileRequest();
-		GEngine->AddOnScreenDebugMessage(1, 4.f, FColor::Blue, TEXT("Client"));
-	}
-}
-
-void ATriangle::FireProjectileRequest_Implementation()
-{
-	FireProjectileMulticast();
-}
-
-void ATriangle::FireProjectileMulticast_Implementation()
 {
 	if (FacingRight) {
 		if (Projectile1 && Projectile2) {
 			Projectile1->FiredOnRightside = true;
 			Projectile2->FiredOnRightside = true;
 		}
+
 	}
 	else {
 		if (Projectile1 && Projectile2) {

@@ -39,16 +39,20 @@ protected:
 	virtual void Init() override;
 
 public:
-	FOnSessionSearchCompleted SearchCompleted;
+	UFUNCTION(BlueprintCallable)
+	void Login();
 
 	UFUNCTION(BlueprintCallable)
-	void HostSession(const FName& PlayerName, const FString RoomCode);
+	void CreateSession(const FName& PlayerName, const FString RoomCode);
+
+	UFUNCTION(BlueprintCallable)
+	void DestroySession();
 
 	UFUNCTION(BlueprintCallable)
 	void FindSession();
 
 	UFUNCTION(BlueprintCallable)
-	void JoinLobby(int index);
+	void JoinSession(int index);
 
 	FORCEINLINE FName GetSessionName() const { return SessionNameKey; }
 	FString GetSessionName(const FOnlineSessionSearchResult& SearchResult) const;
@@ -58,11 +62,17 @@ public:
 
 private:
 	class IOnlineSubsystem* OnlineSubsystem;
+	TSharedPtr<class IOnlineIdentity, ESPMode::ThreadSafe> identityPtr;
 	TSharedPtr<class IOnlineSession, ESPMode::ThreadSafe> sessionPtr;
 
+	// Essential Online Function Delegates
+	void LoginCompleted(int NumOfPlayers, bool bWasSuccessful, const FUniqueNetId& UserId, const FString& Error);
 	void CreateSessionCompleted(FName SessionName, bool bWasSuccessful);
+	void DestroySessionCompleted(FName SessionName, bool bWasSuccessful);
 	void FindSessionsCompleted(bool bWasSuccessful);
 	void JoinSessionCompleted(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
+
+	FOnSessionSearchCompleted SearchCompleted;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSoftObjectPtr<UWorld> GameLevel;
@@ -71,4 +81,6 @@ private:
 
 	const FName SessionNameKey{ "SessionNameKey" };
 	const FName SessionRoomKey{ "SessionRoomKey" };
+
+
 };
