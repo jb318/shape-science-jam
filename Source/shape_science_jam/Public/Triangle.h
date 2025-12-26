@@ -15,8 +15,6 @@ public:
 	// Constructor 
 	ATriangle();
 
-	// Base class function implementations
-	virtual void Attack_Implementation() override;
 	virtual void SpecialMove_Implementation() override;
 
 protected:
@@ -51,14 +49,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AProjectile* Projectile2;
 
-	UFUNCTION(Server, Reliable)
-	void FireProjectileRequest();
-
-	UFUNCTION(NetMulticast, Reliable)
-	void FireProjectileMulticast();
-
 private:
-
 	// Index of which projectile to fire
 	int ProjectileIndex = 0;
 

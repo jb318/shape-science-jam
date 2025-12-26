@@ -2,7 +2,6 @@
 
 
 #include "PlayerWidget.h"
-using namespace std;
 
 UPlayerWidget::UPlayerWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
