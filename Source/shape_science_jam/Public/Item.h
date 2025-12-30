@@ -22,14 +22,17 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Properties")
 	UBoxComponent* BoxComponent;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Properties")
 	FString Name;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Properties")
 	UPaperFlipbookComponent* Flipbook;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Properties")
+	USoundWave* ItemCollectedSFX;
 
 	// Item value (i.e. a value of 7 on invincibility would give the player 7 seconds of invincibility
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -39,5 +42,6 @@ protected:
 	virtual void Interact() override;
 	virtual FString ItemName() override;
 	virtual float ItemValue() override;
-	
+	virtual void UpdateObjective() override;
+	virtual void PlaySoundEffect() override;
 };

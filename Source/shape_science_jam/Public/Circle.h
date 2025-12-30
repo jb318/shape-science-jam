@@ -18,32 +18,10 @@ public:
 	ACircle();
 
 	// Base class function implementations
-	virtual void Attack_Implementation() override;
 	virtual void SpecialMove_Implementation() override;
-
-	
 
 protected: 
 	virtual void BeginPlay() override;
-
-	// Lasts duration of dash
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool CanHitEnemy;
-
-	// Dash attacks damage
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shape Moves")
-	float DashDamage = 0.5;
-
-	// Knockback velocity
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector KnockbackVelocity;
-
-	UFUNCTION()
-	void OnOverlapEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	bool SameVeloDash;
-
 
 private:
 	// Helper function, delays the circle from jumping to match with animation

@@ -33,7 +33,7 @@ public:
 	void CreatePlayerWidget();
 	
 	// Sets the health percent of the player widget
-	void UpdateHealthDisplay(float MinimumHealth, float MaximumHealth, int ShapeIndex = -1);
+	void UpdateHealthDisplay();
 	
 	// Toggles player widget back when restart level 
 	void ToggleWidget();

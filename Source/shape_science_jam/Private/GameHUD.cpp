@@ -23,10 +23,10 @@ void AGameHUD::CreatePlayerWidget()
 	}
 }
 
-void AGameHUD::UpdateHealthDisplay(float MinimumHealth, float MaximumHealth, int ShapeIndex)
+void AGameHUD::UpdateHealthDisplay()
 {
 	if (PlayerWidget) {
-		PlayerWidget->UpdateHealthImage(MinimumHealth, MaximumHealth, ShapeIndex);
+		PlayerWidget->UpdateHealthImage();
 	}
 	
 }

@@ -8,7 +8,6 @@
 #include "Components/BoxComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Projectile.h"
-#include "CombatInterface.h"
 #include "InteractInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameHUD.h"
@@ -20,7 +19,7 @@
  */
 
 UCLASS()
-class SHAPE_SCIENCE_JAM_API AShape : public APaperCharacter, public ICombatInterface
+class SHAPE_SCIENCE_JAM_API AShape : public APaperCharacter
 {
 	GENERATED_BODY()
 	
@@ -72,12 +71,9 @@ protected:
 	float ShapeChangeDuration = 1.f;
 
 public:
-	// Using ReplicatedUsing tag with corresponding function to transfer this value to other clients?
-	UPROPERTY(EditDefaultsOnly, Category = "Stats")
 	float CurrentHealth;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Stats")
-	float MaxHealth = 4.f;
+	float MaxHealth = 8.f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UCameraComponent* CameraComponent;
@@ -97,15 +93,6 @@ public:
 	UFUNCTION()
 	void OnOverlapItemBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	// Functions of shapes
-	// The first is for the childs to base class and derived classes to use inside the UE5 editor
-	// and should only be declared in base class! Also, do not create definition in the cpp file 
-	// The second function is for the cpp functionality of the function and should be overriden 
-	// in derived classes
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Shape Moves")
-	void Attack();
-	virtual void Attack_Implementation();
-
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Shape Moves")
 	void SpecialMove();
 	virtual void SpecialMove_Implementation();
@@ -113,16 +100,10 @@ public:
 	// Name of the item that was overlapped
 	FString ItemName;
 
-	// Functions to be called in conjunction with interfaces
-	void LevelUp();
-
 	virtual void SetHealth(float amount);
 
-	// Members from the combat interface
 	UFUNCTION(BlueprintCallable)
-	virtual void DamageCharacter(float amount, bool IsProjectile) override;
-
-	virtual void HitReaction(FVector LaunchVelocity) override;
+	void DamageShape(float amount, bool InstantDeath);
 
 	// Shapes flipbook animations
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animations")
@@ -139,6 +120,15 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animations")
 	UPaperFlipbook* TransformInAnimation;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	UTexture* Full_Health_Icon;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	UTexture* Half_Health_Icon;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	UTexture* Empty_Health_Icon;
 
 	// Bools to control input and movement
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
@@ -168,10 +158,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly , Category = "AI")
 	bool UseControllerForAttacking = true;
 
-	// How close the AI needs to be to attack player
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI")
-	float AttackRange;
-
 	// Destroys character
 	virtual void CharacterDefeat();
 
@@ -180,6 +166,9 @@ public:
 	bool Invincible;
 
 	int ShapeIndex;
+
+	UFUNCTION(BlueprintCallable)
+	float GetShapeHealthPercent();
 
 private:
 	// reference to HUD

@@ -110,10 +110,6 @@ void AShapeController::PoolShape(int index)
 			GEngine->AddOnScreenDebugMessage(0, 3.f, FColor::Red, TEXT("Transform Actor Component not set"));
 		}
 	}
-	else {
-		// GEngine->AddOnScreenDebugMessage(0, 3.f, FColor::Red, TEXT("No valid shape to transform too"));
-	}
-
 }
 
 void AShapeController::SetupInputComponent()
@@ -153,7 +149,7 @@ void AShapeController::RestoreHealth()
 	if (HUD) {
 		HUD->ToggleWidget();
 		if (Player) {
-			HUD->UpdateHealthDisplay(Player->CurrentHealth, Player->MaxHealth);
+			HUD->UpdateHealthDisplay();
 		}
 
 	}
@@ -259,7 +255,7 @@ void AShapeController::ChangeShape(int XValue, int YValue, FVector PlayerLocatio
 		}
 		Player->ShapeAbilityComponent->TransformInAnimationCall();
 		if (HUD)
-			HUD->UpdateHealthDisplay(Player->CurrentHealth, Player->MaxHealth, Player->ShapeIndex);
+			HUD->UpdateHealthDisplay();
 
 		ControlledShape->InputDisabled = true;
 		ControlledShape->CannotMove = true;
