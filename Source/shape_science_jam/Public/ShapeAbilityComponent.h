@@ -46,4 +46,12 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void DirectInteract();
+
+	// Shapes sound effects
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SFX")
+	USoundWave* DamagedSFX;
+
+	// Shapes sound effects
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SFX")
+	USoundWave* DefeatedSFX;
 };

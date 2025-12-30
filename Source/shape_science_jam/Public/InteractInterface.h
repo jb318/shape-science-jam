@@ -32,5 +32,7 @@ public:
 
 	// Updates objective for all players involved
 	virtual void UpdateObjective();
+
+	virtual void PlaySoundEffect();
 };
 

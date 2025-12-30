@@ -21,3 +21,7 @@ float IInteractInterface::ItemValue()
 void IInteractInterface::UpdateObjective()
 {
 }
+
+void IInteractInterface::PlaySoundEffect()
+{
+}

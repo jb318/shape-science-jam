@@ -14,13 +14,10 @@ class SHAPE_SCIENCE_JAM_API AShapeState : public APlayerState
 {
 	GENERATED_BODY()
 
+protected:
+	virtual void BeginPlay() override;
+
 public:
-
-	/*UPROPERTY(Replicated, BlueprintReadOnly, Category = "Player State")
-	FString PlayerName;
-
-	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Player State")
-	float PlayerHealth;*/
 
 	UFUNCTION(Server, Reliable)
 	void UpdatePlayerHealth();

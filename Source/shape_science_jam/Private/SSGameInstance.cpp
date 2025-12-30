@@ -89,12 +89,9 @@ void USSGameInstance::JoinSession(int index)
 
 	const FOnlineSessionSearchResult& SearchResult = SessionSearch->SearchResults[index];
 
-	// Name used to identify this session *locally* on the client.
-	// It does NOT need to match host’s session name.
 	FName LocalSessionName = FName("GameSession");
 
 	auto UserId = identityPtr->GetUniquePlayerId(0);
-
 
 	const bool bJoinStarted = sessionPtr->JoinSession(*UserId, LocalSessionName, SearchResult);
 	UE_LOG(LogTemp, Warning, TEXT("JoinSession called, success flag: %d"), bJoinStarted);

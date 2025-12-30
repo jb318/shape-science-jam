@@ -2,6 +2,7 @@
 
 
 #include "Item.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AItem::AItem()
@@ -38,5 +39,15 @@ FString AItem::ItemName()
 float AItem::ItemValue()
 {
 	return ItemVal;
+}
+
+void AItem::UpdateObjective()
+{
+}
+
+void AItem::PlaySoundEffect()
+{
+	if (ItemCollectedSFX)
+		UGameplayStatics::PlaySound2D(this, ItemCollectedSFX);
 }
 

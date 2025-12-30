@@ -15,28 +15,6 @@ ACircle::ACircle()
 	ShapeIndex = 0;
 }
 
-void ACircle::Attack_Implementation()
-{
-	Super::Attack_Implementation();
-
-	if (!SpecialMoveClicked) {
-		// Execute dash if not jumping or hit, not falling, and once the cool down is up
-		if (!InputDisabled && !GetCharacterMovement()->IsFalling()) {
-			// Turn off input and make sure can hit is true
-			InputDisabled = true;
-			CanHitEnemy = true;
-
-			if (FacingLeft) {
-				LaunchCharacter(GetActorForwardVector() * -1500.f, false, false);
-			}
-			else {
-				LaunchCharacter(GetActorForwardVector() * 1500.f, false, false);
-			}
-		}
-	}
-	
-}
-
 void ACircle::SpecialMove_Implementation()
 {
 	Super::SpecialMove_Implementation();
@@ -53,29 +31,6 @@ void ACircle::SpecialMove_Implementation()
 void ACircle::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// Binding box component to overlap enemy event
-	if (BoxComponent) {
-		BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ACircle::OnOverlapEnemy);
-	}
-
-}
-
-void ACircle::OnOverlapEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	// Checks if the window to hit enemy is active
-	if (CanHitEnemy) {
-		if (OtherActor && OtherActor != this) {
-			
-			// Filters overlapped Actors with those that implement combat interface
-			if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(OtherActor)) {
-				
-				CombatInterface->DamageCharacter(DashDamage, false);
-				CombatInterface->HitReaction(KnockbackVelocity);
-			}
-		}
-	}
-	
 }
 
 void ACircle::CircleJump()

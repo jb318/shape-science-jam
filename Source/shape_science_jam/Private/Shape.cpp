@@ -3,7 +3,6 @@
 #include "Shape.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "CombatInterface.h"
 #include "InteractInterface.h"
 #include "ShapeState.h"
 
@@ -79,8 +78,8 @@ void AShape::OnOverlapItemBegin(UPrimitiveComponent* OverlappedComponent, AActor
 				// Call the necessary functions depending on which item was overlapped
 				if (ItemName == TEXT("Health")) {
 					SetHealth(InterfaceItem->ItemValue());
-					if (AShapeState* ShapeState = Cast<AShapeState>(GetPlayerState())) {
-						ShapeState->UpdatePlayerHealth();
+					if (HUD) {
+						HUD->PlayerWidget->UpdateHealthImage();
 					}
 				}
 				if (ItemName == TEXT("Invincibilty")) {
@@ -107,18 +106,9 @@ void AShape::OnOverlapItemBegin(UPrimitiveComponent* OverlappedComponent, AActor
 				}
 				// Destroy the item
 				InterfaceItem->Interact();
+				InterfaceItem->PlaySoundEffect();
 			}
 		}
-	}
-}
-
-void AShape::Attack_Implementation()
-{
-	Attack();
-	if (!CoolDownActive) {
-		CoolDownActive = true;
-		FTimerHandle CoolDownTimer;
-		GetWorld()->GetTimerManager().SetTimer(CoolDownTimer, this, &AShape::CoolDown, AttackCoolDown, false);
 	}
 }
 
@@ -143,35 +133,52 @@ void AShape::SetHealth(float amount)
 {
 	if (CurrentHealth + amount > MaxHealth)
 		CurrentHealth = MaxHealth;
-	else if (CurrentHealth + amount <= 0)
-		CharacterDefeat();
+	else if (CurrentHealth + amount <= 0) {
+		CurrentHealth = 0;
+		FTimerHandle DeathTimer;
+		GetWorld()->GetTimerManager().SetTimer(DeathTimer, this, &AShape::CharacterDefeat, 1.f, false);
+	}
 	else
 		CurrentHealth += amount;
 }
 
-void AShape::DamageCharacter(float amount, bool IsProjectile)
+void AShape::DamageShape(float amount, bool InstantDeath)
 {
+	SetHealth(amount * -1);
 
-	if (ShapeAbilityComponent)
+	if (ShapeAbilityComponent) {
 		ShapeAbilityComponent->DamageAnimationCall();
-	else
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("Can't play damage animation as Shape Ability Component is not set"));
-	
-}
-		
+		if (InstantDeath) {
+			UGameplayStatics::PlaySound2D(this, ShapeAbilityComponent->DefeatedSFX);
+		}
+		else {
+			if (CurrentHealth <= 0) 
+				UGameplayStatics::PlaySound2D(this, ShapeAbilityComponent->DefeatedSFX);
+			
+			else
+				UGameplayStatics::PlaySound2D(this, ShapeAbilityComponent->DamagedSFX);
+		}
+	}
 
-void AShape::HitReaction(FVector LaunchVelocity)
-{
-	// Add knockback
-	LaunchCharacter(LaunchVelocity, false, false);
-	ShapeAbilityComponent->DamageAnimationCall();
+	if (HUD) {
+		HUD->UpdateHealthDisplay();
+	}
 }
 
 void AShape::CharacterDefeat()
 {
+	CannotMove = true;
 	if (HUD) {
 		HUD->GameOver();
 		HUD->GameOver_Implementation();
-
 	}
+}
+
+float AShape::GetShapeHealthPercent()
+{
+	if (MaxHealth == 0.f)
+		return 0.0f;
+	
+	float HealthPercent = CurrentHealth / MaxHealth;
+		return HealthPercent;
 }
