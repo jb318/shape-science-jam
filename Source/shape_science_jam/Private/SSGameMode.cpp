@@ -3,10 +3,25 @@
 
 #include "SSGameMode.h"
 #include "GameFramework/PlayerStart.h"
+#include "SSGameState.h"
+#include "SSGameInstance.h"
 
 ASSGameMode::ASSGameMode()
 {
 
+}
+
+void ASSGameMode::InitGameState()
+{
+	Super::InitGameState();
+	ASSGameState* SSGameState = Cast<ASSGameState>(GameState);
+	USSGameInstance* SSGameInstance = GetGameInstance<USSGameInstance>();
+
+	if (GetWorld()->GetNetMode() == NM_ListenServer) {
+		if (SSGameState && SSGameInstance) {
+			SSGameState->SetSessionName(SSGameInstance->GetCurrentSessionName());
+		}
+	}
 }
 
 void ASSGameMode::BeginPlay()

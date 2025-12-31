@@ -3,6 +3,8 @@
 #include "SSGameInstance.h"
 #include "OnlineSubsystem.h"
 #include "Interfaces/OnlineIdentityInterface.h"
+#include "Interfaces/OnlineFriendsInterface.h"
+#include "Interfaces/OnlineExternalUIInterface.h"
 #include <Online/OnlineSessionNames.h>
 #include "Kismet/GameplayStatics.h"
 
@@ -19,7 +21,8 @@ void USSGameInstance::Init()
 	sessionPtr->OnDestroySessionCompleteDelegates.AddUObject(this, &USSGameInstance::DestroySessionCompleted);
 	sessionPtr->OnFindSessionsCompleteDelegates.AddUObject(this, &USSGameInstance::FindSessionsCompleted);
 	sessionPtr->OnJoinSessionCompleteDelegates.AddUObject(this, &USSGameInstance::JoinSessionCompleted);
-	
+
+	FOnSessionInviteReceivedDelegate OnInviteReceived = FOnSessionInviteReceivedDelegate::CreateUObject(this, &USSGameInstance::OnInviteReceived);
 }
 
 void USSGameInstance::Login()
@@ -46,7 +49,7 @@ void USSGameInstance::CreateSession(const FName& PlayerName, const FString RoomC
 		SessionSettings.bAllowJoinInProgress = true;
 		SessionSettings.bAllowJoinViaPresence = true;
 		SessionSettings.NumPublicConnections = true;
-		
+
 		// Passing an arbitrary data, and make is available to be read be client
 		SessionSettings.Set(SessionNameKey, PlayerName.ToString(), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 		SessionSettings.Set(SessionRoomKey, RoomCode, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
@@ -56,7 +59,15 @@ void USSGameInstance::CreateSession(const FName& PlayerName, const FString RoomC
 		FName SessionName = *Name;
 
 		auto UserId = identityPtr->GetUniquePlayerId(0);
-		sessionPtr->CreateSession(*UserId, SessionName, SessionSettings);
+
+		sessionPtr->CreateSession(*UserId, LocalSessionName, SessionSettings);
+	}
+}
+
+void USSGameInstance::DestroySession()
+{
+	if (sessionPtr) {
+		sessionPtr->DestroySession(LocalSessionName);
 	}
 }
 
@@ -64,13 +75,12 @@ void USSGameInstance::FindSession()
 {
 	if (sessionPtr) {
 		SessionSearch = MakeShareable(new FOnlineSessionSearch);
-		
+
 		SessionSearch->bIsLanQuery = false;
 		SessionSearch->MaxSearchResults = 20;
 		SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
 
-		auto UserId = identityPtr->GetUniquePlayerId(0);
-		sessionPtr->FindSessions(*UserId, SessionSearch.ToSharedRef());
+		sessionPtr->FindSessions(0, SessionSearch.ToSharedRef());
 	}
 }
 
@@ -89,7 +99,7 @@ void USSGameInstance::JoinSession(int index)
 
 	const FOnlineSessionSearchResult& SearchResult = SessionSearch->SearchResults[index];
 
-	FName LocalSessionName = FName("GameSession");
+	FName DummySessionName = FName("GameSession");
 
 	auto UserId = identityPtr->GetUniquePlayerId(0);
 
@@ -97,16 +107,43 @@ void USSGameInstance::JoinSession(int index)
 	UE_LOG(LogTemp, Warning, TEXT("JoinSession called, success flag: %d"), bJoinStarted);
 }
 
-void USSGameInstance::DestroySession()
+void USSGameInstance::GetAllFriends()
 {
-	if (sessionPtr) {
-		sessionPtr->DestroySession(FName("MainSession"));
+	if (OnlineSubsystem) {
+		if (IOnlineFriendsPtr FriendsPtr = OnlineSubsystem->GetFriendsInterface()) {
+			FriendsPtr->ReadFriendsList(0, FString(""), FOnReadFriendsListComplete::CreateUObject(this, &USSGameInstance::GetAllFriendsComplete));
+		}
 	}
+	
+}
+
+void USSGameInstance::ShowFriendsListUI()
+{
+	if (OnlineSubsystem) {
+		if (IOnlineExternalUIPtr UIPtr = OnlineSubsystem->GetExternalUIInterface()) {
+			UIPtr->ShowFriendsUI(0);
+		}
+	}
+}
+
+void USSGameInstance::ShowInviteFriendsUI()
+{
+	if (OnlineSubsystem) {
+		if (IOnlineExternalUIPtr UIPtr = OnlineSubsystem->GetExternalUIInterface()) {
+			UIPtr->ShowInviteUI(0, LocalSessionName);
+			
+		}
+	}
+}
+
+void USSGameInstance::InviteFromFriendReceived()
+{
+	
 }
 
 FString USSGameInstance::GetSessionName(const FOnlineSessionSearchResult& SearchResult) const
 {
-	FString outVal = {"Name None"};
+	FString outVal = { "Name None" };
 	SearchResult.Session.SessionSettings.Get(SessionNameKey, outVal);
 	return outVal;
 }
@@ -129,21 +166,13 @@ void USSGameInstance::CreateSessionCompleted(FName SessionName, bool bWasSuccess
 	else {
 		GEngine->AddOnScreenDebugMessage(1, 2.f, FColor::Red, TEXT("Session Creation Failed"));;
 	}
-	
-	if (!GameLevel.IsValid()) {
-		GameLevel.LoadSynchronous();
-	}
-	if (GameLevel.IsValid()) {
-		const FName LevelName = FName(*FPackageName::ObjectPathToPackageName(GameLevel.ToString()));
-		GetWorld()->ServerTravel(LevelName.ToString() + "?listen");
-		UE_LOG(LogTemp, Warning, TEXT("Server travel to %s"), *GameLevel.ToString());
-	}
+	LoadLevelAndListen(LobbyLevel);
 }
 
 void USSGameInstance::DestroySessionCompleted(FName SessionName, bool bWasSuccessful)
 {
 	if (bWasSuccessful) {
-		UE_LOG(LogTemp, Warning, TEXT("%s destroyed succesfully"), *SessionName.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("%s destroyed succesfully sa"), *SessionName.ToString());
 	}
 }
 
@@ -152,7 +181,7 @@ void USSGameInstance::FindSessionsCompleted(bool bWasSuccessful)
 	ExtraSettings.SessionIndex = 0;
 	if (bWasSuccessful && SessionSearch->SearchResults.Num() != 0) {
 		for (const FOnlineSessionSearchResult& lobbyFound : SessionSearch->SearchResults) {
-			FString OutVal{"N/A"};
+			FString OutVal{ "N/A" };
 			lobbyFound.Session.SessionSettings.Get(SessionRoomKey, OutVal);
 			ExtraSettings.SessionRoomCode = OutVal;
 			ExtraSettings.FoundPlayersIGN = GetSessionName(lobbyFound);
@@ -167,9 +196,6 @@ void USSGameInstance::FindSessionsCompleted(bool bWasSuccessful)
 
 void USSGameInstance::JoinSessionCompleted(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
 {
-	UE_LOG(LogTemp, Warning, TEXT("JoinSessionCompleted fired. SessionName: %s, Result: %d"),
-		*SessionName.ToString(), (int32)Result);
-
 	if (Result == EOnJoinSessionCompleteResult::Success)
 	{
 		if (sessionPtr)
@@ -177,7 +203,6 @@ void USSGameInstance::JoinSessionCompleted(FName SessionName, EOnJoinSessionComp
 			FString TravelUrl;
 			const bool bGotUrl = sessionPtr->GetResolvedConnectString(SessionName, TravelUrl);
 			UE_LOG(LogTemp, Warning, TEXT("GetResolvedConnectString: %d, URL: %s"), bGotUrl, *TravelUrl);
-
 			if (bGotUrl && !TravelUrl.IsEmpty())
 			{
 				if (APlayerController* PC = GetFirstLocalPlayerController(GetWorld()))
@@ -186,5 +211,50 @@ void USSGameInstance::JoinSessionCompleted(FName SessionName, EOnJoinSessionComp
 				}
 			}
 		}
+	}
+}
+
+void USSGameInstance::GetAllFriendsComplete(int32 LocalUserNum, bool bWasSuccessful, const FString& ListName, const FString& ErrorStr)
+{
+	if (bWasSuccessful) {
+		if (OnlineSubsystem) {
+			if (IOnlineFriendsPtr FriendsPtr = OnlineSubsystem->GetFriendsInterface()) {
+				TArray<TSharedRef<FOnlineFriend>> FriendsList;
+				if (FriendsPtr->GetFriendsList(0, ListName, FriendsList)) {
+					for (TSharedRef<FOnlineFriend> Friend : FriendsList) {
+						FString FriendName = Friend.Get().GetRealName();
+						if (sessionPtr) {
+							auto FriendId = Friend->GetUserId();
+							sessionPtr->SendSessionInviteToFriend(*FriendId, LocalSessionName, *Friend->GetUserId());
+						}
+					}
+				}
+				else {
+					UE_LOG(LogTemp, Error, TEXT("Failed GetFriendsList"))
+				}
+			}
+		}
+		UE_LOG(LogTemp, Warning, TEXT("Was successful at finding friends"));
+	}
+	else {
+		UE_LOG(LogTemp, Error, TEXT("Cannot find friends"));
+	}
+}
+
+void USSGameInstance::OnInviteReceived(const FUniqueNetId& UserId, const FUniqueNetId& FriendId, const FString& AppId, const FOnlineSessionSearchResult& InviteResult)
+{
+	if (sessionPtr) {
+		sessionPtr->JoinSession(UserId, LocalSessionName, InviteResult);
+	}
+}
+
+void USSGameInstance::LoadLevelAndListen(TSoftObjectPtr<UWorld> LevelToLoad)
+{
+	if (!LevelToLoad.IsValid()) {
+		LevelToLoad.LoadSynchronous();
+	}
+	if (LevelToLoad.IsValid()) {
+		const FName LevelName = FName(*FPackageName::ObjectPathToPackageName(LevelToLoad.ToString()));
+		GetWorld()->ServerTravel(LevelName.ToString() + "?listen");
 	}
 }
