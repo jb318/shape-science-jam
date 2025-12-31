@@ -16,5 +16,15 @@ class SHAPE_SCIENCE_JAM_API ASSGameState : public AGameStateBase
 
 public:
 	void UpdateObjectiveCount();
+	FORCEINLINE FName GetSessionName() const { return SessionName; };
+	void SetSessionName(const FName& NewSessionName);
+
+protected:
+	virtual void GetLifetimeReplicatedProps(TArray< class FLifetimeProperty >& OutLifetimeProps) const override;
+
+private:
+	UPROPERTY(Replicated)
+	FName SessionName;
+
 	
 };

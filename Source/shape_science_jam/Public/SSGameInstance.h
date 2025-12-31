@@ -54,8 +54,21 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void JoinSession(int index);
 
+	UFUNCTION(BlueprintCallable)
+	void GetAllFriends();
+
+	UFUNCTION(BlueprintCallable)
+	void ShowFriendsListUI();
+	
+	UFUNCTION(BlueprintCallable)
+	void ShowInviteFriendsUI();
+
+	UFUNCTION(BlueprintCallable)
+	void InviteFromFriendReceived();
+
 	FORCEINLINE FName GetSessionName() const { return SessionNameKey; }
 	FString GetSessionName(const FOnlineSessionSearchResult& SearchResult) const;
+	FORCEINLINE FName GetCurrentSessionName() const { return CurrentLobbyName; };
 
 	UPROPERTY(BlueprintReadOnly)
 	FExtraSessionSettings ExtraSettings;
@@ -71,16 +84,25 @@ private:
 	void DestroySessionCompleted(FName SessionName, bool bWasSuccessful);
 	void FindSessionsCompleted(bool bWasSuccessful);
 	void JoinSessionCompleted(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
+	void GetAllFriendsComplete(int32 LocalUserNum, bool bWasSuccessful, const FString& ListName, const FString& ErrorStr);
+	void OnInviteReceived(const FUniqueNetId& UserId, const FUniqueNetId& FriendId, const FString& AppId, const FOnlineSessionSearchResult& InviteResult);
 
 	FOnSessionSearchCompleted SearchCompleted;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSoftObjectPtr<UWorld> GameLevel;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSoftObjectPtr<UWorld> LobbyLevel;
 
 	TSharedPtr<class FOnlineSessionSearch> SessionSearch;
 
 	const FName SessionNameKey{ "SessionNameKey" };
 	const FName SessionRoomKey{ "SessionRoomKey" };
 
+	void LoadLevelAndListen(TSoftObjectPtr<UWorld> LevelToLoad);
 
+	FName CurrentLobbyName;
+
+	FName LocalSessionName = FName("GameSession");
 };

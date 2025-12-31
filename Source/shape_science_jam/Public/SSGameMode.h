@@ -19,6 +19,8 @@ public:
 	ASSGameMode();
 
 protected:
+	virtual void InitGameState() override;
+
 	virtual void BeginPlay() override;
 
 	virtual void PostLogin(APlayerController* NewPlayer) override;
